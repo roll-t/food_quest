@@ -1,0 +1,30 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "auto_fin (dev)",
+            "request": "launch",
+            "type": "dart",
+            "args": [
+                "--dart-define=ENV=dev"
+            ]
+        },
+        {
+            "name": "auto_fin (prod)",
+            "request": "launch",
+            "type": "dart",
+            "args": [
+                "--dart-define=ENV=prod"
+            ]
+        },
+        {
+            "name": "auto_fin (test)",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile",
+            "args": [
+                "--dart-define=ENV=test"
+            ]
+        },
+    ]
+}

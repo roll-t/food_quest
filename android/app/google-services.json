@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "35644670840",
+    "project_id": "bookara-cfa06",
+    "storage_bucket": "bookara-cfa06.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:35644670840:android:329899393b163ae4e67e8d",
+        "android_client_info": {
+          "package_name": "com.example.auto_fin"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "35644670840-qo48n607regsdgbpehn24ljd3us902ja.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.auto_fin",
+            "certificate_hash": "eb5598e1fd4ab1245d963ced07af932e1ee5c513"
+          }
+        },
+        {
+          "client_id": "35644670840-3ortbefkvmj83ue4hs727maco5jruiit.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCkrmxbVZknTfS6B6gTvVczLtN0NquaCos"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "35644670840-3ortbefkvmj83ue4hs727maco5jruiit.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

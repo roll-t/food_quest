@@ -1,0 +1,2 @@
+D:/code/Mobile/bookara_comic/android/app/.cxx/Debug/e3n25w03/x86/CMakeFiles/edit_cache.dir
+D:/code/Mobile/bookara_comic/android/app/.cxx/Debug/e3n25w03/x86/CMakeFiles/rebuild_cache.dir
