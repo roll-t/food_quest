@@ -1,11 +1,10 @@
+import 'package:flutter/material.dart';
 import 'package:food_quest/core/config/theme/app_theme_colors.dart';
 import 'package:food_quest/core/extension/core/rx_extensions.dart';
 import 'package:food_quest/core/ui/widgets/dialogs/dialog_utils.dart';
 import 'package:food_quest/core/utils/custom_state.dart';
 import 'package:food_quest/main/nav/presentation/controller/navigation_controller.dart';
-import 'package:food_quest/main/nav/presentation/section/manage_section.dart';
 import 'package:food_quest/main/nav/presentation/widgets/bottom_navigation_bar_widget.dart';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class NavigationPage extends CustomState {
@@ -13,7 +12,7 @@ class NavigationPage extends CustomState {
 
   ///---> [Build-bottom-navigation]
   @override
-  Widget? get bottomNavigationBar => _buildBottomNavigationBar();
+  Widget? get bottomNavigationBar => const _BuildBottomNavigationBar();
 
   ///---> [Build-body]
   @override
@@ -33,9 +32,15 @@ class NavigationPage extends CustomState {
       child: const BodyBuilder(),
     );
   }
+}
 
-  ///---> [Bottom-navigation-bar]
-  GetBuilder<NavigationController> _buildBottomNavigationBar() {
+///=============================== [COMPONENT_PAGE] ====================================
+
+///---> [BUILD_BOTTOM_NAVIGATION_BAR]
+class _BuildBottomNavigationBar extends StatelessWidget {
+  const _BuildBottomNavigationBar();
+  @override
+  Widget build(BuildContext context) {
     return GetBuilder<NavigationController>(
       builder: (controller) => controller.currentPage.obx(
         onData: (index) => BottomNavigationBarWidget(
@@ -50,7 +55,9 @@ class NavigationPage extends CustomState {
   }
 }
 
-///---> [Body-builder]
+///=============================== [MAIN_BODY] ====================================
+
+///---> [BODY_BUILD]
 class BodyBuilder extends GetView<NavigationController> {
   const BodyBuilder({
     super.key,
@@ -59,7 +66,7 @@ class BodyBuilder extends GetView<NavigationController> {
   Widget build(BuildContext context) {
     return Navigator(
       key: Get.nestedKey(10),
-      initialRoute: const ManageSection().routeName,
+      initialRoute: "/home-section",
       onGenerateRoute: (settings) => controller.onGenerateRoute(settings),
     );
   }

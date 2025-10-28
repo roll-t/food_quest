@@ -1,33 +1,33 @@
-import 'package:food_quest/main/nav/di/manage_section_binding.dart';
-import 'package:food_quest/main/nav/di/profile_section_binding%20.dart';
-import 'package:food_quest/main/nav/presentation/section/manage_section.dart';
-import 'package:food_quest/main/nav/presentation/section/profile_section.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:food_quest/main/home/feature/di/home_binding.dart';
+import 'package:food_quest/main/home/feature/presentation/page/home_page.dart';
+import 'package:food_quest/main/user/features/profile/di/profile_binding%20.dart';
+import 'package:food_quest/main/user/features/profile/presentation/page/profile_page.dart';
 import 'package:get/get.dart';
 
 class NavigationController extends GetxController {
   final RxInt currentPage = 0.obs;
 
   List<String> routeNames = [
-    const ManageSection().routeName,
-    const ProfileSection().routeName,
+    "/home-section",
+    '/profile-section',
   ];
 
   Route? onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
-      case '/manage-section':
+      case "/home-section":
         return GetPageRoute(
           settings: settings,
-          page: () => const ManageSection(),
+          page: () => const HomePage(),
           transition: Transition.fadeIn,
-          binding:ManageSectionBinding(),
+          binding: HomeBinding(),
         );
       case '/profile-section':
         return GetPageRoute(
           settings: settings,
           page: () => const ProfileSection(),
-          binding: ProfileSectionBinding(),
+          binding: ProfileBinding(),
           transition: Transition.fadeIn,
         );
     }

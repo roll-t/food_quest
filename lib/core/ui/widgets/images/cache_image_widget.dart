@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/material.dart';
 
 class CacheImageWidget extends StatelessWidget {
   final String imageUrl;
@@ -28,10 +28,9 @@ class CacheImageWidget extends StatelessWidget {
       width: width,
       height: height,
       fit: fit,
-      placeholder: (context, url) => placeholder ?? 
-        const Center(child: CircularProgressIndicator()),
-      errorWidget: (context, url, error) => errorWidget ??
-        const Icon(Icons.broken_image),
+      placeholder: (context, url) =>
+          placeholder ?? const Center(child: CircularProgressIndicator()),
+      errorWidget: (context, url, error) => errorWidget ?? const Icon(Icons.broken_image),
     );
 
     if (borderRadius != null) {

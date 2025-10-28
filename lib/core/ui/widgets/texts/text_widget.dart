@@ -1,8 +1,9 @@
+import 'package:flutter/material.dart';
 import 'package:food_quest/core/config/const/app_dimens.dart';
 import 'package:food_quest/core/config/const/app_enum.dart';
-import 'package:food_quest/core/config/theme/app_theme_colors.dart';
 import 'package:food_quest/core/config/const/app_text_styles.dart';
-import 'package:flutter/material.dart';
+import 'package:food_quest/core/config/theme/app_colors.dart';
+import 'package:food_quest/core/config/theme/app_theme_colors.dart';
 import 'package:get/get.dart';
 
 class TextWidget extends StatelessWidget {
@@ -19,6 +20,7 @@ class TextWidget extends StatelessWidget {
   final TextTransformType transform;
   final AppTextStyleModel? textStyle;
   final EdgeInsets padding;
+  final bool? colorFixed;
 
   const TextWidget({
     super.key,
@@ -27,6 +29,7 @@ class TextWidget extends StatelessWidget {
     this.maxLines = 1000,
     required this.text,
     this.color,
+    this.colorFixed = false,
     this.size = AppDimens.fontSizeMedium,
     this.fontWeight = FontWeight.normal,
     this.fontStyle = FontStyle.normal,
@@ -62,7 +65,8 @@ class TextWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Color textColor = color ?? AppThemeColors.text;
+    final Color textColor =
+        colorFixed == false ? (color ?? AppThemeColors.text) : AppColors.dark700;
     final transformedText = _applyTransform(text.tr);
     return Padding(
       padding: padding,

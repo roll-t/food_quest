@@ -2,7 +2,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "auto_fin (dev)",
+            "name": "food_quest (dev)",
             "request": "launch",
             "type": "dart",
             "args": [
@@ -10,7 +10,7 @@
             ]
         },
         {
-            "name": "auto_fin (prod)",
+            "name": "food_quest (prod)",
             "request": "launch",
             "type": "dart",
             "args": [
@@ -18,7 +18,7 @@
             ]
         },
         {
-            "name": "auto_fin (test)",
+            "name": "food_quest (test)",
             "request": "launch",
             "type": "dart",
             "flutterMode": "profile",

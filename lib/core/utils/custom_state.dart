@@ -1,8 +1,6 @@
-import 'package:food_quest/core/config/const/app_vectors.dart';
 import 'package:food_quest/core/config/theme/app_theme_colors.dart';
 import 'package:food_quest/core/ui/widgets/app_bar/custom_appbar.dart';
 import 'package:food_quest/core/utils/keyboard_utils.dart';
-import 'package:food_quest/core/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:recase/recase.dart';
@@ -50,17 +48,7 @@ abstract class CustomState extends StatelessWidget {
 
   PreferredSizeWidget? _buildAppBar(BuildContext context) {
     if (appBar != null) {
-      return AppBar(
-        leading: leadingIconAppBar ??
-            IconButton(
-              icon: Utils.iconSvg(svgUrl: AppVectors.icArrowBack),
-              onPressed: () {
-                Get.back();
-              },
-            ),
-        backgroundColor: Colors.transparent,
-        title: appBar,
-      );
+      return appBar as PreferredSizeWidget;
     }
     if (title != null) return buildDefaultAppBar(context);
     return null;
@@ -87,30 +75,25 @@ abstract class CustomState extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    final body =
-        size.width > 800 ? buildTabletBody(context) : buildBody(context);
-
+    final body = size.width > 800 ? buildTabletBody(context) : buildBody(context);
     return GestureDetector(
       onTap: dismissKeyboard ? KeyboardUtils.hiddenKeyboard : null,
-      child: Container(
-        color: AppThemeColors.background300,
-        child: Stack(
-          children: [
-            Positioned.fill(
-              child: ColoredBox(color: backgroundColor ?? Colors.transparent),
-            ),
-            _buildBackground(),
-            Scaffold(
-              drawer: drawer,
-              resizeToAvoidBottomInset: true,
-              backgroundColor: Colors.transparent,
-              appBar: _buildAppBar(context),
-              body: body,
-              floatingActionButton: floatingActionButton,
-              bottomNavigationBar: bottomNavigationBar,
-            ),
-          ],
-        ),
+      child: Stack(
+        children: [
+          Positioned.fill(
+            child: ColoredBox(color: backgroundColor ?? Colors.transparent),
+          ),
+          _buildBackground(),
+          Scaffold(
+            drawer: drawer,
+            resizeToAvoidBottomInset: true,
+            backgroundColor: Colors.transparent,
+            appBar: _buildAppBar(context),
+            body: body,
+            floatingActionButton: floatingActionButton,
+            bottomNavigationBar: bottomNavigationBar,
+          ),
+        ],
       ),
     );
   }

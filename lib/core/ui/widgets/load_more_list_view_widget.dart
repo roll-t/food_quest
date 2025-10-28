@@ -1,6 +1,6 @@
+import 'package:flutter/material.dart';
 import 'package:food_quest/core/ui/widgets/data_null_widget.dart';
 import 'package:food_quest/core/ui/widgets/shimmer/shimmer_loading_list.dart';
-import 'package:flutter/material.dart';
 
 class LoadMoreListViewWidget<T> extends StatelessWidget {
   final List<T> items;

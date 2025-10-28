@@ -18,16 +18,15 @@ class AppIcons {
   static final String icFlowMoney = _icon("ic_flow_money");
 
   static final String ic20Loan = _icon("ic_20_loan");
-  static final String icMonthlyPrincipalInterest =
-      _icon("ic_monthly_principal_interest");
+  static final String icMonthlyPrincipalInterest = _icon("ic_monthly_principal_interest");
   static final String icReportDebt = _icon("ic_report_debt");
 
-  static final String icIncomeExpenseByCategory =
-      _icon("ic_income_expense_by_category");
+  static final String icIncomeExpenseByCategory = _icon("ic_income_expense_by_category");
   static final String icReportWeeklyMonthly = _icon("ic_report_weekly_monthly");
 
   static final String icSalary = _icon("ic_salary");
   static final String icAttendance = _icon("ic_attendance");
   static final String icRose = _icon("ic_rose");
   static final String icNoData = _icon("ic_no_data");
+  static final String iAddFood = _icon("i_add_food");
 }

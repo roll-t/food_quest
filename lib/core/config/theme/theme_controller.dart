@@ -1,8 +1,8 @@
+import 'package:flutter/material.dart';
 import 'package:food_quest/core/config/const/app_logger.dart';
 import 'package:food_quest/core/config/theme/app_color_scheme.dart';
 import 'package:food_quest/core/config/theme/app_theme.dart';
 import 'package:food_quest/core/local_storage/app_get_storage.dart';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class ThemeController extends GetxController {
@@ -20,8 +20,7 @@ class ThemeController extends GetxController {
     super.onInit();
 
     // Load theme mode từ bộ nhớ
-    themeMode.value =
-        AppGetStorage.getTheme() ? ThemeMode.dark : ThemeMode.light;
+    themeMode.value = AppGetStorage.getTheme() ? ThemeMode.dark : ThemeMode.light;
     // Load theme chính từ bộ nhớ
     currentThemeIndex.value = AppGetStorage.getPrimaryTheme(
       AppColorTheme.theme1,
@@ -35,8 +34,7 @@ class ThemeController extends GetxController {
 
   /// Chuyển đổi giữa light/dark
   void toggleTheme() {
-    themeMode.value =
-        themeMode.value == ThemeMode.dark ? ThemeMode.light : ThemeMode.dark;
+    themeMode.value = themeMode.value == ThemeMode.dark ? ThemeMode.light : ThemeMode.dark;
 
     AppGetStorage.saveTheme(themeMode.value == ThemeMode.dark);
     applyCurrentTheme();
