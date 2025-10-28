@@ -1,14 +1,13 @@
+import 'package:flutter/material.dart';
 import 'package:food_quest/core/config/const/app_vectors.dart';
 import 'package:food_quest/core/config/theme/app_colors.dart';
 import 'package:food_quest/core/config/theme/app_theme_colors.dart';
 import 'package:food_quest/core/ui/widgets/inputs/custom_text_field.dart';
-import 'package:food_quest/core/utils/utils.dart';
-import 'package:flutter/material.dart';
 
 class SearchWidget extends StatelessWidget {
   final Function(String value)? onSearch;
   final Function(String value)? onSubmit;
-  final TextEditingController ? searchController;
+  final TextEditingController? searchController;
   final double height;
   final String hint;
   final Color? backgroundColor;
@@ -34,17 +33,15 @@ class SearchWidget extends StatelessWidget {
       textSize: 14,
       hintText: hint,
       prefixIcon: Padding(
-        padding: const EdgeInsets.only(
-          left: 8.0,
-          top: 8.0,
-          bottom: 8.0,
-        ),
-        child: Utils.iconSvg(
-          color: AppColors.grey.withValues(alpha: .5),
-          svgUrl: AppVectors.icSearch,
-          size: 20,
-        ),
-      ),
+          padding: const EdgeInsets.only(
+            left: 8.0,
+            top: 8.0,
+            bottom: 8.0,
+          ),
+          child: AppVectors.icSearch.show(
+            color: AppColors.grey.withValues(alpha: .5),
+            size: 20,
+          )),
       backgroundColor: backgroundColor ?? AppThemeColors.background300,
       boxShadow: const [],
       height: height,

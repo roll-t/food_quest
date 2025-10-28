@@ -1,10 +1,9 @@
+import 'package:flutter/material.dart';
+import 'package:food_quest/core/config/const/app_text_styles.dart';
 import 'package:food_quest/core/config/const/app_vectors.dart';
 import 'package:food_quest/core/config/theme/app_colors.dart';
 import 'package:food_quest/core/config/theme/app_theme_colors.dart';
-import 'package:food_quest/core/config/const/app_text_styles.dart';
 import 'package:food_quest/core/ui/widgets/texts/text_widget.dart';
-import 'package:food_quest/core/utils/utils.dart';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
@@ -32,7 +31,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       leading: showBackButton && Navigator.of(context).canPop()
           ? leadingIcon ??
               IconButton(
-                icon: Utils.iconSvg(svgUrl: AppVectors.icArrowBack),
+                icon: AppVectors.icArrowBack.show(),
                 onPressed: () {
                   Get.back();
                 },

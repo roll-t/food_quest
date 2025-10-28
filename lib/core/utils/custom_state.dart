@@ -1,7 +1,7 @@
+import 'package:flutter/material.dart';
 import 'package:food_quest/core/config/theme/app_theme_colors.dart';
 import 'package:food_quest/core/ui/widgets/app_bar/custom_appbar.dart';
 import 'package:food_quest/core/utils/keyboard_utils.dart';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:recase/recase.dart';
 
@@ -40,9 +40,7 @@ abstract class CustomState extends StatelessWidget {
       leadingIcon: leadingIconAppBar,
       showBackButton: showBack,
       title: title,
-      actions: actionAppBar != null
-          ? [actionAppBar ?? const SizedBox.shrink()]
-          : null,
+      actions: actionAppBar != null ? [actionAppBar ?? const SizedBox.shrink()] : null,
     );
   }
 

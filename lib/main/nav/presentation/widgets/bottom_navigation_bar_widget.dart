@@ -1,9 +1,8 @@
+import 'package:curved_navigation_bar/curved_navigation_bar.dart';
+import 'package:flutter/material.dart';
 import 'package:food_quest/core/config/const/app_vectors.dart';
 import 'package:food_quest/core/config/theme/app_colors.dart';
 import 'package:food_quest/core/config/theme/app_theme_colors.dart';
-import 'package:food_quest/core/utils/utils.dart';
-import 'package:flutter/material.dart';
-import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 
 class BottomNavigationBarWidget extends StatelessWidget {
   final int currentIndex;
@@ -28,16 +27,14 @@ class BottomNavigationBarWidget extends StatelessWidget {
       height: 60,
       animationDuration: const Duration(milliseconds: 200),
       items: [
-        Utils.iconSvg(
-          svgUrl: AppVectors.icManage,
+        AppVectors.icManage.show(
           size: 25,
           color: AppColors.white,
         ),
-        Utils.iconSvg(
-          svgUrl: AppVectors.icPerson,
+        AppVectors.icPerson.show(
           size: 25,
           color: AppColors.white,
-        ),
+        )
       ],
     );
   }

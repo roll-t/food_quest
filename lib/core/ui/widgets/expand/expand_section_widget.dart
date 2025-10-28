@@ -1,10 +1,10 @@
+import 'package:flutter/material.dart';
 import 'package:food_quest/core/config/const/app_vectors.dart';
 import 'package:food_quest/core/config/theme/app_colors.dart';
 import 'package:food_quest/core/config/theme/app_theme_colors.dart';
 import 'package:food_quest/core/ui/widgets/expand/expand_controller.dart';
 import 'package:food_quest/core/ui/widgets/texts/text_widget.dart';
 import 'package:food_quest/core/utils/utils.dart';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class ExpandSectionWidget extends StatelessWidget {
@@ -38,8 +38,7 @@ class ExpandSectionWidget extends StatelessWidget {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                Utils.iconSvg(
-                  svgUrl: AppVectors.icList,
+                AppVectors.icList.show(
                   size: 20,
                 ),
                 const SizedBox(width: 5),
@@ -53,8 +52,8 @@ class ExpandSectionWidget extends StatelessWidget {
                 ),
                 Obx(() => Utils.iconSvg(
                       svgUrl: controller.isExpanded.value
-                          ? AppVectors.icArrowUp
-                          : AppVectors.icArrowDown,
+                          ? AppVectors.icArrowUp.path
+                          : AppVectors.icArrowDown.path,
                       size: 24,
                     ))
               ],
@@ -65,8 +64,7 @@ class ExpandSectionWidget extends StatelessWidget {
           () => AnimatedOpacity(
             opacity: controller.isExpanded.value ? 1.0 : 0.0,
             duration: const Duration(milliseconds: 200),
-            child:
-                controller.isExpanded.value ? child : const SizedBox.shrink(),
+            child: controller.isExpanded.value ? child : const SizedBox.shrink(),
           ),
         ),
       ],

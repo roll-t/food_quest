@@ -1,15 +1,15 @@
+import 'package:flutter/material.dart';
 import 'package:food_quest/core/config/const/app_vectors.dart';
 import 'package:food_quest/core/config/theme/app_colors.dart';
 import 'package:food_quest/core/config/theme/app_theme_colors.dart';
-import 'package:food_quest/core/model/ui/item_model.dart';
 import 'package:food_quest/core/extension/core/empty_extensions.dart';
 import 'package:food_quest/core/extension/core/rx_extensions.dart';
+import 'package:food_quest/core/model/ui/item_model.dart';
 import 'package:food_quest/core/ui/widgets/bottom_sheet/bottom_sheet_controller.dart';
 import 'package:food_quest/core/ui/widgets/texts/text_span_widget.dart';
 import 'package:food_quest/core/ui/widgets/texts/text_widget.dart';
 import 'package:food_quest/core/utils/keyboard_utils.dart';
 import 'package:food_quest/core/utils/utils.dart';
-import 'package:flutter/material.dart';
 
 class CustomBottomSheetWidget extends StatelessWidget {
   final BottomSheetController controller;
@@ -83,7 +83,7 @@ class CustomBottomSheetWidget extends StatelessWidget {
                   children: [
                     if (leadingIconUrl.isNotNullOrEmpty) ...[
                       Utils.iconSvg(
-                        svgUrl: leadingIconUrl.orIcNull(),
+                        svgUrl: leadingIconUrl!,
                         color: AppColors.text300,
                         size: 18,
                       ),
@@ -92,22 +92,17 @@ class CustomBottomSheetWidget extends StatelessWidget {
                     const SizedBox(width: 4),
                     Expanded(
                       child: TextWidget(
-                        text: value.title.orEmpty().isNotEmpty
-                            ? value.title.orNA()
-                            : hint,
+                        text: value.title.orEmpty().isNotEmpty ? value.title.orNA() : hint,
                         size: 14,
-                        color: value.title.orEmpty().isNotEmpty
-                            ? AppThemeColors.text
-                            : AppColors.grey,
-                        fontWeight: value.title.orEmpty().isNotEmpty
-                            ? FontWeight.w500
-                            : FontWeight.w400,
+                        color:
+                            value.title.orEmpty().isNotEmpty ? AppThemeColors.text : AppColors.grey,
+                        fontWeight:
+                            value.title.orEmpty().isNotEmpty ? FontWeight.w500 : FontWeight.w400,
                         maxLines: 1,
                       ),
                     ),
                     const SizedBox(width: 6),
-                    Utils.iconSvg(
-                      svgUrl: AppVectors.icArrowDown,
+                    AppVectors.icArrowDown.show(
                       color: AppThemeColors.text100,
                       size: 18,
                     )
@@ -122,8 +117,6 @@ class CustomBottomSheetWidget extends StatelessWidget {
 
     return isMaxParent
         ? SizedBox(width: double.infinity, child: content)
-        : Align(
-            alignment: Alignment.centerLeft,
-            child: IntrinsicWidth(child: content));
+        : Align(alignment: Alignment.centerLeft, child: IntrinsicWidth(child: content));
   }
 }

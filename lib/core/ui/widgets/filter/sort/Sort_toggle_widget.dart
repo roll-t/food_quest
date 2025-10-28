@@ -1,11 +1,10 @@
+import 'package:flutter/material.dart';
 // ignore: file_names
 import 'package:food_quest/core/config/const/app_text_styles.dart';
 import 'package:food_quest/core/config/const/app_vectors.dart';
 import 'package:food_quest/core/config/theme/app_colors.dart';
 import 'package:food_quest/core/config/theme/app_theme_colors.dart';
 import 'package:food_quest/core/ui/widgets/texts/text_widget.dart';
-import 'package:food_quest/core/utils/utils.dart';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import 'sort_controller.dart';
@@ -47,8 +46,7 @@ class SortToggleWidget extends StatelessWidget {
               ),
             ),
             const SizedBox(width: 10),
-            Utils.iconSvg(
-              svgUrl: AppVectors.icFilter,
+            AppVectors.icFilter.show(
               color: AppThemeColors.primary,
             )
           ],

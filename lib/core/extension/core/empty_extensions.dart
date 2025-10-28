@@ -1,4 +1,3 @@
-import 'package:food_quest/core/config/const/app_vectors.dart';
 import 'package:flutter/material.dart';
 
 extension NullCheckExtension on Object? {
@@ -20,12 +19,6 @@ extension WidgetVisibilityExtension on Widget? {
       return const SizedBox.shrink();
     }
     return this!;
-  }
-}
-
-extension SafeIconUrlExtension on String? {
-  String orIcNull([String? defaultIcon]) {
-    return this ?? (defaultIcon ?? AppVectors.icNotUrl);
   }
 }
 
