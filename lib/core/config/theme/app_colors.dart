@@ -6,6 +6,15 @@ class AppColors {
   static const Color red = Color(0xFFeb2f06);
   static const Color yellow = Color(0xFFe58e26);
 
+  static const Color transparent = Color.fromARGB(0, 8, 19, 17);
+  static const Color warning = Color(0xFFfa983a);
+  static const Color error = Color(0xFFeb2f06);
+  static const Color success = Color(0xFF2ed573);
+  static const Color grey = Color(0xFF8890A6);
+  static const Color black = Color(0xFF000000);
+  static const Color white = Color(0xFFffffff);
+  static const Color accent = Color(0xFFeb2f06);
+
   // Shadow
   static const Color shadow700 = Color(0xFF173531);
 
@@ -18,22 +27,12 @@ class AppColors {
   static const light200 = Color.fromARGB(255, 238, 238, 238);
   static const light100 = Color.fromARGB(255, 255, 255, 255);
 
-  // Primary Colors
-  static const Color black = Color(0xFF000000);
-  static const Color white = Color(0xFFffffff);
-  static const Color accent = Color(0xFFeb2f06);
-
-  static const Color primary2 = Color.fromARGB(255, 187, 21, 21);
-  static const Color primary3 = Color(0xFF34C759);
-
-  // Secondary Colors
-  static const Color secondary2 = Color(0xFFFF4500); // Accent Red
-  static const Color secondary3 = Color(0xFF34A853); // Teal
+  static const Color primary1 = Color(0xfff88602);
+  static const Color primary2 = Color(0xFF008651);
 
   // Background Colors
-  static const Color background1 = Color(0xFFF2F2F7); // Light background
-  static const Color background2 = Color(0xFF121212); // Dark background
-
+  static const Color background1 = Color(0xFFF2F2F7);
+  static const Color background2 = Color(0xFF121212);
   // Surface Colors
   static const Color surface1 = Color(0xFFFFFFFF); // White surface
   static const Color surface2 = Color(0xFF1C1C1E); // Dark surface
@@ -45,14 +44,9 @@ class AppColors {
   static const Color disabledText = Color(0xFFB6B6B6);
 
   // === PRIMARY COLORS ===
-  static const primary1_500 = Color(0xFF008651);
-  static const primary2_500 = Color(0xFF00C03D);
-  static const primary2_200 = Color.fromARGB(255, 197, 255, 215);
-
-  // === PRIMARY COLORS ===
-  static const primary700 = Color(0xFF008651); // primary1_500
-  static const primary500 = Color(0xFF00C03D); // primary2_500
-  static const primary200 = Color.fromARGB(255, 197, 255, 215); // primary2_200
+  // static const primary700 = Color(0xFF008651);
+  static const primary500 = Color(0xFF00C03D);
+  static const primary200 = Color.fromARGB(255, 197, 255, 215);
 
 // === SECONDARY COLORS ===
   static const secondary500 = Color(0xFF00B7E5);
@@ -68,13 +62,6 @@ class AppColors {
   static const text300 = Color(0xFFBDBDBD);
   static const text200 = Color(0xFFE0E0E0);
   static const text100 = Color(0xFFF5F5F5);
-
-  static const Color transparent = Color.fromARGB(0, 8, 19, 17);
-  static const Color warning = Color(0xFFfa983a);
-  static const Color error = Color(0xFFeb2f06);
-  static const Color success = Color(0xFF2ed573);
-
-  static const Color grey = Color(0xFF8890A6);
 
   static const neutralColor1 = Color(0xFF3C4143);
   static const neutralColor2 = Color(0xFF3C4143);

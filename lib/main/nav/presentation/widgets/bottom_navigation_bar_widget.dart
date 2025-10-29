@@ -27,11 +27,11 @@ class BottomNavigationBarWidget extends StatelessWidget {
       height: 60,
       animationDuration: const Duration(milliseconds: 200),
       items: [
-        AppVectors.icManage.show(
+        AppVectors.icHome.show(
           size: 25,
           color: AppColors.white,
         ),
-        AppVectors.icPerson.show(
+        AppVectors.icSetting.show(
           size: 25,
           color: AppColors.white,
         )

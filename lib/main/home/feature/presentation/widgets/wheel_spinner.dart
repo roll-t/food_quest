@@ -6,13 +6,16 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_fortune_wheel/flutter_fortune_wheel.dart';
 import 'package:food_quest/core/config/const/app_icons.dart';
+import 'package:food_quest/core/config/const/app_images.dart';
 import 'package:food_quest/core/config/const/app_padding.dart';
 import 'package:food_quest/core/config/const/app_text_styles.dart';
 import 'package:food_quest/core/config/theme/app_colors.dart';
-import 'package:food_quest/core/config/theme/app_theme_colors.dart';
+import 'package:food_quest/core/ui/animations/app_animation_controller.dart';
 import 'package:food_quest/core/ui/widgets/buttons/primary_button.dart';
+import 'package:food_quest/core/ui/widgets/images/asset_image_widget.dart';
 import 'package:food_quest/core/ui/widgets/images/cache_image_widget.dart';
 import 'package:food_quest/core/ui/widgets/texts/text_widget.dart';
+import 'package:food_quest/core/utils/binding_utils.dart';
 import 'package:food_quest/main/home/feature/presentation/controller/scale_dialog_controller.dart';
 import 'package:food_quest/main/home/feature/presentation/controller/wheel_controller.dart';
 import 'package:get/get.dart';
@@ -23,7 +26,7 @@ class WheelSpinner extends GetView<WheelController> {
 
   @override
   Widget build(BuildContext context) {
-    const double wheelScale = 1.5;
+    const double wheelScale = 1.35;
     return Column(
       children: [
         Transform.scale(
@@ -32,59 +35,50 @@ class WheelSpinner extends GetView<WheelController> {
             children: [
               Container(
                 height: 100.w,
-                padding: const EdgeInsets.all(10),
-                decoration: const BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Color(0xffda3d20),
+                constraints: BoxConstraints(
+                  maxHeight: 50.h,
                 ),
-                child: Container(
-                  padding: const EdgeInsets.all(6),
-                  decoration: const BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Color(0xffa22409),
-                  ),
-                  child: Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      Transform.rotate(
-                        angle: math.pi,
-                        child: FortuneWheel(
-                          selected: controller.selected.stream,
-                          animateFirst: false,
-                          indicators: const [
-                            FortuneIndicator(child: SizedBox.shrink()),
-                          ],
-                          items: [
-                            for (final food in controller.foods)
-                              FortuneItem(
-                                child: Transform.rotate(
-                                  angle: math.pi,
-                                  child: Stack(
-                                    fit: StackFit.expand,
-                                    children: [
-                                      CacheImageWidget(imageUrl: food.image),
-                                      Container(
-                                        color: Colors.black.withOpacity(0.6),
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    Transform.rotate(
+                      angle: math.pi,
+                      child: FortuneWheel(
+                        selected: controller.selected.stream,
+                        animateFirst: false,
+                        indicators: const [
+                          FortuneIndicator(child: SizedBox.shrink()),
+                        ],
+                        items: [
+                          for (final food in controller.foods)
+                            FortuneItem(
+                              child: Transform.rotate(
+                                angle: math.pi,
+                                child: Stack(
+                                  fit: StackFit.expand,
+                                  children: [
+                                    CacheImageWidget(imageUrl: food.image),
+                                    Container(
+                                      color: AppColors.black.withOpacity(0.6),
+                                    ),
+                                    Center(
+                                      child: TextWidget(
+                                        text: food.name,
+                                        color: AppColors.white,
+                                        textStyle: AppTextStyle.semiBold18,
+                                        maxLines: 1,
+                                        textAlign: TextAlign.center,
                                       ),
-                                      Center(
-                                        child: TextWidget(
-                                          text: food.name,
-                                          color: AppColors.white,
-                                          textStyle: AppTextStyle.semiBold18,
-                                          maxLines: 1,
-                                          textAlign: TextAlign.center,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
+                                    ),
+                                  ],
                                 ),
                               ),
-                          ],
-                          onAnimationEnd: controller.onSpinEnd,
-                        ),
+                            ),
+                        ],
+                        onAnimationEnd: controller.onSpinEnd,
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
 
@@ -92,9 +86,22 @@ class WheelSpinner extends GetView<WheelController> {
               Positioned(
                 left: 0,
                 right: 0,
-                bottom: 0,
+                bottom: 10,
                 child: AppIcons.icHandCat.show(size: 50),
               ),
+              Positioned(
+                left: 0,
+                right: 0,
+                bottom: 0,
+                top: 0,
+                child: Transform.scale(
+                  scale: 1.15,
+                  child: const AssetImageWidget(
+                    assetPath: AppImages.iBorderWheel,
+                  ),
+                ),
+              ),
+
               Positioned(
                 left: 0,
                 right: 0,
@@ -108,17 +115,18 @@ class WheelSpinner extends GetView<WheelController> {
                       color: AppColors.white,
                     ),
                     child: Container(
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          boxShadow: [
-                            BoxShadow(
-                              color: AppColors.black.withValues(alpha: .2),
-                              spreadRadius: 1,
-                              blurRadius: 3,
-                            ),
-                          ],
-                        ),
-                        child: AppIcons.icCenterWheel.show(size: 50)),
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(
+                            color: AppColors.black.withValues(alpha: .2),
+                            spreadRadius: 1,
+                            blurRadius: 3,
+                          ),
+                        ],
+                      ),
+                      child: AppIcons.icCenterWheel.show(size: 50),
+                    ),
                   ),
                 ),
               )
@@ -185,6 +193,7 @@ class _BuildIconsFeature extends StatelessWidget {
   final Widget icon;
   final String label;
   final VoidCallback? onTap;
+
   const _BuildIconsFeature({
     required this.icon,
     this.onTap,
@@ -193,25 +202,39 @@ class _BuildIconsFeature extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final controller = BindUtils.putWithTag(() => ScaleAnimationController());
     return GestureDetector(
-      onTap: onTap,
-      child: Column(
-        spacing: 6,
-        children: [
-          icon,
-          Container(
-            padding: AppEdgeInsets.v4h8,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(8),
-              color: AppThemeColors.primary.withValues(alpha: .85),
+      onTap: () async {
+        await controller.playTapScale();
+        onTap?.call();
+      },
+      child: AnimatedBuilder(
+        animation: controller.scaleCtrl,
+        builder: (context, child) {
+          return Transform.scale(
+            scale: controller.scaleCtrl.value,
+            child: Column(
+              spacing: 6,
+              children: [
+                icon,
+                Container(
+                  padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    color: Colors.orange.withOpacity(.85),
+                  ),
+                  child: Text(
+                    label,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 12,
+                    ),
+                  ),
+                ),
+              ],
             ),
-            child: TextWidget(
-              text: label,
-              textStyle: AppTextStyle.medium12,
-              color: AppColors.white,
-            ),
-          ),
-        ],
+          );
+        },
       ),
     );
   }

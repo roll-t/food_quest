@@ -7,7 +7,6 @@ class SplashBinding extends Bindings {
   @override
   void dependencies() {
     Get.put(SplashController());
-
     Get.put(InternetService());
     Get.put(ApiClient());
   }

@@ -1,8 +1,8 @@
 // app_theme.dart
+import 'package:flutter/material.dart';
 import 'package:food_quest/core/config/theme/app_color_scheme.dart';
 import 'package:food_quest/core/config/theme/app_colors.dart';
 import 'package:food_quest/core/config/theme/app_theme_colors.dart';
-import 'package:flutter/material.dart';
 
 class AppTheme {
   static ThemeData light(AppColorScheme colors) {
@@ -25,7 +25,7 @@ class AppTheme {
         elevation: 0,
       ),
       navigationBarTheme: const NavigationBarThemeData(
-        backgroundColor: AppColors.primary1_500,
+        backgroundColor: AppColors.primary500,
       ),
       textTheme: TextTheme(
         bodyLarge: TextStyle(color: colors.textDark),
@@ -59,7 +59,7 @@ class AppTheme {
         elevation: 0,
       ),
       navigationBarTheme: const NavigationBarThemeData(
-        backgroundColor: AppColors.primary1_500,
+        backgroundColor: AppColors.primary500,
       ),
       textTheme: const TextTheme(
         bodyLarge: TextStyle(color: Colors.white),

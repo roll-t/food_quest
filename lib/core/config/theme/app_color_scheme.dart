@@ -1,4 +1,5 @@
 import 'dart:ui';
+
 import 'package:food_quest/core/config/theme/app_colors.dart';
 
 class AppColorScheme {
@@ -75,7 +76,7 @@ class AppColorThemeScheme {
     switch (theme) {
       case AppColorTheme.theme1:
         return const AppColorScheme(
-          primary: AppColors.primary700,
+          primary: AppColors.primary2,
           secondary: AppColors.secondary500,
           error: AppColors.red,
           background300: AppColors.light200,
@@ -83,7 +84,7 @@ class AppColorThemeScheme {
           background100: AppColors.light100,
           surface: AppColors.neutralColor6,
           card: AppColors.neutralColor5,
-          appBar: AppColors.primary2_500,
+          appBar: AppColors.primary500,
           text: AppColors.text700,
           text100: AppColors.text600,
           text200: AppColors.text500,
@@ -93,7 +94,7 @@ class AppColorThemeScheme {
           textSecondary: AppColors.text500,
           textDisabled: AppColors.text400,
           icon: AppColors.text500,
-          iconActive: AppColors.primary700,
+          iconActive: AppColors.primary2,
           iconInactive: AppColors.text400,
           divider: AppColors.neutralColor2,
           border: AppColors.neutralColor2,
@@ -107,9 +108,9 @@ class AppColorThemeScheme {
 
       case AppColorTheme.theme2:
         return const AppColorScheme(
-          primary: AppColors.primary2,
+          primary: AppColors.primary1,
           secondary: AppColors.secondary500,
-          appBar: AppColors.primary2,
+          appBar: AppColors.primary1,
           error: AppColors.red,
           background300: AppColors.light200,
           background200: AppColors.light300,
@@ -125,7 +126,7 @@ class AppColorThemeScheme {
           textSecondary: AppColors.neutralColor5,
           textDisabled: AppColors.neutralColor4,
           icon: AppColors.neutralColor5,
-          iconActive: AppColors.primary2,
+          iconActive: AppColors.primary1,
           iconInactive: AppColors.text400,
           divider: AppColors.neutralColor4,
           border: AppColors.neutralColor4,
@@ -143,7 +144,7 @@ class AppColorThemeScheme {
     switch (theme) {
       case AppColorTheme.theme1:
         return const AppColorScheme(
-          primary: AppColors.primary700,
+          primary: AppColors.primary2,
           secondary: AppColors.secondary500,
           error: AppColors.red,
           background300: AppColors.dark700,
@@ -151,7 +152,7 @@ class AppColorThemeScheme {
           background100: AppColors.dark300,
           surface: AppColors.neutralColor6,
           card: AppColors.neutralColor5,
-          appBar: AppColors.primary2_500,
+          appBar: AppColors.primary500,
           text: AppColors.light100,
           text100: AppColors.light200,
           text200: AppColors.light300,
@@ -161,7 +162,7 @@ class AppColorThemeScheme {
           textSecondary: AppColors.light200,
           textDisabled: AppColors.text300,
           icon: AppColors.text200,
-          iconActive: AppColors.primary700,
+          iconActive: AppColors.primary2,
           iconInactive: AppColors.text200,
           divider: AppColors.neutralColor5,
           border: AppColors.neutralColor5,
@@ -175,9 +176,9 @@ class AppColorThemeScheme {
 
       case AppColorTheme.theme2:
         return const AppColorScheme(
-          primary: AppColors.primary2,
+          primary: AppColors.primary1,
           secondary: AppColors.secondary500,
-          appBar: AppColors.primary2,
+          appBar: AppColors.primary1,
           error: AppColors.red,
           background300: AppColors.dark700,
           background200: AppColors.dark500,
@@ -193,7 +194,7 @@ class AppColorThemeScheme {
           textSecondary: AppColors.light200,
           textDisabled: AppColors.text300,
           icon: AppColors.text200,
-          iconActive: AppColors.primary2,
+          iconActive: AppColors.primary1,
           iconInactive: AppColors.text200,
           divider: AppColors.neutralColor5,
           border: AppColors.neutralColor5,
