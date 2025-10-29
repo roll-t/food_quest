@@ -1,9 +1,8 @@
-import 'package:food_quest/core/config/const/app_icons.dart';
-import 'package:food_quest/core/config/theme/app_theme_colors.dart';
-import 'package:food_quest/core/config/const/app_text_styles.dart';
-import 'package:food_quest/core/ui/widgets/images/asset_image_widget.dart';
-import 'package:food_quest/core/ui/widgets/texts/text_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:food_quest/core/config/const/app_icons.dart';
+import 'package:food_quest/core/config/const/app_text_styles.dart';
+import 'package:food_quest/core/config/theme/app_theme_colors.dart';
+import 'package:food_quest/core/ui/widgets/texts/text_widget.dart';
 
 class DataNullWidget extends StatelessWidget {
   const DataNullWidget({
@@ -15,10 +14,7 @@ class DataNullWidget extends StatelessWidget {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        AssetImageWidget(
-          assetPath: AppIcons.icNoData,
-          width: 150,
-        ),
+        AppIcons.icNoData.show(size: 150),
         const SizedBox(height: 10),
         TextWidget(
           text: "Không có dữ liệu",

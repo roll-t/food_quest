@@ -1,9 +1,8 @@
+import 'package:flutter/material.dart';
 import 'package:food_quest/core/utils/keyboard_utils.dart';
 import 'package:food_quest/core/utils/utils.dart';
 import 'package:food_quest/core/utils/validation_utils.dart';
-import 'package:food_quest/main/nav/presentation/page/navigation_page.dart';
 import 'package:food_quest/main/user/domain/usecase/user_usecase.dart';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class LoginController extends GetxController {
@@ -11,10 +10,8 @@ class LoginController extends GetxController {
 
   LoginController(this._useCase);
 
-  final TextEditingController userNameController =
-      TextEditingController(text: "linh123");
-  final TextEditingController passwordController =
-      TextEditingController(text: "123456");
+  final TextEditingController userNameController = TextEditingController(text: "linh123");
+  final TextEditingController passwordController = TextEditingController(text: "123456");
 
   final RxBool isLoading = false.obs;
   final RxString errorMessage = ''.obs;

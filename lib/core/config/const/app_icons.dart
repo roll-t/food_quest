@@ -1,32 +1,34 @@
+import 'package:flutter/material.dart';
+
 class AppIcons {
   static const String _root = "assets/icons/";
   static const String _ext = ".png";
 
-  static String _icon(String name) => '$_root$name$_ext';
+  static const icNoData = _PngIcon("${_root}ic_no_data$_ext");
+  static const icAddFood = _PngIcon("${_root}ic_add_food$_ext");
+  static const icHandCat = _PngIcon("${_root}ic_hand_cat$_ext");
+  static const icCenterWheel = _PngIcon("${_root}ic_center_wheel$_ext");
+  static const icAskAi = _PngIcon("${_root}ic_ask_ai$_ext");
+  static const icHistory = _PngIcon("${_root}ic_history$_ext");
+}
 
-  static final String icStatisticsVehicle = _icon("ic_statistics_vehicle");
-  static final String icProfit = _icon("ic_profig");
-  static final String icAllCar = _icon("ic_all_car");
-  static final String icCarInGaga = _icon("ic_car_in_gaga");
-  static final String icCarBuy = _icon("ic_car_buy");
-  static final String icAddCar = _icon("ic_add_car");
-  static final String icCarCategory = _icon("ic_car_category");
+class _PngIcon {
+  final String path;
+  const _PngIcon(this.path);
 
-  static final String icRetail = _icon("ic_retail");
-  static final String icGoldInventory = _icon("ic_gold_inventory");
-  static final String icExportGold = _icon("ic_export_gold");
-  static final String icFlowMoney = _icon("ic_flow_money");
+  Widget show({
+    double size = 25,
+    BoxFit fit = BoxFit.contain,
+    Color? color,
+  }) {
+    return Image.asset(
+      path,
+      width: size,
+      height: size,
+      fit: fit,
+      color: color,
+    );
+  }
 
-  static final String ic20Loan = _icon("ic_20_loan");
-  static final String icMonthlyPrincipalInterest = _icon("ic_monthly_principal_interest");
-  static final String icReportDebt = _icon("ic_report_debt");
-
-  static final String icIncomeExpenseByCategory = _icon("ic_income_expense_by_category");
-  static final String icReportWeeklyMonthly = _icon("ic_report_weekly_monthly");
-
-  static final String icSalary = _icon("ic_salary");
-  static final String icAttendance = _icon("ic_attendance");
-  static final String icRose = _icon("ic_rose");
-  static final String icNoData = _icon("ic_no_data");
-  static final String iAddFood = _icon("i_add_food");
+  String get raw => path;
 }

@@ -1,7 +1,8 @@
+import 'package:flutter/cupertino.dart';
 import 'package:food_quest/core/config/const/app_images.dart';
-import 'package:food_quest/core/config/theme/app_theme_colors.dart';
 import 'package:food_quest/core/config/const/app_padding.dart';
 import 'package:food_quest/core/config/const/app_text_styles.dart';
+import 'package:food_quest/core/config/theme/app_theme_colors.dart';
 import 'package:food_quest/core/ui/widgets/buttons/primary_button.dart';
 import 'package:food_quest/core/ui/widgets/images/asset_image_widget.dart';
 import 'package:food_quest/core/ui/widgets/inputs/custom_text_field.dart';
@@ -9,7 +10,6 @@ import 'package:food_quest/core/ui/widgets/texts/text_widget.dart';
 import 'package:food_quest/core/utils/custom_state.dart';
 import 'package:food_quest/main/user/features/auth/login/presentation/page/login_page.dart';
 import 'package:food_quest/main/user/features/auth/signin/presentation/controller/signin_controller.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
@@ -28,7 +28,7 @@ class _BodyBuilder extends GetView<SigninController> {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: Padding(
-        padding: AppPadding.h16,
+        padding: AppEdgeInsets.h16,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [

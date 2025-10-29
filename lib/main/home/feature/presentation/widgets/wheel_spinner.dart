@@ -1,10 +1,15 @@
 // =========================== //
 //        WHEEL WIDGET         //
 // =========================== //
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_fortune_wheel/flutter_fortune_wheel.dart';
+import 'package:food_quest/core/config/const/app_icons.dart';
+import 'package:food_quest/core/config/const/app_padding.dart';
 import 'package:food_quest/core/config/const/app_text_styles.dart';
 import 'package:food_quest/core/config/theme/app_colors.dart';
+import 'package:food_quest/core/config/theme/app_theme_colors.dart';
 import 'package:food_quest/core/ui/widgets/buttons/primary_button.dart';
 import 'package:food_quest/core/ui/widgets/images/cache_image_widget.dart';
 import 'package:food_quest/core/ui/widgets/texts/text_widget.dart';
@@ -18,64 +23,235 @@ class WheelSpinner extends GetView<WheelController> {
 
   @override
   Widget build(BuildContext context) {
+    const double wheelScale = 1.5;
     return Column(
       children: [
-        SizedBox(
-          height: 85.w,
-          child: FortuneWheel(
-            selected: controller.selected.stream,
-            animateFirst: false,
-            items: [
-              for (final food in controller.foods)
-                FortuneItem(
+        Transform.scale(
+          scale: wheelScale,
+          child: Stack(
+            children: [
+              Container(
+                height: 100.w,
+                padding: const EdgeInsets.all(10),
+                decoration: const BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Color(0xffda3d20),
+                ),
+                child: Container(
+                  padding: const EdgeInsets.all(6),
+                  decoration: const BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Color(0xffa22409),
+                  ),
                   child: Stack(
-                    fit: StackFit.expand,
+                    alignment: Alignment.center,
                     children: [
-                      CacheImageWidget(imageUrl: food.image),
-                      Container(color: Colors.black.withOpacity(0.7)),
-                      // Tên món ăn
-                      Center(
-                        child: TextWidget(
-                          text: food.name,
-                          color: AppColors.white,
-                          textStyle: AppTextStyle.semiBold18,
+                      Transform.rotate(
+                        angle: math.pi,
+                        child: FortuneWheel(
+                          selected: controller.selected.stream,
+                          animateFirst: false,
+                          indicators: const [
+                            FortuneIndicator(child: SizedBox.shrink()),
+                          ],
+                          items: [
+                            for (final food in controller.foods)
+                              FortuneItem(
+                                child: Transform.rotate(
+                                  angle: math.pi,
+                                  child: Stack(
+                                    fit: StackFit.expand,
+                                    children: [
+                                      CacheImageWidget(imageUrl: food.image),
+                                      Container(
+                                        color: Colors.black.withOpacity(0.6),
+                                      ),
+                                      Center(
+                                        child: TextWidget(
+                                          text: food.name,
+                                          color: AppColors.white,
+                                          textStyle: AppTextStyle.semiBold18,
+                                          maxLines: 1,
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                          ],
+                          onAnimationEnd: controller.onSpinEnd,
                         ),
                       ),
                     ],
                   ),
                 ),
-            ],
-            indicators: const [
-              FortuneIndicator(
-                alignment: Alignment.topCenter,
-                child: TriangleIndicator(color: Colors.red),
               ),
+
+              // --- Indicator (tay mèo) ---
+              Positioned(
+                left: 0,
+                right: 0,
+                bottom: 0,
+                child: AppIcons.icHandCat.show(size: 50),
+              ),
+              Positioned(
+                left: 0,
+                right: 0,
+                bottom: 0,
+                top: 0,
+                child: Center(
+                  child: Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: const BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: AppColors.white,
+                    ),
+                    child: Container(
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          boxShadow: [
+                            BoxShadow(
+                              color: AppColors.black.withValues(alpha: .2),
+                              spreadRadius: 1,
+                              blurRadius: 3,
+                            ),
+                          ],
+                        ),
+                        child: AppIcons.icCenterWheel.show(size: 50)),
+                  ),
+                ),
+              )
             ],
-            onAnimationEnd: controller.onSpinEnd,
           ),
         ),
-        const SizedBox(height: 20),
-        Obx(
-          () => IgnorePointer(
-            ignoring: controller.isSpinning.value,
-            child: AnimatedScale(
-              scale: controller.isPressed.value ? 0.9 : 1.0,
-              duration: const Duration(milliseconds: 120),
-              curve: Curves.easeOut,
-              child: Opacity(
-                opacity: controller.isSpinning.value ? .6 : 1,
-                child: PrimaryButton(
-                  text: "Quay",
-                  textSize: 30,
-                  onPressed: controller.spinWheel,
+
+        const SizedBox(height: 90 * wheelScale),
+        // ----- Nút quay -----
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            _BuildIconsFeature(
+              onTap: () {},
+              icon: AppIcons.icAskAi.show(size: 50),
+              label: "Hỏi trợ lý",
+            ),
+            _BuildIconsFeature(
+              icon: AppIcons.icAddFood.show(size: 50),
+              label: "Thêm món",
+            ),
+            _BuildIconsFeature(
+              icon: AppIcons.icHistory.show(size: 50),
+              label: "Từng ăn",
+            ),
+          ],
+        ),
+        const Spacer(),
+        Padding(
+          padding: AppEdgeInsets.h16,
+          child: Column(
+            children: [
+              Obx(
+                () => IgnorePointer(
+                  ignoring: controller.isSpinning.value,
+                  child: AnimatedScale(
+                    scale: controller.isPressed.value ? 0.9 : 1.0,
+                    duration: const Duration(milliseconds: 120),
+                    curve: Curves.easeOut,
+                    child: Opacity(
+                      opacity: controller.isSpinning.value ? 0.6 : 1.0,
+                      child: PrimaryButton(
+                        text: "Quay",
+                        textSize: 26,
+                        isMaxParent: true,
+                        onPressed: controller.spinWheel,
+                      ),
+                    ),
+                  ),
                 ),
               ),
-            ),
+            ],
           ),
         ),
+        const SizedBox(
+          height: 40,
+        )
       ],
     );
   }
+}
+
+class _BuildIconsFeature extends StatelessWidget {
+  final Widget icon;
+  final String label;
+  final VoidCallback? onTap;
+  const _BuildIconsFeature({
+    required this.icon,
+    this.onTap,
+    this.label = "",
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Column(
+        spacing: 6,
+        children: [
+          icon,
+          Container(
+            padding: AppEdgeInsets.v4h8,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(8),
+              color: AppThemeColors.primary.withValues(alpha: .85),
+            ),
+            child: TextWidget(
+              text: label,
+              textStyle: AppTextStyle.medium12,
+              color: AppColors.white,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class WheelDividerPainter extends CustomPainter {
+  final int sectionCount;
+  final Color color;
+  final double strokeWidth;
+
+  WheelDividerPainter({
+    required this.sectionCount,
+    this.color = Colors.white,
+    this.strokeWidth = 1,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = color
+      ..strokeWidth = strokeWidth
+      ..style = PaintingStyle.stroke;
+
+    final center = Offset(size.width / 2, size.height / 2);
+    final radius = size.width / 2;
+
+    final angleStep = 2 * math.pi / sectionCount;
+
+    for (int i = 0; i < sectionCount; i++) {
+      final angle = i * angleStep;
+      final end = Offset(
+        center.dx + radius * math.cos(angle),
+        center.dy + radius * math.sin(angle),
+      );
+      canvas.drawLine(center, end, paint);
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
 
 // =========================== //
@@ -94,7 +270,7 @@ class ScaleTransitionDialog extends GetView<ScaleDialogController> {
       scale: controller.scale,
       child: Center(
         child: Container(
-          width: Get.width * .8,
+          width: Get.width * .9,
           margin: const EdgeInsets.symmetric(horizontal: 24),
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(

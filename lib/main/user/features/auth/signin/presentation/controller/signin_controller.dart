@@ -1,12 +1,11 @@
+import 'package:flutter/widgets.dart';
 import 'package:food_quest/core/config/const/app_enum.dart';
 import 'package:food_quest/core/config/const/app_logger.dart';
 import 'package:food_quest/core/ui/widgets/dialogs/dialog_utils.dart';
 import 'package:food_quest/core/utils/keyboard_utils.dart';
 import 'package:food_quest/core/utils/utils.dart';
 import 'package:food_quest/core/utils/validation_utils.dart';
-import 'package:food_quest/main/nav/presentation/page/navigation_page.dart';
 import 'package:food_quest/main/user/domain/usecase/user_usecase.dart';
-import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 
 class SigninController extends GetxController {
@@ -17,10 +16,8 @@ class SigninController extends GetxController {
   final TextEditingController firstNameController = TextEditingController();
   final TextEditingController lastNameController = TextEditingController();
   final TextEditingController phoneNumberController = TextEditingController();
-  final TextEditingController passwordController =
-      TextEditingController(text: "123456");
-  final TextEditingController confirmPasswordController =
-      TextEditingController(text: "123456");
+  final TextEditingController passwordController = TextEditingController(text: "123456");
+  final TextEditingController confirmPasswordController = TextEditingController(text: "123456");
 
   final isLoading = false.obs;
 
@@ -67,7 +64,7 @@ class SigninController extends GetxController {
 
       if (user != null) {
         DialogUtils.showConfirm(
-          barrierDismissible:false,
+          barrierDismissible: false,
           alertType: AlertType.success,
           content: "Tài khoản đã được đăng ký",
           title: "Đăng ký thành công",
