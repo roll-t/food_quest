@@ -10,14 +10,16 @@ import 'package:food_quest/core/config/const/app_images.dart';
 import 'package:food_quest/core/config/const/app_padding.dart';
 import 'package:food_quest/core/config/const/app_text_styles.dart';
 import 'package:food_quest/core/config/theme/app_colors.dart';
+import 'package:food_quest/core/extension/core/empty_extensions.dart';
 import 'package:food_quest/core/ui/animations/app_animation_controller.dart';
 import 'package:food_quest/core/ui/widgets/buttons/primary_button.dart';
+import 'package:food_quest/core/ui/widgets/dialogs/dialog_utils.dart';
 import 'package:food_quest/core/ui/widgets/images/asset_image_widget.dart';
 import 'package:food_quest/core/ui/widgets/images/cache_image_widget.dart';
 import 'package:food_quest/core/ui/widgets/texts/text_widget.dart';
-import 'package:food_quest/core/utils/binding_utils.dart';
-import 'package:food_quest/main/home/feature/presentation/controller/scale_dialog_controller.dart';
+import 'package:food_quest/main/home/feature/di/add_food_binding.dart';
 import 'package:food_quest/main/home/feature/presentation/controller/wheel_controller.dart';
+import 'package:food_quest/main/home/feature/presentation/widgets/add_food_from.dart';
 import 'package:get/get.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
@@ -86,7 +88,7 @@ class WheelSpinner extends GetView<WheelController> {
               Positioned(
                 left: 0,
                 right: 0,
-                bottom: 10,
+                bottom: 5.w,
                 child: AppIcons.icHandCat.show(size: 50),
               ),
               Positioned(
@@ -95,7 +97,7 @@ class WheelSpinner extends GetView<WheelController> {
                 bottom: 0,
                 top: 0,
                 child: Transform.scale(
-                  scale: 1.15,
+                  scale: 1.1,
                   child: const AssetImageWidget(
                     assetPath: AppImages.iBorderWheel,
                   ),
@@ -143,12 +145,21 @@ class WheelSpinner extends GetView<WheelController> {
               onTap: () {},
               icon: AppIcons.icAskAi.show(size: 50),
               label: "Hỏi trợ lý",
+              animateController: controller.animationCtrButton1,
             ),
             _BuildIconsFeature(
+              animateController: controller.animationCtrButton2,
               icon: AppIcons.icAddFood.show(size: 50),
               label: "Thêm món",
+              onTap: () {
+                DialogUtils.show(
+                  binding: AddFoodBinding(),
+                  const AddFoodFrom(),
+                );
+              },
             ),
             _BuildIconsFeature(
+              animateController: controller.animationCtrButton3,
               icon: AppIcons.icHistory.show(size: 50),
               label: "Từng ăn",
             ),
@@ -193,160 +204,54 @@ class _BuildIconsFeature extends StatelessWidget {
   final Widget icon;
   final String label;
   final VoidCallback? onTap;
+  final ScaleAnimationController? animateController;
 
   const _BuildIconsFeature({
     required this.icon,
     this.onTap,
     this.label = "",
+    this.animateController,
   });
 
   @override
   Widget build(BuildContext context) {
-    final controller = BindUtils.putWithTag(() => ScaleAnimationController());
-    return GestureDetector(
-      onTap: () async {
-        await controller.playTapScale();
-        onTap?.call();
-      },
-      child: AnimatedBuilder(
-        animation: controller.scaleCtrl,
-        builder: (context, child) {
-          return Transform.scale(
-            scale: controller.scaleCtrl.value,
-            child: Column(
-              spacing: 6,
-              children: [
-                icon,
-                Container(
-                  padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8),
-                    color: Colors.orange.withOpacity(.85),
-                  ),
-                  child: Text(
-                    label,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 12,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          );
-        },
-      ),
-    );
-  }
-}
-
-class WheelDividerPainter extends CustomPainter {
-  final int sectionCount;
-  final Color color;
-  final double strokeWidth;
-
-  WheelDividerPainter({
-    required this.sectionCount,
-    this.color = Colors.white,
-    this.strokeWidth = 1,
-  });
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = color
-      ..strokeWidth = strokeWidth
-      ..style = PaintingStyle.stroke;
-
-    final center = Offset(size.width / 2, size.height / 2);
-    final radius = size.width / 2;
-
-    final angleStep = 2 * math.pi / sectionCount;
-
-    for (int i = 0; i < sectionCount; i++) {
-      final angle = i * angleStep;
-      final end = Offset(
-        center.dx + radius * math.cos(angle),
-        center.dy + radius * math.sin(angle),
-      );
-      canvas.drawLine(center, end, paint);
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
-}
-
-// =========================== //
-//  UI HIỂN THỊ TRONG DIALOG  //
-// =========================== //
-class ScaleTransitionDialog extends GetView<ScaleDialogController> {
-  final String result;
-  const ScaleTransitionDialog({
-    super.key,
-    required this.result,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return ScaleTransition(
-      scale: controller.scale,
-      child: Center(
-        child: Container(
-          width: Get.width * .9,
-          margin: const EdgeInsets.symmetric(horizontal: 24),
-          padding: const EdgeInsets.all(20),
+    final content = Column(
+      spacing: 6,
+      children: [
+        icon,
+        Container(
+          padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
           decoration: BoxDecoration(
-            color: Colors.orange.shade50,
-            borderRadius: BorderRadius.circular(16),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.2),
-                blurRadius: 10,
-                offset: const Offset(0, 5),
-              ),
-            ],
+            borderRadius: BorderRadius.circular(8),
+            color: Colors.orange.withOpacity(.85),
           ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Icon(Icons.emoji_events, size: 60, color: Colors.orange),
-              const SizedBox(height: 12),
-              const TextWidget(
-                text: "🎉 Chúc mừng! 🎉",
-                textAlign: TextAlign.center,
-                colorFixed: true,
-                textStyle: AppTextStyle.bold18,
-              ),
-              const SizedBox(height: 8),
-              TextWidget(
-                text: "Hôm nay ăn: $result",
-                textAlign: TextAlign.center,
-                colorFixed: true,
-                textStyle: AppTextStyle.regular16,
-              ),
-              const SizedBox(height: 16),
-              Row(
-                spacing: 24,
-                children: [
-                  Expanded(
-                    child: PrimaryButton(
-                      text: "Quay lại",
-                      onPressed: controller.closeDialog,
-                    ),
-                  ),
-                  Expanded(
-                    child: PrimaryButton(
-                      text: "Chỗ ăn",
-                      onPressed: controller.closeDialog,
-                    ),
-                  ),
-                ],
-              ),
-            ],
+          child: Text(
+            label,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 12,
+            ),
           ),
         ),
-      ),
+      ],
+    );
+
+    return GestureDetector(
+      onTap: () async {
+        await animateController?.playTapScale();
+        onTap?.call();
+      },
+      child: !animateController.isNotNull
+          ? content
+          : AnimatedBuilder(
+              animation: animateController!.scaleCtrl,
+              builder: (context, child) {
+                return Transform.scale(
+                  scale: animateController?.scaleCtrl.value,
+                  child: content,
+                );
+              },
+            ),
     );
   }
 }

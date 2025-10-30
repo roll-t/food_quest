@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:food_quest/main/home/feature/presentation/widgets/wheel_spinner.dart';
+import 'package:food_quest/main/home/feature/presentation/widgets/scale_transition_dialog.dart';
 import 'package:get/get.dart';
 
 // =========================== //

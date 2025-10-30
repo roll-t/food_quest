@@ -1,31 +1,47 @@
-import 'package:food_quest/core/config/const/app_images.dart';
+import 'package:flutter/material.dart';
 import 'package:food_quest/core/config/const/app_enum.dart';
+import 'package:food_quest/core/config/const/app_images.dart';
+import 'package:food_quest/core/config/const/app_text_styles.dart';
 import 'package:food_quest/core/config/theme/app_colors.dart';
 import 'package:food_quest/core/config/theme/app_theme_colors.dart';
-import 'package:food_quest/core/config/const/app_text_styles.dart';
 import 'package:food_quest/core/ui/widgets/buttons/primary_button.dart';
 import 'package:food_quest/core/ui/widgets/texts/text_widget.dart';
-import 'package:flutter/material.dart';
+import 'package:food_quest/core/utils/binding_utils.dart';
 import 'package:get/get.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class DialogUtils {
-  // static void showAlterLoading(BuildContext context,
-  //     {bool isBarrierDismissible = false}) {
-  //   showDialog(
-  //     // The user CANNOT close this dialog  by pressing outsite it
-  //     barrierDismissible: isBarrierDismissible,
-  //     context: context,
-  //     builder: (_) {
-  //       return Center(
-  //         child: LoadingAnimationWidget.threeRotatingDots(
-  //           color: AppThemeColors.primary,
-  //           size: 40,
-  //         ),
-  //       );
-  //     },
-  //   );
-  // }
+  static Future<T?> show<T>(
+    Widget dialog, {
+    Bindings? binding,
+    bool barrierDismissible = true,
+    Color? barrierColor,
+    bool useSafeArea = true,
+    Duration transitionDuration = const Duration(milliseconds: 200),
+    Curve transitionCurve = Curves.easeOutBack,
+    Transition transition = Transition.zoom,
+    List<Type>? autoRemoveControllers,
+  }) async {
+    binding?.dependencies();
+    await Future.delayed(Duration.zero);
+    final result = await Get.dialog<T>(
+      dialog,
+      barrierDismissible: barrierDismissible,
+      barrierColor: barrierColor ?? Colors.black.withOpacity(0.4),
+      useSafeArea: useSafeArea,
+      transitionDuration: transitionDuration,
+      transitionCurve: transitionCurve,
+    );
+
+    // Cleanup controller sau khi dialog đóng
+    if (autoRemoveControllers != null) {
+      for (final type in autoRemoveControllers) {
+        BindUtils.removeByType(type);
+      }
+    }
+
+    return result;
+  }
 
   static void showProgressDialog() {
     Get.dialog(

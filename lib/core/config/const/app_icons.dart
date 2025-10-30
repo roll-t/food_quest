@@ -10,6 +10,7 @@ class AppIcons {
   static const icCenterWheel = _PngIcon("${_root}ic_center_wheel$_ext");
   static const icAskAi = _PngIcon("${_root}ic_ask_ai$_ext");
   static const icHistory = _PngIcon("${_root}ic_history$_ext");
+  static const icClose = _PngIcon("${_root}ic_close$_ext");
 }
 
 class _PngIcon {
@@ -20,14 +21,29 @@ class _PngIcon {
     double size = 25,
     BoxFit fit = BoxFit.contain,
     Color? color,
+    EdgeInsets? padding,
+    VoidCallback? onTap,
+    Alignment? align, // cho phép null
   }) {
-    return Image.asset(
-      path,
-      width: size,
-      height: size,
-      fit: fit,
-      color: color,
+    final content = GestureDetector(
+      onTap: onTap,
+      child: Padding(
+        padding: padding ?? EdgeInsets.zero,
+        child: Image.asset(
+          path,
+          width: size,
+          height: size,
+          fit: fit,
+          color: color,
+        ),
+      ),
     );
+
+    if (align != null) {
+      return Align(alignment: align, child: content);
+    } else {
+      return content;
+    }
   }
 
   String get raw => path;

@@ -30,6 +30,13 @@ class BindUtils {
     return instance;
   }
 
+  static void removeByType(Type type) {
+    final tag = type.toString();
+    if (Get.isRegistered(tag: tag)) {
+      Get.delete(tag: tag, force: true);
+    }
+  }
+
   /// 🔹 Tạo controller khi lần đầu được gọi (lazy init)
   /// - Nếu đã tồn tại → bỏ qua
   static void lazyPut<T extends GetxController>(
