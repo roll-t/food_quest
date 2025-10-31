@@ -1,8 +1,9 @@
 import 'dart:io';
+
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:food_quest/core/config/const/app_enum.dart';
 import 'package:food_quest/core/config/theme/app_colors.dart';
 import 'package:food_quest/core/ui/widgets/dialogs/dialog_utils.dart';
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:get/get.dart';
 
 class InternetService extends GetxService {
@@ -32,7 +33,6 @@ class InternetService extends GetxService {
     Future.microtask(() async {
       isConnected.value = await checkNetwork();
     });
-    
   }
 
   Future<bool> checkNetwork() async {

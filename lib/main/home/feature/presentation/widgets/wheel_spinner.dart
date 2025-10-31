@@ -1,6 +1,3 @@
-// =========================== //
-//        WHEEL WIDGET         //
-// =========================== //
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
@@ -10,8 +7,8 @@ import 'package:food_quest/core/config/const/app_images.dart';
 import 'package:food_quest/core/config/const/app_padding.dart';
 import 'package:food_quest/core/config/const/app_text_styles.dart';
 import 'package:food_quest/core/config/theme/app_colors.dart';
-import 'package:food_quest/core/extension/core/empty_extensions.dart';
 import 'package:food_quest/core/ui/animations/app_animation_controller.dart';
+import 'package:food_quest/core/ui/animations/scale_on_tap.dart';
 import 'package:food_quest/core/ui/widgets/buttons/primary_button.dart';
 import 'package:food_quest/core/ui/widgets/dialogs/dialog_utils.dart';
 import 'package:food_quest/core/ui/widgets/images/asset_image_widget.dart';
@@ -215,43 +212,28 @@ class _BuildIconsFeature extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final content = Column(
-      spacing: 6,
-      children: [
-        icon,
-        Container(
-          padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(8),
-            color: Colors.orange.withOpacity(.85),
-          ),
-          child: Text(
-            label,
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 12,
-            ),
-          ),
-        ),
-      ],
-    );
-
-    return GestureDetector(
-      onTap: () async {
-        await animateController?.playTapScale();
+    return ScaleOnTap(
+      onTap: () {
         onTap?.call();
       },
-      child: !animateController.isNotNull
-          ? content
-          : AnimatedBuilder(
-              animation: animateController!.scaleCtrl,
-              builder: (context, child) {
-                return Transform.scale(
-                  scale: animateController?.scaleCtrl.value,
-                  child: content,
-                );
-              },
+      child: Column(
+        spacing: 6,
+        children: [
+          icon,
+          Container(
+            padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(8),
+              color: Colors.orange.withOpacity(.85),
             ),
+            child: TextWidget(
+              text: label,
+              color: AppColors.white,
+              textStyle: AppTextStyle.medium14,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

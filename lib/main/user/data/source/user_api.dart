@@ -1,7 +1,7 @@
 import 'package:food_quest/core/config/const/app_enum.dart';
 import 'package:food_quest/core/config/result.dart';
-import 'package:food_quest/core/services/api_endpoint.dart';
-import 'package:food_quest/core/services/api_client.dart';
+import 'package:food_quest/core/services/api/api_client.dart';
+import 'package:food_quest/core/services/api/api_endpoint.dart';
 import 'package:food_quest/main/user/data/model/user_model.dart';
 import 'package:get/get.dart';
 

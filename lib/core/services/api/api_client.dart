@@ -1,13 +1,15 @@
 import 'dart:developer';
+
+import 'package:dio/dio.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:food_quest/core/config/const/app_enum.dart';
 import 'package:food_quest/core/config/result.dart';
 import 'package:food_quest/core/local_storage/app_get_storage.dart';
-import 'package:food_quest/core/services/api_intercepter.dart';
+import 'package:food_quest/core/services/api/api_intercepter.dart';
 import 'package:food_quest/core/ui/widgets/dialogs/dialog_utils.dart';
-import 'package:dio/dio.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
-import 'internet_service.dart'; // import service check mạng
+
+import '../internet_service.dart'; // import service check mạng
 
 class ApiClient extends GetxService {
   late final Dio _dio;
@@ -58,8 +60,7 @@ class ApiClient extends GetxService {
     Map<String, dynamic>? query,
   }) async {
     if (!_internetService.isConnected.value) {
-      return Result(
-          status: Results.error, message: 'Không có kết nối internet');
+      return Result(status: Results.error, message: 'Không có kết nối internet');
     }
 
     try {
@@ -103,8 +104,7 @@ class ApiClient extends GetxService {
     Map<String, dynamic>? data,
   }) async {
     if (!_internetService.isConnected.value) {
-      return Result(
-          status: Results.error, message: 'Không có kết nối internet');
+      return Result(status: Results.error, message: 'Không có kết nối internet');
     }
 
     try {
@@ -120,8 +120,7 @@ class ApiClient extends GetxService {
     Map<String, dynamic>? data,
   }) async {
     if (!_internetService.isConnected.value) {
-      return Result(
-          status: Results.error, message: 'Không có kết nối internet');
+      return Result(status: Results.error, message: 'Không có kết nối internet');
     }
 
     try {
@@ -137,8 +136,7 @@ class ApiClient extends GetxService {
     Map<String, dynamic>? data,
   }) async {
     if (!_internetService.isConnected.value) {
-      return Result(
-          status: Results.error, message: 'Không có kết nối internet');
+      return Result(status: Results.error, message: 'Không có kết nối internet');
     }
 
     try {
@@ -151,9 +149,7 @@ class ApiClient extends GetxService {
 
   /// --- RESPONSE & ERROR HANDLER ---
   Result _handleResponse(dynamic response) {
-    if (response.statusCode != null &&
-        response.statusCode! >= 200 &&
-        response.statusCode! < 300) {
+    if (response.statusCode != null && response.statusCode! >= 200 && response.statusCode! < 300) {
       return Result(status: Results.success, data: response.data);
     } else {
       final message = (response.data is Map && response.data['error'] != null)

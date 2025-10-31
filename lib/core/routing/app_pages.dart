@@ -1,5 +1,7 @@
 import 'package:food_quest/core/ui/widgets/notFound/not_found_page.dart';
 import 'package:food_quest/core/utils/binding/internet_binding.dart';
+import 'package:food_quest/main/food/di/food_binding.dart';
+import 'package:food_quest/main/food/presentation/page/add_food_page.dart';
 import 'package:food_quest/main/nav/di/navigation_binding.dart';
 import 'package:food_quest/main/nav/presentation/page/navigation_page.dart';
 import 'package:food_quest/main/splash/di/splash_binding.dart';
@@ -37,6 +39,10 @@ final appPage = [
     ],
   ),
   GetPage(
+    name: const AddFoodPage().routeName,
+    page: () => const AddFoodPage(),
+  ),
+  GetPage(
     name: const SigninPage().routeName,
     page: () => const SigninPage(),
     binding: SigninBinding(),
@@ -44,5 +50,6 @@ final appPage = [
   GetPage(
     name: NotFoundPage.routeName,
     page: () => const NotFoundPage(),
+    binding: FoodBinding(),
   ),
 ];

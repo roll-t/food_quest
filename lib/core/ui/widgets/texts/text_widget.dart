@@ -75,7 +75,7 @@ class TextWidget extends StatelessWidget {
         maxLines: maxLines,
         textAlign: textAlign,
         style: TextStyle(
-          fontFamily: fontFamily ?? "Roboto",
+          fontFamily: fontFamily ?? "Itim",
           color: textColor,
           fontSize: textStyle?.fontSize ?? size,
           fontStyle: fontStyle,

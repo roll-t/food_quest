@@ -11,6 +11,8 @@ class AppIcons {
   static const icAskAi = _PngIcon("${_root}ic_ask_ai$_ext");
   static const icHistory = _PngIcon("${_root}ic_history$_ext");
   static const icClose = _PngIcon("${_root}ic_close$_ext");
+  static const icAdd = _PngIcon("${_root}ic_add$_ext");
+  static const icCloseV2 = _PngIcon("${_root}ic_close_v2$_ext");
 }
 
 class _PngIcon {
