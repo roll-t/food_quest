@@ -21,7 +21,10 @@ final appPage = [
   GetPage(
     name: "/splash",
     page: () => const SplashPage(),
-    binding: SplashBinding(),
+    bindings: [
+      SplashBinding(),
+      FoodBinding(),
+    ],
   ),
   GetPage(
     name: const NavigationPage().routeName,
@@ -41,6 +44,7 @@ final appPage = [
   GetPage(
     name: const AddFoodPage().routeName,
     page: () => const AddFoodPage(),
+    binding: FoodBinding(),
   ),
   GetPage(
     name: const SigninPage().routeName,
@@ -50,6 +54,5 @@ final appPage = [
   GetPage(
     name: NotFoundPage.routeName,
     page: () => const NotFoundPage(),
-    binding: FoodBinding(),
   ),
 ];

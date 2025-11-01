@@ -1,10 +1,8 @@
 import 'dart:async';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter_fortune_wheel/flutter_fortune_wheel.dart';
-import 'package:food_quest/core/ui/animations/app_animation_controller.dart';
-import 'package:food_quest/core/utils/binding_utils.dart';
-import 'package:food_quest/main/home/data/model/food_model.dart';
+import 'package:food_quest/core/extension/core/empty_extensions.dart';
+import 'package:food_quest/main/food/data/model/food_model.dart';
 import 'package:food_quest/main/home/feature/presentation/controller/scale_dialog_controller.dart';
 import 'package:food_quest/main/home/feature/presentation/widgets/scale_transition_dialog.dart';
 import 'package:get/get.dart';
@@ -13,22 +11,6 @@ class WheelController extends GetxController {
   // ---- Reactive states ----
   final RxBool isPressed = false.obs;
   final RxBool isSpinning = false.obs;
-
-  final animationCtrButton1 = BindUtils.put(
-    tag: UniqueKey().toString(),
-    () => ScaleAnimationController(),
-  );
-
-  final animationCtrButton2 = BindUtils.put(
-    tag: UniqueKey().toString(),
-    () => ScaleAnimationController(),
-  );
-
-  final animationCtrButton3 = BindUtils.put(
-    tag: UniqueKey().toString(),
-    () => ScaleAnimationController(),
-  );
-
   // ---- Stream for the wheel ----
   final StreamController<int> selected = StreamController<int>();
 
@@ -90,7 +72,7 @@ class WheelController extends GetxController {
 
       // Gọi dialog (không bọc Get.put() trong await)
       await Get.dialog(
-        ScaleTransitionDialog(result: foods[_selectedIndex!].name),
+        ScaleTransitionDialog(result: foods[_selectedIndex!].name.orNA()),
         barrierDismissible: false,
       );
 
@@ -105,9 +87,6 @@ class WheelController extends GetxController {
   @override
   void onClose() {
     selected.close();
-    animationCtrButton1.dispose();
-    animationCtrButton2.dispose();
-    animationCtrButton3.dispose();
     super.onClose();
   }
 }

@@ -5,7 +5,13 @@ import 'package:get/get.dart';
 class FoodBinding extends Bindings {
   @override
   void dependencies() {
-    Get.lazyPut(() => FoodService());
-    Get.lazyPut(() => FoodController());
+    Get.lazyPut(
+      () => FoodService(),
+      fenix: true,
+    );
+    Get.put(
+      FoodController(),
+      permanent: true,
+    );
   }
 }

@@ -1,11 +1,18 @@
+import 'package:food_quest/core/config/const/app_logger.dart';
 import 'package:food_quest/core/services/firebase/firebase_service.dart';
 import 'package:food_quest/main/food/data/model/food_model.dart';
 
 class FoodService extends FirebaseService {
   final String _collection = "foods";
 
-  Future<void> addFood(Map<String, dynamic> food) async {
-    await db.collection(_collection).add(food);
+  Future<bool> addFood(Map<String, dynamic> food) async {
+    try {
+      await db.collection(_collection).add(food);
+      return true;
+    } catch (e) {
+      AppLogger.e(e);
+      return false;
+    }
   }
 
   Future<void> updateFood(String id, Map<String, dynamic> data) async {

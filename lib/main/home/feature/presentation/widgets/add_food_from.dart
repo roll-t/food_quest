@@ -8,6 +8,7 @@ import 'package:food_quest/core/ui/animations/scale_on_tap.dart';
 import 'package:food_quest/core/ui/widgets/texts/text_widget.dart';
 import 'package:food_quest/main/food/presentation/page/add_food_page.dart';
 import 'package:food_quest/main/home/feature/presentation/controller/add_food_form_controller.dart';
+import 'package:food_quest/main/home/feature/presentation/widgets/food_item.dart';
 import 'package:get/get.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
@@ -112,42 +113,9 @@ class _BuildListFoodSelected extends GetView<AddFoodFormController> {
               }
               final food = controller.listFoodSelected[index - 1];
 
-              return Stack(
-                children: [
-                  Container(
-                    margin: AppEdgeInsets.all8,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(16),
-                      color: Colors.blue.shade100,
-                      image: DecorationImage(
-                        image: NetworkImage(food.image),
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                    child: Center(
-                      child: Container(
-                        padding: AppEdgeInsets.all12,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(16),
-                          color: AppColors.white.withValues(alpha: .85),
-                        ),
-                        child: TextWidget(
-                          text: food.name,
-                          textStyle: AppTextStyle.medium14,
-                          colorFixed: true,
-                        ),
-                      ),
-                    ),
-                  ),
-                  Positioned(
-                    top: 4,
-                    right: 4,
-                    child: GestureDetector(
-                      onTap: () => controller.removeFood(food),
-                      child: AppIcons.icCloseV2.show(),
-                    ),
-                  ),
-                ],
+              return FoodItem(
+                food: food,
+                onRemove: () => controller.removeFood(food),
               );
             },
           );

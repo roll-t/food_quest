@@ -1,5 +1,5 @@
 import 'package:flutter/animation.dart';
-import 'package:food_quest/main/home/data/model/food_model.dart';
+import 'package:food_quest/main/food/data/model/food_model.dart';
 import 'package:get/get.dart';
 
 class AddFoodFormController extends GetxController with GetSingleTickerProviderStateMixin {
@@ -43,7 +43,7 @@ class AddFoodFormController extends GetxController with GetSingleTickerProviderS
 
   void removeFood(FoodModel food) async {
     final key = food.id ?? food.name;
-    hiddenItems.add(key);
+    hiddenItems.add(key!);
     listFoodSelected.remove(food);
     hiddenItems.remove(key);
   }

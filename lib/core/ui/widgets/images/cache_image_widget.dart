@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:food_quest/core/config/theme/app_colors.dart';
 
 class CacheImageWidget extends StatelessWidget {
   final String imageUrl;
@@ -29,8 +30,16 @@ class CacheImageWidget extends StatelessWidget {
       height: height,
       fit: fit,
       placeholder: (context, url) =>
-          placeholder ?? const Center(child: CircularProgressIndicator()),
-      errorWidget: (context, url, error) => errorWidget ?? const Icon(Icons.broken_image),
+          placeholder ??
+          const Center(
+            child: CircularProgressIndicator(),
+          ),
+      errorWidget: (context, url, error) =>
+          errorWidget ??
+          const Icon(
+            Icons.broken_image,
+            color: AppColors.text400,
+          ),
     );
 
     if (borderRadius != null) {
@@ -39,7 +48,6 @@ class CacheImageWidget extends StatelessWidget {
         child: image,
       );
     }
-
     return image;
   }
 }

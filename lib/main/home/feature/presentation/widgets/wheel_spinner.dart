@@ -7,7 +7,7 @@ import 'package:food_quest/core/config/const/app_images.dart';
 import 'package:food_quest/core/config/const/app_padding.dart';
 import 'package:food_quest/core/config/const/app_text_styles.dart';
 import 'package:food_quest/core/config/theme/app_colors.dart';
-import 'package:food_quest/core/ui/animations/app_animation_controller.dart';
+import 'package:food_quest/core/extension/export/extension.dart';
 import 'package:food_quest/core/ui/animations/scale_on_tap.dart';
 import 'package:food_quest/core/ui/widgets/buttons/primary_button.dart';
 import 'package:food_quest/core/ui/widgets/dialogs/dialog_utils.dart';
@@ -56,13 +56,13 @@ class WheelSpinner extends GetView<WheelController> {
                                 child: Stack(
                                   fit: StackFit.expand,
                                   children: [
-                                    CacheImageWidget(imageUrl: food.image),
+                                    CacheImageWidget(imageUrl: food.image.orEmpty()),
                                     Container(
                                       color: AppColors.black.withOpacity(0.6),
                                     ),
                                     Center(
                                       child: TextWidget(
-                                        text: food.name,
+                                        text: food.name.orNA(),
                                         color: AppColors.white,
                                         textStyle: AppTextStyle.semiBold18,
                                         maxLines: 1,
@@ -142,10 +142,8 @@ class WheelSpinner extends GetView<WheelController> {
               onTap: () {},
               icon: AppIcons.icAskAi.show(size: 50),
               label: "Hỏi trợ lý",
-              animateController: controller.animationCtrButton1,
             ),
             _BuildIconsFeature(
-              animateController: controller.animationCtrButton2,
               icon: AppIcons.icAddFood.show(size: 50),
               label: "Thêm món",
               onTap: () {
@@ -156,7 +154,6 @@ class WheelSpinner extends GetView<WheelController> {
               },
             ),
             _BuildIconsFeature(
-              animateController: controller.animationCtrButton3,
               icon: AppIcons.icHistory.show(size: 50),
               label: "Từng ăn",
             ),
@@ -201,13 +198,11 @@ class _BuildIconsFeature extends StatelessWidget {
   final Widget icon;
   final String label;
   final VoidCallback? onTap;
-  final ScaleAnimationController? animateController;
 
   const _BuildIconsFeature({
     required this.icon,
     this.onTap,
     this.label = "",
-    this.animateController,
   });
 
   @override
