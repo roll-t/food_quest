@@ -49,6 +49,7 @@ dependencies:
   app_links: ^6.4.1
   receive_intent: ^0.2.7
   tiktok_scraper: ^0.0.8
+  url_launcher: ^6.3.2
 
 dev_dependencies:
   flutter_test:

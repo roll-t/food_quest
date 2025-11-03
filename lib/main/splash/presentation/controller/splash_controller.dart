@@ -10,7 +10,8 @@ class SplashController extends GetxController {
   @override
   Future<void> onReady() async {
     super.onReady();
-
+    foodController = Get.find<FoodController>();
+    await foodController.fetchNextPage();
     if (DeepLinkService.sharedText != null) {
       Get.offAllNamed(
         const AddFoodPage().routeName,
@@ -18,9 +19,6 @@ class SplashController extends GetxController {
       );
       return;
     }
-
-    foodController = Get.find<FoodController>();
-    await foodController.getFood();
     await Future.delayed(const Duration(milliseconds: 300));
     Get.offAllNamed(const NavigationPage().routeName);
   }

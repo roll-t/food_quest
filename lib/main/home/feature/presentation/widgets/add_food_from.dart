@@ -150,10 +150,13 @@ class _BuildListFoodRecent extends StatelessWidget {
               ),
               itemCount: 30,
               itemBuilder: (context, index) {
-                return Container(
-                  decoration: BoxDecoration(
-                    color: Colors.blue.shade100,
-                    borderRadius: BorderRadius.circular(20),
+                return ScaleOnTap(
+                  onTap: () {},
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.blue.shade100,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
                   ),
                 );
               },

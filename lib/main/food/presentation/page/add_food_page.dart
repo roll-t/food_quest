@@ -9,6 +9,7 @@ import 'package:food_quest/core/ui/widgets/buttons/primary_button.dart';
 import 'package:food_quest/core/ui/widgets/inputs/custom_text_field.dart';
 import 'package:food_quest/core/ui/widgets/texts/text_widget.dart';
 import 'package:food_quest/core/utils/custom_state.dart';
+import 'package:food_quest/core/utils/utils.dart';
 import 'package:food_quest/main/food/data/model/food_model.dart';
 import 'package:food_quest/main/food/presentation/controller/deep_link_controller.dart';
 import 'package:food_quest/main/food/presentation/controller/food_controller.dart';
@@ -75,32 +76,42 @@ class _BuildListRecommend extends StatelessWidget {
               children: [
                 TextWidget(text: "Món đã lưu"),
                 Expanded(
-                    child: CustomTextField(
-                  height: 35,
-                  hintText: "Nhập tên món...",
-                )),
+                  child: CustomTextField(
+                    height: 35,
+                    hintText: "Nhập tên món...",
+                  ),
+                ),
               ],
             ),
             GetBuilder<FoodController>(
               builder: (controller) {
                 return Expanded(
                   child: Obx(
-                    () => GridView.builder(
-                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 3,
-                        childAspectRatio: 1,
+                    () => RefreshIndicator(
+                      onRefresh: controller.resetData,
+                      child: GridView.builder(
+                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          childAspectRatio: 1,
+                        ),
+                        itemCount: controller.listFoodSelected.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          final FoodModel food = controller.listFoodSelected[index];
+                          return ScaleOnTap(
+                            onTap: () {
+                              if (food.metaDataModel?.url != null) {
+                                Utils.lanchUrl(food.metaDataModel!.url);
+                              }
+                            },
+                            child: FoodItem(
+                              food: food,
+                              onRemove: () {
+                                controller.deleteFood(food.id);
+                              },
+                            ),
+                          );
+                        },
                       ),
-                      itemCount: controller.listFoodSelected.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        final FoodModel food = controller.listFoodSelected[index];
-                        return ScaleOnTap(
-                          onTap: () {},
-                          child: FoodItem(
-                            food: food,
-                            onRemove: () {},
-                          ),
-                        );
-                      },
                     ),
                   ),
                 );
@@ -133,7 +144,7 @@ class _BuildAddFoodWidget extends StatelessWidget {
             spacing: 8,
             children: [
               CustomTextField(
-                controller: TextEditingController(),
+                controller: controller.foodNameController,
                 label: "Nhập tên ghi nhớ",
               ),
               if (DeepLinkService.isOpenedFromShare)

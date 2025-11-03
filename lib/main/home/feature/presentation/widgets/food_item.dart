@@ -37,13 +37,14 @@ class FoodItem extends StatelessWidget {
               children: [
                 /// ẢNH NỀN
                 CacheImageWidget(
-                  imageUrl: food.image.orEmpty(),
+                  imageUrl: (food.metaDataModel?.imageUrl).orEmpty(),
                   fit: BoxFit.cover,
                 ),
 
                 /// CHỮ TÊN MÓN
                 Center(
                   child: Container(
+                    margin: AppEdgeInsets.h12,
                     padding: const EdgeInsets.symmetric(
                       horizontal: 6,
                       vertical: 8,
