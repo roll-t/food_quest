@@ -39,7 +39,7 @@ class WheelController extends GetxController {
       name: 'Pasta',
       image:
           'https://tse3.mm.bing.net/th/id/OIP.1dR3odGnCpRdmCq3QSnCEgAAAA?w=417&h=626&rs=1&pid=ImgDetMain&o=7&rm=3',
-    ),
+    ),     
     FoodModel(
       name: 'Salad',
       image:

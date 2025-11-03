@@ -1,5 +1,5 @@
-import 'package:food_quest/core/config/theme/app_colors.dart';
 import 'package:flutter/material.dart';
+import 'package:food_quest/core/config/theme/app_colors.dart';
 import 'package:get/get.dart';
 
 class TextSpanWidget extends StatelessWidget {
@@ -51,6 +51,7 @@ class TextSpanWidget extends StatelessWidget {
               color: textColor1,
               height: lineHeight,
               fontStyle: fontStyle1,
+              fontFamily: "Itim",
             ),
           ),
           const TextSpan(text: " "), // Adding space between the texts
@@ -61,8 +62,9 @@ class TextSpanWidget extends StatelessWidget {
               overflow: TextOverflow.ellipsis,
               fontWeight: fontWeight2,
               height: lineHeight,
-              color: textColor2, // Custom color for the second text
+              color: textColor2,
               fontStyle: fontStyle2,
+              fontFamily: "Itim",
             ),
           ),
         ],

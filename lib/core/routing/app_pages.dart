@@ -1,5 +1,6 @@
 import 'package:food_quest/core/ui/widgets/notFound/not_found_page.dart';
 import 'package:food_quest/core/utils/binding/internet_binding.dart';
+import 'package:food_quest/main/food/di/add_food_binding.dart';
 import 'package:food_quest/main/food/di/food_binding.dart';
 import 'package:food_quest/main/food/presentation/page/add_food_page.dart';
 import 'package:food_quest/main/nav/di/navigation_binding.dart';
@@ -44,7 +45,10 @@ final appPage = [
   GetPage(
     name: const AddFoodPage().routeName,
     page: () => const AddFoodPage(),
-    binding: FoodBinding(),
+    bindings: [
+      AddFoodBinding(),
+      FoodBinding(),
+    ],
   ),
   GetPage(
     name: const SigninPage().routeName,

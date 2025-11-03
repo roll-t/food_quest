@@ -23,7 +23,7 @@ android {
 
     defaultConfig {
         applicationId "com.example.auto_fin"
-        minSdk 23
+        minSdk 23                 // ✅ OK for app_links + sharing intent
         targetSdk 35
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
@@ -35,14 +35,19 @@ android {
         }
     }
 
+    // ✅ FIX: Kotlin + Java về 1.8 để không xung đột plugin
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_17
-        targetCompatibility JavaVersion.VERSION_17
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
         coreLibraryDesugaringEnabled true
     }
 
     kotlinOptions {
-        jvmTarget = '17'
+        jvmTarget = "1.8"
+    }
+
+    packagingOptions {
+        resources.excludes += "/META-INF/{AL2.0,LGPL2.1}"
     }
 
     sourceSets {
@@ -57,6 +62,7 @@ flutter {
 dependencies {
     implementation("com.google.android.material:material:1.12.0")
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")
+
     implementation platform('com.google.firebase:firebase-bom:33.5.1')
     implementation 'com.google.firebase:firebase-analytics'
     implementation 'com.google.firebase:firebase-auth'

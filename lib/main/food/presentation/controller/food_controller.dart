@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:food_quest/core/config/const/app_enum.dart';
+import 'package:food_quest/core/services/deep_link_service.dart';
 import 'package:food_quest/core/ui/widgets/dialogs/dialog_utils.dart';
 import 'package:food_quest/core/utils/keyboard_utils.dart';
 import 'package:food_quest/main/food/data/model/food_model.dart';
@@ -12,6 +13,11 @@ class FoodController extends GetxController {
   final TextEditingController foodNameController = TextEditingController();
   final RxBool isLoading = false.obs;
   final RxString message = ''.obs;
+  final deepLink = DeepLinkService.sharedText;
+
+  bool isAddDeepLink() {
+    return DeepLinkService.isOpenedFromShare;
+  }
 
   ///============================== [FUNCTIONS] ==============================
   Future<void> getFood() async {

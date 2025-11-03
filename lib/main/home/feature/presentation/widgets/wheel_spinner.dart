@@ -14,7 +14,7 @@ import 'package:food_quest/core/ui/widgets/dialogs/dialog_utils.dart';
 import 'package:food_quest/core/ui/widgets/images/asset_image_widget.dart';
 import 'package:food_quest/core/ui/widgets/images/cache_image_widget.dart';
 import 'package:food_quest/core/ui/widgets/texts/text_widget.dart';
-import 'package:food_quest/main/home/feature/di/add_food_binding.dart';
+import 'package:food_quest/main/home/feature/di/add_food_from_binding.dart';
 import 'package:food_quest/main/home/feature/presentation/controller/wheel_controller.dart';
 import 'package:food_quest/main/home/feature/presentation/widgets/add_food_from.dart';
 import 'package:get/get.dart';
@@ -148,7 +148,7 @@ class WheelSpinner extends GetView<WheelController> {
               label: "Thêm món",
               onTap: () {
                 DialogUtils.show(
-                  binding: AddFoodBinding(),
+                  binding: AddFoodFromBinding(),
                   const AddFoodFrom(),
                 );
               },
