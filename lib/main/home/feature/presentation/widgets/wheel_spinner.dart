@@ -61,17 +61,29 @@ class WheelSpinner extends StatelessWidget {
                                     child: Stack(
                                       fit: StackFit.expand,
                                       children: [
-                                        CacheImageWidget(imageUrl: food.image.orEmpty()),
+                                        CacheImageWidget(
+                                            imageUrl: food.metaDataModel?.imageUrl.orEmpty()),
                                         Container(
                                           color: AppColors.black.withOpacity(0.6),
                                         ),
                                         Center(
-                                          child: TextWidget(
-                                            text: food.name.orNA(),
-                                            color: AppColors.white,
-                                            textStyle: AppTextStyle.semiBold18,
-                                            maxLines: 1,
-                                            textAlign: TextAlign.center,
+                                          child: Container(
+                                            padding: const EdgeInsets.symmetric(
+                                              horizontal: 12,
+                                              vertical: 8,
+                                            ),
+                                            decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.circular(12),
+                                              color: AppColors.white.withValues(alpha: .8),
+                                            ),
+                                            constraints: BoxConstraints(maxWidth: 30.w),
+                                            child: TextWidget(
+                                              text: food.name.orNA(),
+                                              color: AppColors.black,
+                                              textStyle: AppTextStyle.semiBold14,
+                                              maxLines: 2,
+                                              textAlign: TextAlign.center,
+                                            ),
                                           ),
                                         ),
                                       ],
@@ -90,7 +102,7 @@ class WheelSpinner extends StatelessWidget {
                   Positioned(
                     left: 0,
                     right: 0,
-                    bottom: 5.w,
+                    bottom: 3.w,
                     child: AppIcons.icHandCat.show(size: 50),
                   ),
                   Positioned(

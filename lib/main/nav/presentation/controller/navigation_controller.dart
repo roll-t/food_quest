@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:food_quest/main/food/di/food_binding.dart';
 import 'package:food_quest/main/home/feature/di/home_binding.dart';
 import 'package:food_quest/main/home/feature/presentation/page/home_page.dart';
 import 'package:food_quest/main/user/features/profile/di/profile_binding%20.dart';
@@ -23,7 +22,6 @@ class NavigationController extends GetxController {
           page: () => const HomePage(),
           transition: Transition.fadeIn,
           bindings: [
-            FoodBinding(),
             HomeBinding(),
           ],
         );

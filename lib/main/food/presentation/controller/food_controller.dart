@@ -8,41 +8,41 @@ import 'package:food_quest/core/config/const/app_enum.dart';
 import 'package:food_quest/core/services/deep_link_service.dart';
 import 'package:food_quest/core/ui/widgets/dialogs/dialog_utils.dart';
 import 'package:food_quest/core/utils/keyboard_utils.dart';
+import 'package:food_quest/core/utils/mixin_controller/argument_handle_mixin_controller.dart';
+import 'package:food_quest/core/utils/utils.dart';
 import 'package:food_quest/main/food/data/model/food_model.dart';
 import 'package:food_quest/main/food/data/source/food_service.dart';
 import 'package:food_quest/main/food/presentation/controller/deep_link_controller.dart';
+import 'package:food_quest/main/splash/presentation/controller/splash_controller.dart';
 import 'package:get/get.dart';
 
-class FoodController extends GetxController {
-  final FoodService _foodService = Get.find<FoodService>();
-
+class FoodController extends GetxController with ArgumentHandlerMixinController<SplashArg> {
+  FoodController(this._foodService);
+  final FoodService _foodService;
   final RxList<FoodModel> listFoods = <FoodModel>[].obs;
   final RxList<FoodModel> selectedFoods = <FoodModel>[].obs;
-
   final foodNameController = TextEditingController();
   final message = ''.obs;
-
   final isLoading = false.obs;
   final isMultiSelectMode = false.obs;
   final isLoadingListFood = false.obs;
   final List<FoodModel> listFoodOnWheel = [];
   DocumentSnapshot? lastDocument;
   static const int pageLimit = 18;
-  // ===========================================================================
-  // ✅ COMMON HELPERS
-  // ===========================================================================
 
-  Future<void> _runWithLoading(Future<void> Function() action, {String? errorMessage}) async {
-    try {
-      DialogUtils.showProgressDialog();
-      await action();
-    } catch (e) {
-      message.value = errorMessage != null ? "$errorMessage: $e" : e.toString();
-    } finally {
-      Get.back(); // always close dialog
+  @override
+  void onInit() async {
+    super.onInit();
+
+    bool hasArg = handleArgumentFromGet();
+    if (hasArg) {
+      listFoods.assignAll(argsData?.listFood ?? []);
     }
   }
 
+  // ===========================================================================
+  // ✅ COMMON HELPERS
+  // ===========================================================================
   Future<void> _loadList(
     Future<List<FoodModel>> Function() source,
     RxBool loadingState, {
@@ -85,14 +85,6 @@ class FoodController extends GetxController {
   // ✅ LOAD & PAGINATION
   // ===========================================================================
 
-  Future<void> getAllFoods() {
-    return _loadList(
-      _foodService.getAllFoods,
-      isLoadingListFood,
-      updateId: "LIST_FOOD_RECOMMEND_ID",
-    );
-  }
-
   Future<void> getSelectedFoods() {
     return _loadList(_foodService.getSelectedFoods, isLoading);
   }
@@ -114,6 +106,7 @@ class FoodController extends GetxController {
     } finally {
       isLoading.value = false;
     }
+    update(["LIST_FOOD_RECOMMEND_ID"]);
   }
 
   Future<void> loadFoodOnWheel() async {
@@ -123,7 +116,6 @@ class FoodController extends GetxController {
       listFoodOnWheel
         ..clear()
         ..addAll(foods);
-      print("FoodController $foods");
     } catch (e) {
       message.value = 'Error loading foods for wheel: $e';
     } finally {
@@ -136,17 +128,17 @@ class FoodController extends GetxController {
   // ===========================================================================
 
   Future<void> addFood() async {
-    KeyboardUtils.hiddenKeyboard();
+    await KeyboardUtils.hiddenKeyboard(isDelay: true);
+
     if (!_validateInput()) return;
 
-    await _runWithLoading(() async {
+    await Utils.runWithLoading(() async {
       final food = DeepLinkService.isOpenedFromShare
           ? FoodModel(
               name: foodNameController.text,
               metaDataModel: Get.find<DeepLinkController>().metaData.value,
             )
           : FoodModel(name: foodNameController.text);
-
       final success = await _foodService.addFood(food);
 
       if (success) {
@@ -159,7 +151,7 @@ class FoodController extends GetxController {
           content: "Thêm thất bại, thử lại",
         );
       }
-    }, errorMessage: "Lỗi thêm food");
+    });
   }
 
   Future<void> deleteFood(String? id) async {
@@ -167,13 +159,12 @@ class FoodController extends GetxController {
       alertType: AlertType.warning,
       content: "Bạn có thật sự muốn xoá!",
       onConfirm: () async {
-        await _runWithLoading(
+        await Utils.runWithLoading(
           () async {
             await _foodService.deleteFood(id!);
             await resetData();
             Get.back();
           },
-          errorMessage: "Error deleting food",
         );
       },
     );
@@ -186,10 +177,9 @@ class FoodController extends GetxController {
       alertType: AlertType.warning,
       content: "Bạn có chắc muốn xoá ${selectedFoods.length} món?",
       onConfirm: () async {
-        await _runWithLoading(() async {
+        await Utils.runWithLoading(() async {
           final ids = selectedFoods.map((e) => e.id!).toList();
           final success = await _foodService.deleteMultiFood(ids);
-
           if (!success) {
             DialogUtils.showAlert(
               alertType: AlertType.error,
@@ -234,22 +224,24 @@ class FoodController extends GetxController {
   Future<void> onSelectMultiChoiceFood() async {
     if (selectedFoods.isEmpty) return;
 
-    await _runWithLoading(() async {
-      final ids = selectedFoods.map((e) => e.id!).toList();
-      final success = await _foodService.toggleSelectedMulti(ids, true);
+    await Utils.runWithLoading(
+      () async {
+        final ids = selectedFoods.map((e) => e.id!).toList();
+        final success = await _foodService.toggleSelectedMulti(ids, true);
 
-      if (success) {
-        for (final food in selectedFoods) {
-          food.isSelected = true;
+        if (success) {
+          for (final food in selectedFoods) {
+            food.isSelected = true;
+          }
+          selectedFoods.refresh();
+        } else {
+          DialogUtils.showAlert(
+            alertType: AlertType.error,
+            content: "Cập nhật chọn nhiều thất bại!",
+          );
         }
-        selectedFoods.refresh();
-      } else {
-        DialogUtils.showAlert(
-          alertType: AlertType.error,
-          content: "Cập nhật chọn nhiều thất bại!",
-        );
-      }
-    }, errorMessage: "Error toggle multi");
+      },
+    );
   }
 
   // ===========================================================================
@@ -286,8 +278,9 @@ class FoodController extends GetxController {
   }
 
   Future<void> refreshFoods() async {
-    await getAllFoods();
     lastDocument = null;
+    listFoods.clear();
+    await fetchNextPage();
   }
 
   Future<void> resetData() async {

@@ -6,6 +6,10 @@ class HomeBinding extends Bindings {
   @override
   void dependencies() {
     Get.lazyPut(() => ScaleDialogController());
-    Get.lazyPut(() => WheelController());
+    Get.lazyPut(
+      () => WheelController(
+        foodController: Get.find(),
+      ),
+    );
   }
 }

@@ -2,32 +2,36 @@ import 'dart:async';
 
 import 'package:flutter_fortune_wheel/flutter_fortune_wheel.dart';
 import 'package:food_quest/core/extension/core/empty_extensions.dart';
+import 'package:food_quest/core/utils/mixin_controller/argument_handle_mixin_controller.dart';
 import 'package:food_quest/main/food/data/model/food_model.dart';
 import 'package:food_quest/main/food/presentation/controller/food_controller.dart';
 import 'package:food_quest/main/home/feature/presentation/controller/scale_dialog_controller.dart';
 import 'package:food_quest/main/home/feature/presentation/widgets/scale_transition_dialog.dart';
 import 'package:get/get.dart';
 
-class WheelController extends GetxController {
+class WheelController extends GetxController with ArgumentHandlerMixinController<List<FoodModel>> {
+  WheelController({
+    required this.foodController,
+  });
+  final FoodController foodController;
+
   // ---- Reactive states ----
   final RxBool isPressed = false.obs;
   final RxBool isSpinning = false.obs;
   final RxBool isLoading = true.obs;
+
   // ---- Stream for the wheel ----
   final StreamController<int> selected = StreamController<int>();
-  late final FoodController foodController;
   // ---- Data ----
   final List<FoodModel> foods = [];
-
-  final List<FoodModel> foodsShimmer = [
-    FoodModel(),
-    FoodModel(),
-    FoodModel(),
-    FoodModel(),
-    FoodModel(),
-  ];
-
   int? _selectedIndex;
+  final List<FoodModel> foodsShimmer = List.generate(5, (_) => FoodModel());
+
+  @override
+  void onInit() {
+    super.onInit();
+    handleArgumentFromGet();
+  }
 
   @override
   void onReady() async {
@@ -35,12 +39,13 @@ class WheelController extends GetxController {
     initialData();
   }
 
-  void initialData() async {
-    final hasInit = Get.isRegistered<FoodController>(tag: "init");
-    foodController = hasInit ? Get.find<FoodController>(tag: "init") : Get.find<FoodController>();
-    foods.assignAll(foodController.listFoodOnWheel);
-    Get.delete<FoodController>(tag: "init");
-    if (foods.isNotEmpty) {}
+  Future<void> initialData() async {
+    if (argsData?.isNotEmpty ?? false) {
+      foods.assignAll(argsData ?? []);
+    } else {
+      await foodController.loadFoodOnWheel();
+      foods.assignAll(foodController.listFoodOnWheel);
+    }
     update(["WHEEL_ID"]);
   }
 

@@ -1,28 +1,31 @@
 // ignore_for_file: depend_on_referenced_packages
 
 import 'package:dio/dio.dart';
-import 'package:food_quest/core/services/deep_link_service.dart';
+import 'package:food_quest/core/utils/mixin_controller/argument_handle_mixin_controller.dart';
 import 'package:food_quest/main/food/data/model/meta_data_model.dart';
 import 'package:food_quest/main/food/data/model/tiktok_meta_data.dart';
+import 'package:food_quest/main/splash/presentation/controller/splash_controller.dart';
 import 'package:get/get.dart';
 import 'package:html/dom.dart';
 import 'package:html/parser.dart' as html_parser;
 import 'package:tiktok_scraper/tiktok_scraper.dart';
 
-class DeepLinkController extends GetxController {
+class DeepLinkController extends GetxController with ArgumentHandlerMixinController<SplashArg> {
   final Rx<MetaDataModel?> metaData = Rx(null);
   final RxBool isLoading = false.obs;
+  late final String? deepLink;
 
   @override
   void onInit() {
     super.onInit();
+    handleArgumentFromGet();
     _initDeepLink();
   }
 
   void _initDeepLink() {
-    final raw = DeepLinkService.sharedText;
-    if (raw != null && raw.isEmpty) return;
-    fetchMetaData(raw!);
+    deepLink = argsData?.deepLinkText;
+    if ((deepLink?.isEmpty ?? false)) return;
+    fetchMetaData(deepLink!);
   }
 
   Future<void> fetchMetaData(String url) async {
