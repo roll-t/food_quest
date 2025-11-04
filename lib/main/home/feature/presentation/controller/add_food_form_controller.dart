@@ -1,25 +1,20 @@
 import 'package:flutter/animation.dart';
+import 'package:food_quest/core/ui/widgets/dialogs/dialog_utils.dart';
 import 'package:food_quest/main/food/data/model/food_model.dart';
+import 'package:food_quest/main/food/presentation/controller/food_controller.dart';
 import 'package:get/get.dart';
 
 class AddFoodFormController extends GetxController with GetSingleTickerProviderStateMixin {
   late AnimationController scaleController;
   late Animation<double> scaleAnimation;
+  final FoodController foodController = Get.find<FoodController>();
   final RxList<FoodModel> listFoodSelected = <FoodModel>[].obs;
   final RxSet<String> hiddenItems = <String>{}.obs;
   List<FoodModel> recentFoods = [];
-
   @override
   void onInit() {
     super.onInit();
-    listFoodSelected.value = [
-      FoodModel(name: "Pizza", image: "https://picsum.photos/200?1"),
-      FoodModel(name: "Sushi", image: "https://picsum.photos/200?2"),
-      FoodModel(name: "Burger", image: "https://picsum.photos/200?3"),
-      FoodModel(name: "Salad", image: "https://picsum.photos/200?4"),
-      FoodModel(name: "Noodles", image: "https://picsum.photos/200?5"),
-    ];
-
+    listFoodSelected.value = foodController.listFoodOnWheel;
     recentFoods = List.generate(
       20,
       (i) => FoodModel(
@@ -42,10 +37,13 @@ class AddFoodFormController extends GetxController with GetSingleTickerProviderS
   }
 
   void removeFood(FoodModel food) async {
+    DialogUtils.showProgressDialog();
+    await foodController.toggleSelected(food);
     final key = food.id ?? food.name;
     hiddenItems.add(key!);
     listFoodSelected.remove(food);
     hiddenItems.remove(key);
+    Get.back();
   }
 
   @override

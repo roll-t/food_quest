@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:food_quest/core/config/const/app_icons.dart';
 import 'package:food_quest/core/config/const/app_padding.dart';
 import 'package:food_quest/core/config/theme/app_colors.dart';
 import 'package:food_quest/core/config/theme/app_theme_colors.dart';
@@ -7,6 +8,7 @@ import 'package:food_quest/core/services/deep_link_service.dart';
 import 'package:food_quest/core/ui/animations/scale_on_tap.dart';
 import 'package:food_quest/core/ui/widgets/buttons/primary_button.dart';
 import 'package:food_quest/core/ui/widgets/inputs/custom_text_field.dart';
+import 'package:food_quest/core/ui/widgets/shimmer/shimmer_widget.dart';
 import 'package:food_quest/core/ui/widgets/texts/text_widget.dart';
 import 'package:food_quest/core/utils/custom_state.dart';
 import 'package:food_quest/core/utils/utils.dart';
@@ -15,6 +17,7 @@ import 'package:food_quest/main/food/presentation/controller/deep_link_controlle
 import 'package:food_quest/main/food/presentation/controller/food_controller.dart';
 import 'package:food_quest/main/home/feature/presentation/widgets/food_item.dart';
 import 'package:get/get.dart';
+import 'package:responsive_sizer/responsive_sizer.dart';
 
 class AddFoodPage extends CustomState {
   const AddFoodPage({super.key});
@@ -37,7 +40,11 @@ class _BodyBuilder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Padding(
-      padding: AppEdgeInsets.all16,
+      padding: EdgeInsets.only(
+        left: 16,
+        right: 16,
+        bottom: 16,
+      ),
       child: Column(
         spacing: 16,
         children: [
@@ -54,64 +61,142 @@ class _BodyBuilder extends StatelessWidget {
 
 class _BuildListRecommend extends StatelessWidget {
   const _BuildListRecommend();
-
   @override
   Widget build(BuildContext context) {
     return Expanded(
       child: Container(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 12,
-          vertical: 18,
-        ),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 18),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),
           color: AppColors.white,
         ),
         child: Column(
-          mainAxisSize: MainAxisSize.max,
           spacing: 16,
           children: [
-            const Row(
-              spacing: 16,
-              children: [
-                TextWidget(text: "Món đã lưu"),
-                Expanded(
-                  child: CustomTextField(
-                    height: 35,
-                    hintText: "Nhập tên món...",
-                  ),
-                ),
-              ],
+            SizedBox(
+              height: 35,
+              child: GetBuilder<FoodController>(
+                id: "HANDLE_BAR_ID",
+                builder: (controller) {
+                  ///---> [SEARCH CASE]
+                  return Row(
+                    spacing: 16,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const TextWidget(text: "Món đã lưu"),
+                      Expanded(
+                        child: AnimatedSwitcher(
+                          duration: const Duration(milliseconds: 250),
+                          switchInCurve: Curves.easeOut,
+                          switchOutCurve: Curves.easeIn,
+                          child: controller.isMultiSelectMode.value
+                              ? Row(
+                                  spacing: 16,
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    ScaleOnTap(
+                                      onTap: controller.onSelectMultiChoiceFood,
+                                      child: Container(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 6,
+                                          vertical: 4,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(12),
+                                          color: AppThemeColors.primary.withValues(alpha: .2),
+                                        ),
+                                        child: Row(
+                                          spacing: 6,
+                                          children: [
+                                            const TextWidget(text: "Thêm"),
+                                            AppIcons.icAdd.show(),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                    ScaleOnTap(
+                                      child: Container(
+                                        padding:
+                                            const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(12),
+                                          color: AppThemeColors.primary.withValues(alpha: .2),
+                                        ),
+                                        child: Row(
+                                          spacing: 6,
+                                          children: [
+                                            const TextWidget(text: "Xóa"),
+                                            AppIcons.icDelete.show(),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                )
+                              : const CustomTextField(
+                                  height: 35,
+                                  hintText: "Nhập tên món...",
+                                ),
+                        ),
+                      )
+                    ],
+                  );
+                },
+              ),
             ),
             GetBuilder<FoodController>(
+              id: "LIST_FOOD_RECOMMEND_ID",
               builder: (controller) {
-                return Expanded(
-                  child: Obx(
-                    () => RefreshIndicator(
-                      onRefresh: controller.resetData,
-                      child: GridView.builder(
-                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          childAspectRatio: 1,
-                        ),
-                        itemCount: controller.listFoodSelected.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          final FoodModel food = controller.listFoodSelected[index];
-                          return ScaleOnTap(
-                            onTap: () {
-                              if (food.metaDataModel?.url != null) {
-                                Utils.lanchUrl(food.metaDataModel!.url);
-                              }
-                            },
-                            child: FoodItem(
-                              food: food,
-                              onRemove: () {
-                                controller.deleteFood(food.id);
-                              },
-                            ),
-                          );
-                        },
+                if (controller.isLoadingListFood.value) {
+                  return Expanded(
+                    child: GridView.builder(
+                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        childAspectRatio: 1,
                       ),
+                      itemCount: 8,
+                      itemBuilder: (context, index) {
+                        return Container(
+                          margin: AppEdgeInsets.all12,
+                          child: const ShimmerWidget(),
+                        );
+                      },
+                    ),
+                  );
+                }
+                if (controller.listFoods.isEmpty) {
+                  return Expanded(
+                    child: Opacity(
+                      opacity: .3,
+                      child: Center(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          spacing: 16,
+                          children: [
+                            AppIcons.icEmptyData.show(size: 40.w),
+                            const TextWidget(
+                              text: "không có dữ liệu",
+                              size: 16,
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                  );
+                }
+                return Expanded(
+                  child: RefreshIndicator(
+                    onRefresh: controller.resetData,
+                    child: GridView.builder(
+                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        childAspectRatio: 1,
+                      ),
+                      itemCount: controller.listFoods.length,
+                      itemBuilder: (context, index) {
+                        final food = controller.listFoods[index];
+                        return _FoodSelectableItem(food: food);
+                      },
                     ),
                   ),
                 );
@@ -281,5 +366,87 @@ class _BuildAddFoodWidget extends StatelessWidget {
         );
       },
     );
+  }
+}
+
+class _FoodSelectableItem extends GetView<FoodController> {
+  final FoodModel food;
+  const _FoodSelectableItem({required this.food});
+
+  @override
+  Widget build(BuildContext context) {
+    return Obx(() {
+      final bool isSelected = controller.selectedFoods.contains(food);
+      return GestureDetector(
+        onLongPress: () {
+          controller.enableMultiSelect();
+          controller.toggleFoodSelection(food);
+        },
+        onTap: () {
+          if (controller.isMultiSelectMode.value) {
+            controller.toggleFoodSelection(food);
+          } else {
+            if (food.metaDataModel?.url != null) {
+              Utils.lanchUrl(food.metaDataModel!.url);
+            }
+          }
+        },
+        child: Stack(
+          children: [
+            // SCALE ANIMATION
+            TweenAnimationBuilder<double>(
+              duration: const Duration(milliseconds: 200),
+              tween: Tween(begin: 1, end: isSelected ? .85 : 1),
+              curve: Curves.easeOut,
+              builder: (_, scale, child) => Transform.scale(
+                scale: scale,
+                child: child,
+              ),
+              child: FoodItem(food: food),
+            ),
+
+            // 🔹 BORDER HIGHLIGHT (Positioned outside, animation inside)
+            Positioned.fill(
+              child: AnimatedOpacity(
+                duration: const Duration(milliseconds: 200),
+                opacity: isSelected ? 1 : 0,
+                child: Container(
+                  margin: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(
+                      width: 4,
+                      color: AppThemeColors.primary,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+
+            // 🔹 TICK ICON (AnimatedPositioned stays valid)
+            AnimatedPositioned(
+              duration: const Duration(milliseconds: 200),
+              top: isSelected ? 6 : -20,
+              right: isSelected ? 6 : -20,
+              child: AnimatedOpacity(
+                duration: const Duration(milliseconds: 200),
+                opacity: isSelected ? 1 : 0,
+                child: Container(
+                  padding: const EdgeInsets.all(2),
+                  decoration: BoxDecoration(
+                      color: AppColors.white,
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        width: 1,
+                        color: AppThemeColors.primary,
+                      )),
+                  child: AppIcons.icTick.show(),
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    });
   }
 }

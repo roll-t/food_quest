@@ -15,28 +15,86 @@ import 'package:get/get.dart';
 
 class FoodController extends GetxController {
   final FoodService _foodService = Get.find<FoodService>();
-  final RxList<FoodModel> listFoodSelected = <FoodModel>[].obs;
-  final TextEditingController foodNameController = TextEditingController();
-  final RxBool isLoading = false.obs;
-  final RxBool isLoadingListFood = false.obs;
-  final RxString message = ''.obs;
 
-  // Phân trang
+  final RxList<FoodModel> listFoods = <FoodModel>[].obs;
+  final RxList<FoodModel> selectedFoods = <FoodModel>[].obs;
+
+  final foodNameController = TextEditingController();
+  final message = ''.obs;
+
+  final isLoading = false.obs;
+  final isMultiSelectMode = false.obs;
+  final isLoadingListFood = false.obs;
+  final List<FoodModel> listFoodOnWheel = [];
   DocumentSnapshot? lastDocument;
-  final int pageLimit = 18;
+  static const int pageLimit = 18;
+  // ===========================================================================
+  // ✅ COMMON HELPERS
+  // ===========================================================================
 
-  ///============================== [FUNCTIONS] ==============================
-
-  Future<void> getAllFoods() async {
+  Future<void> _runWithLoading(Future<void> Function() action, {String? errorMessage}) async {
     try {
-      isLoading.value = true;
-      final foods = await _foodService.getAllFoods();
-      listFoodSelected.assignAll(foods);
+      DialogUtils.showProgressDialog();
+      await action();
     } catch (e) {
-      message.value = 'Error loading foods: $e';
+      message.value = errorMessage != null ? "$errorMessage: $e" : e.toString();
     } finally {
-      isLoading.value = false;
+      Get.back(); // always close dialog
     }
+  }
+
+  Future<void> _loadList(
+    Future<List<FoodModel>> Function() source,
+    RxBool loadingState, {
+    String? updateId,
+  }) async {
+    try {
+      loadingState.value = true;
+      if (updateId != null) update([updateId]);
+      final foods = await source();
+      listFoods.assignAll(foods);
+    } catch (e) {
+      message.value = "Error: $e";
+    } finally {
+      loadingState.value = false;
+      if (updateId != null) update([updateId]);
+    }
+  }
+
+  // ===========================================================================
+  // ✅ UI CONTROLS
+  // ===========================================================================
+
+  void enableMultiSelect() {
+    isMultiSelectMode.value = true;
+    update(["HANDLE_BAR_ID"]);
+  }
+
+  void toggleFoodSelection(FoodModel food) {
+    selectedFoods.contains(food) ? selectedFoods.remove(food) : selectedFoods.add(food);
+
+    selectedFoods.refresh();
+
+    if (selectedFoods.isEmpty) {
+      isMultiSelectMode.value = false;
+      update(["HANDLE_BAR_ID"]);
+    }
+  }
+
+  // ===========================================================================
+  // ✅ LOAD & PAGINATION
+  // ===========================================================================
+
+  Future<void> getAllFoods() {
+    return _loadList(
+      _foodService.getAllFoods,
+      isLoadingListFood,
+      updateId: "LIST_FOOD_RECOMMEND_ID",
+    );
+  }
+
+  Future<void> getSelectedFoods() {
+    return _loadList(_foodService.getSelectedFoods, isLoading);
   }
 
   Future<void> fetchNextPage() async {
@@ -46,8 +104,9 @@ class FoodController extends GetxController {
         limit: pageLimit,
         startAfterDoc: lastDocument,
       );
+
       if (foods.isNotEmpty) {
-        listFoodSelected.addAll(foods);
+        listFoods.addAll(foods);
         lastDocument = await _foodService.db.collection("foods").doc(foods.last.id).get();
       }
     } catch (e) {
@@ -57,20 +116,165 @@ class FoodController extends GetxController {
     }
   }
 
-  Future<void> getSelectedFoods() async {
+  Future<void> loadFoodOnWheel() async {
     try {
       isLoading.value = true;
       final foods = await _foodService.getSelectedFoods();
-      listFoodSelected.assignAll(foods);
+      listFoodOnWheel
+        ..clear()
+        ..addAll(foods);
+      print("FoodController $foods");
     } catch (e) {
-      message.value = 'Error loading selected foods: $e';
+      message.value = 'Error loading foods for wheel: $e';
     } finally {
       isLoading.value = false;
     }
   }
 
-  /// 🔹 Kiểm tra dữ liệu trước khi thêm
-  bool _validation() {
+  // ===========================================================================
+  // ✅ CRUD ACTIONS
+  // ===========================================================================
+
+  Future<void> addFood() async {
+    KeyboardUtils.hiddenKeyboard();
+    if (!_validateInput()) return;
+
+    await _runWithLoading(() async {
+      final food = DeepLinkService.isOpenedFromShare
+          ? FoodModel(
+              name: foodNameController.text,
+              metaDataModel: Get.find<DeepLinkController>().metaData.value,
+            )
+          : FoodModel(name: foodNameController.text);
+
+      final success = await _foodService.addFood(food);
+
+      if (success) {
+        Fluttertoast.showToast(msg: "Lưu thành công");
+        if (DeepLinkService.isOpenedFromShare) _exitApp();
+        resetData();
+      } else {
+        DialogUtils.showAlert(
+          alertType: AlertType.error,
+          content: "Thêm thất bại, thử lại",
+        );
+      }
+    }, errorMessage: "Lỗi thêm food");
+  }
+
+  Future<void> deleteFood(String? id) async {
+    DialogUtils.showConfirm(
+      alertType: AlertType.warning,
+      content: "Bạn có thật sự muốn xoá!",
+      onConfirm: () async {
+        await _runWithLoading(
+          () async {
+            await _foodService.deleteFood(id!);
+            await resetData();
+            Get.back();
+          },
+          errorMessage: "Error deleting food",
+        );
+      },
+    );
+  }
+
+  Future<void> deleteSelectedFoods() async {
+    if (selectedFoods.isEmpty) return;
+
+    DialogUtils.showConfirm(
+      alertType: AlertType.warning,
+      content: "Bạn có chắc muốn xoá ${selectedFoods.length} món?",
+      onConfirm: () async {
+        await _runWithLoading(() async {
+          final ids = selectedFoods.map((e) => e.id!).toList();
+          final success = await _foodService.deleteMultiFood(ids);
+
+          if (!success) {
+            DialogUtils.showAlert(
+              alertType: AlertType.error,
+              content: "Xoá thất bại, thử lại!",
+            );
+            return;
+          }
+
+          Fluttertoast.showToast(msg: "Đã xoá ${ids.length} món");
+          selectedFoods.clear();
+          isMultiSelectMode.value = false;
+          await refreshFoods();
+          Get.back();
+        });
+      },
+    );
+  }
+
+  Future<void> updateFood(FoodModel food) async {
+    try {
+      await _foodService.updateFood(food.id!, food.toJson());
+      final index = listFoods.indexWhere((f) => f.id == food.id);
+      if (index != -1) listFoods[index] = food;
+      listFoods.refresh();
+    } catch (e) {
+      message.value = 'Error updating food: $e';
+    }
+  }
+
+  Future<void> toggleSelected(FoodModel food) async {
+    try {
+      final newValue = !food.isSelected;
+      await _foodService.toggleSelected(food.id!, newValue);
+      food.isSelected = newValue;
+      listFoods.refresh();
+    } catch (e) {
+      message.value = 'Error toggling selection: $e';
+    }
+  }
+
+  /// Toggle multi
+  Future<void> onSelectMultiChoiceFood() async {
+    if (selectedFoods.isEmpty) return;
+
+    await _runWithLoading(() async {
+      final ids = selectedFoods.map((e) => e.id!).toList();
+      final success = await _foodService.toggleSelectedMulti(ids, true);
+
+      if (success) {
+        for (final food in selectedFoods) {
+          food.isSelected = true;
+        }
+        selectedFoods.refresh();
+      } else {
+        DialogUtils.showAlert(
+          alertType: AlertType.error,
+          content: "Cập nhật chọn nhiều thất bại!",
+        );
+      }
+    }, errorMessage: "Error toggle multi");
+  }
+
+  // ===========================================================================
+  // ✅ STREAM
+  // ===========================================================================
+
+  void streamFoodsRealtime() {
+    _foodService.streamFoods().listen(
+          (foods) => listFoods.assignAll(foods),
+          onError: (e) => message.value = 'Error loading foods realtime: $e',
+        );
+  }
+
+  void streamSelectedFoodsRealtime() {
+    _foodService.streamSelectedFoods().listen(
+          (foods) => listFoods.assignAll(foods),
+          onError: (e) => message.value = 'Error loading selected foods realtime: $e',
+        );
+  }
+
+  // ===========================================================================
+  // ✅ HELPER / VALIDATION
+  // ===========================================================================
+
+  bool _validateInput() {
     if (foodNameController.text.isEmpty) {
       DialogUtils.showAlert(
         alertType: AlertType.error,
@@ -81,136 +285,22 @@ class FoodController extends GetxController {
     return true;
   }
 
-  Future<void> addFood() async {
-    KeyboardUtils.hiddenKeyboard();
-
-    if (!_validation()) return;
-
-    DialogUtils.showProgressDialog();
-
-    try {
-      final FoodModel food;
-
-      if (DeepLinkService.isOpenedFromShare) {
-        final deepLinkController = Get.find<DeepLinkController>();
-        food = FoodModel(
-          name: foodNameController.text,
-          metaDataModel: deepLinkController.metaData.value,
-        );
-      } else {
-        food = FoodModel(
-          name: foodNameController.text,
-        );
-      }
-
-      final success = await _foodService.addFood(food);
-
-      if (success) {
-        Get.back();
-        Fluttertoast.showToast(msg: "Lưu thành công");
-        if (DeepLinkService.isOpenedFromShare) {
-          if (Platform.isAndroid) {
-            SystemNavigator.pop();
-          } else if (Platform.isIOS) {
-            exit(0);
-          }
-        } else {
-          resetData();
-        }
-      } else {
-        Get.back();
-        DialogUtils.showAlert(
-          alertType: AlertType.error,
-          content: "Thêm thất bại, thử lại",
-        );
-      }
-    } catch (e) {
-      Get.back();
-      DialogUtils.showAlert(
-        alertType: AlertType.error,
-        content: "Lỗi: $e",
-      );
-    }
-  }
-
-  Future<void> deleteFood(String? id) async {
-    DialogUtils.showConfirm(
-      alertType: AlertType.warning,
-      content: "Bạn có thật sự muốn xoá!",
-      onConfirm: () async {
-        try {
-          DialogUtils.showProgressDialog();
-          await _foodService.deleteFood(id!);
-          await resetData();
-          Get.back();
-          Get.back();
-        } catch (e) {
-          message.value = 'Error deleting food: $e';
-        }
-      },
-    );
-  }
-
-  /// 🔹 Cập nhật food
-  Future<void> updateFood(FoodModel food) async {
-    try {
-      await _foodService.updateFood(food.id!, food.toJson());
-      // Cập nhật local list
-      int index = listFoodSelected.indexWhere((f) => f.id == food.id);
-      if (index != -1) listFoodSelected[index] = food;
-      listFoodSelected.refresh();
-    } catch (e) {
-      message.value = 'Error updating food: $e';
-    }
-  }
-
-  Future<void> toggleSelected(FoodModel food) async {
-    try {
-      await _foodService.toggleSelected(food.id!, !food.isSelected);
-      food.isSelected = !food.isSelected;
-      listFoodSelected.refresh();
-    } catch (e) {
-      message.value = 'Error toggling selection: $e';
-    }
-  }
-
   Future<void> refreshFoods() async {
-    try {
-      isLoading.value = true;
-      final foods = await _foodService.getAllFoods();
-      listFoodSelected.assignAll(foods);
-      lastDocument = null;
-    } catch (e) {
-      message.value = 'Error refreshing foods: $e';
-    } finally {
-      isLoading.value = false;
-    }
+    await getAllFoods();
+    lastDocument = null;
   }
 
   Future<void> resetData() async {
+    if (isMultiSelectMode.value) return;
     foodNameController.clear();
-    refreshFoods();
+    await refreshFoods();
   }
 
-  void streamFoodsRealtime() {
-    _foodService.streamFoods().listen(
-      (foods) {
-        listFoodSelected.assignAll(foods);
-      },
-      onError: (e) {
-        message.value = 'Error loading foods realtime: $e';
-      },
-    );
-  }
-
-  void streamSelectedFoodsRealtime() {
-    _foodService.streamSelectedFoods().listen(
-      (foods) {
-        listFoodSelected.assignAll(foods);
-      },
-      onError: (e) {
-        message.value = 'Error loading selected foods realtime: $e';
-      },
-    );
+  void _exitApp() {
+    if (Platform.isAndroid) {
+      SystemNavigator.pop();
+    } else if (Platform.isIOS) {
+      exit(0);
+    }
   }
 }

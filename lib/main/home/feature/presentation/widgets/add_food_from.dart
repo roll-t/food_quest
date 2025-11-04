@@ -98,6 +98,7 @@ class _BuildListFoodSelected extends GetView<AddFoodFormController> {
               if (index == 0) {
                 return ScaleOnTap(
                   onTap: () {
+                    controller.foodController.getAllFoods();
                     Get.toNamed(const AddFoodPage().routeName);
                   },
                   child: Container(

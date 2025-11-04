@@ -21,7 +21,6 @@ class FoodItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const borderRadius = BorderRadius.all(Radius.circular(16));
-
     return Stack(
       children: [
         Container(

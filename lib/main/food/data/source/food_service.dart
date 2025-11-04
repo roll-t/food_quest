@@ -122,4 +122,38 @@ class FoodService extends FirebaseService {
       return snapshot.docs.map((doc) => FoodModel.fromJson(doc.data(), id: doc.id)).toList();
     });
   }
+
+  /// ✅ Xóa nhiều foods cùng lúc (dùng batch)
+  Future<bool> deleteMultiFood(List<String> ids) async {
+    if (ids.isEmpty) return false;
+    try {
+      final batch = db.batch();
+      for (final id in ids) {
+        final docRef = db.collection(_collection).doc(id);
+        batch.delete(docRef);
+      }
+      await batch.commit();
+      return true;
+    } catch (e) {
+      AppLogger.e(e);
+      return false;
+    }
+  }
+
+  /// ✅ Toggle isSelected cho nhiều item cùng lúc
+  Future<bool> toggleSelectedMulti(List<String> ids, bool isSelected) async {
+    if (ids.isEmpty) return false;
+    try {
+      final batch = db.batch();
+      for (final id in ids) {
+        final docRef = db.collection(_collection).doc(id);
+        batch.update(docRef, {'isSelected': isSelected});
+      }
+      await batch.commit();
+      return true;
+    } catch (e) {
+      AppLogger.e(e);
+      return false;
+    }
+  }
 }

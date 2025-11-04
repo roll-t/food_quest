@@ -13,12 +13,14 @@ class AppIcons {
   static const icClose = _PngIcon("${_root}ic_close$_ext");
   static const icAdd = _PngIcon("${_root}ic_add$_ext");
   static const icCloseV2 = _PngIcon("${_root}ic_close_v2$_ext");
+  static const icTick = _PngIcon("${_root}ic_tick$_ext");
+  static const icDelete = _PngIcon("${_root}ic_delete$_ext");
+  static const icEmptyData = _PngIcon("${_root}ic_empty_data$_ext");
 }
 
 class _PngIcon {
   final String path;
   const _PngIcon(this.path);
-
   Widget show({
     double size = 25,
     BoxFit fit = BoxFit.contain,

@@ -9,9 +9,6 @@ class FoodBinding extends Bindings {
       () => FoodService(),
       fenix: true,
     );
-    Get.put(
-      FoodController(),
-      permanent: true,
-    );
+    Get.lazyPut(() => FoodController());
   }
 }

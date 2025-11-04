@@ -5,21 +5,21 @@ import 'package:food_quest/main/nav/presentation/page/navigation_page.dart';
 import 'package:get/get.dart';
 
 class SplashController extends GetxController {
-  late final FoodController foodController;
+  late FoodController foodController;
 
   @override
   Future<void> onReady() async {
     super.onReady();
-    foodController = Get.find<FoodController>();
-    await foodController.fetchNextPage();
+    foodController = Get.find<FoodController>(tag: "init");
     if (DeepLinkService.sharedText != null) {
+      await foodController.fetchNextPage();
       Get.offAllNamed(
         const AddFoodPage().routeName,
         arguments: DeepLinkService.sharedText,
       );
       return;
     }
-    await Future.delayed(const Duration(milliseconds: 300));
+    await foodController.loadFoodOnWheel();
     Get.offAllNamed(const NavigationPage().routeName);
   }
 }

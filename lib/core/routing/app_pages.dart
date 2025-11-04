@@ -22,10 +22,7 @@ final appPage = [
   GetPage(
     name: "/splash",
     page: () => const SplashPage(),
-    bindings: [
-      SplashBinding(),
-      FoodBinding(),
-    ],
+    binding: SplashBinding(),
   ),
   GetPage(
     name: const NavigationPage().routeName,
