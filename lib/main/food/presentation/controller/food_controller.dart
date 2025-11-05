@@ -17,26 +17,29 @@ import 'package:food_quest/main/splash/presentation/controller/splash_controller
 import 'package:get/get.dart';
 
 class FoodController extends GetxController with ArgumentHandlerMixinController<SplashArg> {
+  
   FoodController(this._foodService);
-  final FoodService _foodService;
-  final RxList<FoodModel> listFoods = <FoodModel>[].obs;
-  final RxList<FoodModel> selectedFoods = <FoodModel>[].obs;
-  final foodNameController = TextEditingController();
-  final message = ''.obs;
+  static const int pageLimit = 18;
   final isLoading = false.obs;
+  final isLoadingListSaved = false.obs;
+  final message = ''.obs;
   final isMultiSelectMode = false.obs;
-  final isLoadingListFood = false.obs;
+  final FoodService _foodService;
+  final RxList<FoodModel> selectedFoodsMarker = <FoodModel>[].obs;
+  final RxList<FoodModel> selectedFoodsHandler = <FoodModel>[].obs;
+  final RxList<FoodModel> listFoods = <FoodModel>[].obs;
+  final foodNameController = TextEditingController();
   final List<FoodModel> listFoodOnWheel = [];
   DocumentSnapshot? lastDocument;
-  static const int pageLimit = 18;
 
   @override
   void onInit() async {
     super.onInit();
-
     bool hasArg = handleArgumentFromGet();
     if (hasArg) {
-      listFoods.assignAll(argsData?.listFood ?? []);
+      if (argsData?.listFood?.isNotEmpty ?? false) {
+        listFoods.assignAll(argsData?.listFood ?? []);
+      }
     }
   }
 
@@ -71,11 +74,11 @@ class FoodController extends GetxController with ArgumentHandlerMixinController<
   }
 
   void toggleFoodSelection(FoodModel food) {
-    selectedFoods.contains(food) ? selectedFoods.remove(food) : selectedFoods.add(food);
-
-    selectedFoods.refresh();
-
-    if (selectedFoods.isEmpty) {
+    selectedFoodsHandler.contains(food)
+        ? selectedFoodsHandler.remove(food)
+        : selectedFoodsHandler.add(food);
+    selectedFoodsHandler.refresh();
+    if (selectedFoodsHandler.isEmpty) {
       isMultiSelectMode.value = false;
       update(["HANDLE_BAR_ID"]);
     }
@@ -86,12 +89,13 @@ class FoodController extends GetxController with ArgumentHandlerMixinController<
   // ===========================================================================
 
   Future<void> getSelectedFoods() {
-    return _loadList(_foodService.getSelectedFoods, isLoading);
+    return _loadList(_foodService.getSelectedFoods, isLoadingListSaved);
   }
 
   Future<void> fetchNextPage() async {
     try {
-      isLoading.value = true;
+      isLoadingListSaved.value = true;
+      update(["LIST_FOOD_RECOMMEND_ID"]);
       final foods = await _foodService.fetchFoodsPage(
         limit: pageLimit,
         startAfterDoc: lastDocument,
@@ -104,7 +108,7 @@ class FoodController extends GetxController with ArgumentHandlerMixinController<
     } catch (e) {
       message.value = 'Error fetching foods page: $e';
     } finally {
-      isLoading.value = false;
+      isLoadingListSaved.value = false;
     }
     update(["LIST_FOOD_RECOMMEND_ID"]);
   }
@@ -170,15 +174,15 @@ class FoodController extends GetxController with ArgumentHandlerMixinController<
     );
   }
 
-  Future<void> deleteSelectedFoods() async {
-    if (selectedFoods.isEmpty) return;
+  Future<void> deleteMultiSelectedFoods() async {
+    if (selectedFoodsHandler.isEmpty) return;
 
     DialogUtils.showConfirm(
       alertType: AlertType.warning,
-      content: "Bạn có chắc muốn xoá ${selectedFoods.length} món?",
+      content: "Bạn có chắc muốn xoá ${selectedFoodsHandler.length} món?",
       onConfirm: () async {
         await Utils.runWithLoading(() async {
-          final ids = selectedFoods.map((e) => e.id!).toList();
+          final ids = selectedFoodsHandler.map((e) => e.id!).toList();
           final success = await _foodService.deleteMultiFood(ids);
           if (!success) {
             DialogUtils.showAlert(
@@ -189,7 +193,7 @@ class FoodController extends GetxController with ArgumentHandlerMixinController<
           }
 
           Fluttertoast.showToast(msg: "Đã xoá ${ids.length} món");
-          selectedFoods.clear();
+          selectedFoodsHandler.clear();
           isMultiSelectMode.value = false;
           await refreshFoods();
           Get.back();
@@ -211,9 +215,7 @@ class FoodController extends GetxController with ArgumentHandlerMixinController<
 
   Future<void> toggleSelected(FoodModel food) async {
     try {
-      final newValue = !food.isSelected;
-      await _foodService.toggleSelected(food.id!, newValue);
-      food.isSelected = newValue;
+      await _foodService.toggleSelected(food.id!, !food.isSelected);
       listFoods.refresh();
     } catch (e) {
       message.value = 'Error toggling selection: $e';
@@ -221,27 +223,37 @@ class FoodController extends GetxController with ArgumentHandlerMixinController<
   }
 
   /// Toggle multi
+  /// ✅ Chọn nhiều món → chuyển sang trạng thái isSelected = true
   Future<void> onSelectMultiChoiceFood() async {
-    if (selectedFoods.isEmpty) return;
+    if (selectedFoodsHandler.isEmpty) {
+      Fluttertoast.showToast(msg: "Chưa chọn món nào");
+      return;
+    }
 
-    await Utils.runWithLoading(
-      () async {
-        final ids = selectedFoods.map((e) => e.id!).toList();
-        final success = await _foodService.toggleSelectedMulti(ids, true);
+    // Danh sách ID cần update
+    final ids = selectedFoodsHandler.map((e) => e.id!).toList();
 
-        if (success) {
-          for (final food in selectedFoods) {
-            food.isSelected = true;
-          }
-          selectedFoods.refresh();
-        } else {
-          DialogUtils.showAlert(
-            alertType: AlertType.error,
-            content: "Cập nhật chọn nhiều thất bại!",
-          );
-        }
-      },
-    );
+    await Utils.runWithLoading(() async {
+      final success = await _foodService.toggleSelectedMulti(ids, true);
+
+      if (!success) {
+        DialogUtils.showAlert(
+          alertType: AlertType.error,
+          content: "Cập nhật thất bại, thử lại!",
+        );
+        return;
+      }
+      for (final food in selectedFoodsHandler) {
+        food.isSelected = true;
+      }
+      selectedFoodsMarker.addAll(selectedFoodsHandler);
+      selectedFoodsHandler.clear();
+      isMultiSelectMode.value = false;
+      update(["HANDLE_BAR_ID"]);
+
+      Fluttertoast.showToast(msg: "Đã chọn ${ids.length} món");
+      listFoods.refresh();
+    });
   }
 
   // ===========================================================================

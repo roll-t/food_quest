@@ -7,6 +7,7 @@ import 'package:food_quest/core/config/const/app_images.dart';
 import 'package:food_quest/core/config/const/app_padding.dart';
 import 'package:food_quest/core/config/const/app_text_styles.dart';
 import 'package:food_quest/core/config/theme/app_colors.dart';
+import 'package:food_quest/core/config/theme/app_theme_colors.dart';
 import 'package:food_quest/core/extension/export/extension.dart';
 import 'package:food_quest/core/ui/animations/scale_on_tap.dart';
 import 'package:food_quest/core/ui/widgets/buttons/primary_button.dart';
@@ -30,7 +31,7 @@ class WheelSpinner extends StatelessWidget {
       id: "WHEEL_ID",
       builder: (controller) {
         final List<FoodModel> listFood =
-            controller.foods.isNotEmpty ? controller.foods : controller.foodsShimmer;
+            controller.foods.length >= 2 ? controller.foods : controller.foodsShimmer;
         return Column(
           children: [
             Transform.scale(
@@ -193,7 +194,7 @@ class WheelSpinner extends StatelessWidget {
                             text: "Quay",
                             textSize: 26,
                             isMaxParent: true,
-                            onPressed: controller.spinWheel,
+                            onPressed: controller.onSpinWheel,
                           ),
                         ),
                       ),
@@ -234,10 +235,13 @@ class _BuildIconsFeature extends StatelessWidget {
         children: [
           icon,
           Container(
-            padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+            padding: const EdgeInsets.symmetric(
+              vertical: 4,
+              horizontal: 8,
+            ),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(8),
-              color: Colors.orange.withOpacity(.85),
+              color: AppThemeColors.primary.withOpacity(.85),
             ),
             child: TextWidget(
               text: label,

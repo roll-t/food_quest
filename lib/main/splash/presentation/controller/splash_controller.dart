@@ -8,10 +8,12 @@ import 'package:get/get.dart';
 class SplashArg {
   String? deepLinkText;
   List<FoodModel>? listFood;
+  List<FoodModel>? listFoodSelected;
   bool isInit;
   SplashArg({
     this.deepLinkText,
     this.listFood,
+    this.listFoodSelected,
     this.isInit = false,
   });
 }

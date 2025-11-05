@@ -48,7 +48,11 @@ class FoodService extends FirebaseService {
     DocumentSnapshot? startAfterDoc,
   }) async {
     try {
-      Query query = db.collection(_collection).orderBy('createdAt', descending: true).limit(limit);
+      Query query = db
+          .collection(_collection)
+          .orderBy('createdAt', descending: true)
+          // .where('isSelected', isEqualTo: false )
+          .limit(limit);
       if (startAfterDoc != null) {
         query = query.startAfterDocument(startAfterDoc);
       }

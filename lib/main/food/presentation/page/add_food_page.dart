@@ -115,9 +115,12 @@ class _BuildListRecommend extends StatelessWidget {
                                       ),
                                     ),
                                     ScaleOnTap(
+                                      onTap: controller.deleteMultiSelectedFoods,
                                       child: Container(
-                                        padding:
-                                            const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 6,
+                                          vertical: 4,
+                                        ),
                                         decoration: BoxDecoration(
                                           borderRadius: BorderRadius.circular(12),
                                           color: AppThemeColors.primary.withValues(alpha: .2),
@@ -147,7 +150,7 @@ class _BuildListRecommend extends StatelessWidget {
             GetBuilder<FoodController>(
               id: "LIST_FOOD_RECOMMEND_ID",
               builder: (controller) {
-                if (controller.isLoadingListFood.value) {
+                if (controller.isLoadingListSaved.value) {
                   return Expanded(
                     child: GridView.builder(
                       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -157,8 +160,8 @@ class _BuildListRecommend extends StatelessWidget {
                       itemCount: 8,
                       itemBuilder: (context, index) {
                         return Container(
-                          margin: AppEdgeInsets.all12,
-                          child: const ShimmerWidget(),
+                          margin: AppEdgeInsets.all6,
+                          child: const ShimmerWidget(radius: 16),
                         );
                       },
                     ),
@@ -376,13 +379,17 @@ class _FoodSelectableItem extends GetView<FoodController> {
   @override
   Widget build(BuildContext context) {
     return Obx(() {
-      final bool isSelected = controller.selectedFoods.contains(food);
+      final bool isSelected = controller.selectedFoodsHandler.contains(food);
+      final bool isSelectedMarker = controller.selectedFoodsMarker.any((e) => e.id == food.id);
+
       return GestureDetector(
         onLongPress: () {
+          if (isSelectedMarker) return;
           controller.enableMultiSelect();
           controller.toggleFoodSelection(food);
         },
         onTap: () {
+          if (isSelectedMarker && controller.isMultiSelectMode.value) return;
           if (controller.isMultiSelectMode.value) {
             controller.toggleFoodSelection(food);
           } else {
@@ -393,7 +400,6 @@ class _FoodSelectableItem extends GetView<FoodController> {
         },
         child: Stack(
           children: [
-            // SCALE ANIMATION
             TweenAnimationBuilder<double>(
               duration: const Duration(milliseconds: 200),
               tween: Tween(begin: 1, end: isSelected ? .85 : 1),
@@ -404,8 +410,6 @@ class _FoodSelectableItem extends GetView<FoodController> {
               ),
               child: FoodItem(food: food),
             ),
-
-            // 🔹 BORDER HIGHLIGHT (Positioned outside, animation inside)
             Positioned.fill(
               child: AnimatedOpacity(
                 duration: const Duration(milliseconds: 200),
@@ -422,8 +426,6 @@ class _FoodSelectableItem extends GetView<FoodController> {
                 ),
               ),
             ),
-
-            // 🔹 TICK ICON (AnimatedPositioned stays valid)
             AnimatedPositioned(
               duration: const Duration(milliseconds: 200),
               top: isSelected ? 6 : -20,
@@ -434,16 +436,59 @@ class _FoodSelectableItem extends GetView<FoodController> {
                 child: Container(
                   padding: const EdgeInsets.all(2),
                   decoration: BoxDecoration(
-                      color: AppColors.white,
-                      shape: BoxShape.circle,
-                      border: Border.all(
-                        width: 1,
-                        color: AppThemeColors.primary,
-                      )),
+                    color: AppColors.white,
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      width: 1,
+                      color: AppThemeColors.primary,
+                    ),
+                  ),
                   child: AppIcons.icTick.show(),
                 ),
               ),
             ),
+            if (isSelectedMarker)
+              Positioned.fill(
+                child: Stack(
+                  children: [
+                    Positioned.fill(
+                      child: Container(
+                        margin: AppEdgeInsets.all6,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(16),
+                          color: AppColors.black.withValues(
+                            alpha: .2,
+                          ),
+                        ),
+                        child: const SizedBox.shrink(),
+                      ),
+                    ),
+                    Positioned(
+                      right: 0,
+                      top: 0,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 4,
+                          vertical: 2,
+                        ),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(12),
+                          color: AppColors.background2,
+                        ),
+                        child: Row(
+                          children: [
+                            const TextWidget(
+                              text: "Đã chọn",
+                              color: AppColors.white,
+                            ),
+                            AppIcons.icWheelMark.show(size: 35),
+                          ],
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              ),
           ],
         ),
       );

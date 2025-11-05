@@ -5,8 +5,8 @@ import 'package:food_quest/core/config/const/app_text_styles.dart';
 import 'package:food_quest/core/config/theme/app_colors.dart';
 import 'package:food_quest/core/config/theme/app_theme_colors.dart';
 import 'package:food_quest/core/ui/animations/scale_on_tap.dart';
+import 'package:food_quest/core/ui/widgets/shimmer/shimmer_widget.dart';
 import 'package:food_quest/core/ui/widgets/texts/text_widget.dart';
-import 'package:food_quest/main/food/presentation/page/add_food_page.dart';
 import 'package:food_quest/main/home/feature/presentation/controller/add_food_form_controller.dart';
 import 'package:food_quest/main/home/feature/presentation/widgets/food_item.dart';
 import 'package:get/get.dart';
@@ -24,7 +24,7 @@ class AddFoodFrom extends GetView<AddFoodFormController> {
           color: Colors.transparent,
           child: Container(
             width: 95.w,
-            height: 80.h,
+            height: 90.h,
             decoration: BoxDecoration(
               color: AppColors.white,
               borderRadius: BorderRadius.circular(16),
@@ -62,7 +62,6 @@ class _BodyBuilder extends StatelessWidget {
 
 class _BuildListFoodSelected extends GetView<AddFoodFormController> {
   const _BuildListFoodSelected();
-
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -86,6 +85,24 @@ class _BuildListFoodSelected extends GetView<AddFoodFormController> {
           ],
         ),
         Obx(() {
+          ///---> [LOADING_CASE]
+          if (controller.isLoadingSelectedFoods.value) {
+            return GridView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 3,
+                crossAxisSpacing: 16,
+              ),
+              itemCount: 3,
+              itemBuilder: (context, _) {
+                return const ShimmerWidget();
+              },
+            );
+          }
+
+          ///---> [RENDER_CASE]
           return GridView.builder(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
@@ -97,10 +114,7 @@ class _BuildListFoodSelected extends GetView<AddFoodFormController> {
             itemBuilder: (context, index) {
               if (index == 0) {
                 return ScaleOnTap(
-                  onTap: () {
-                    controller.foodController.fetchNextPage();
-                    Get.toNamed(const AddFoodPage().routeName);
-                  },
+                  onTap: controller.onGoToAddFoodPage,
                   child: Container(
                     margin: AppEdgeInsets.all8,
                     padding: const EdgeInsets.all(12),
@@ -113,10 +127,9 @@ class _BuildListFoodSelected extends GetView<AddFoodFormController> {
                 );
               }
               final food = controller.listFoodSelected[index - 1];
-
               return FoodItem(
                 food: food,
-                onRemove: () => controller.removeFood(food),
+                onRemove: () => controller.onRemoveFood(food),
               );
             },
           );
@@ -145,7 +158,7 @@ class _BuildListFoodRecent extends StatelessWidget {
             child: GridView.builder(
               padding: const EdgeInsets.symmetric(horizontal: 16).copyWith(bottom: 20),
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 3,
+                crossAxisCount: 2,
                 crossAxisSpacing: 12,
                 mainAxisSpacing: 12,
               ),

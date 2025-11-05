@@ -16,6 +16,7 @@ class AppIcons {
   static const icTick = _PngIcon("${_root}ic_tick$_ext");
   static const icDelete = _PngIcon("${_root}ic_delete$_ext");
   static const icEmptyData = _PngIcon("${_root}ic_empty_data$_ext");
+  static const icWheelMark = _PngIcon("${_root}ic_wheel_mark$_ext");
 }
 
 class _PngIcon {

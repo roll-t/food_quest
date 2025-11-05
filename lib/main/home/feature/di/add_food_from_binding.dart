@@ -8,7 +8,7 @@ class AddFoodFromBinding extends Bindings {
     Get.lazyPut(
       () => AddFoodFormController(
         foodController: Get.find(),
-        listFoodSelected: Get.find<WheelController>().foodController.selectedFoods,
+        listFoodSelected: Get.find<WheelController>().foods.obs,
       ),
       fenix: true,
     );

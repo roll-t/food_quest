@@ -10,23 +10,23 @@ import 'package:food_quest/main/home/feature/presentation/widgets/scale_transiti
 import 'package:get/get.dart';
 
 class WheelController extends GetxController with ArgumentHandlerMixinController<List<FoodModel>> {
+  ///---> [CONTROLLER_EXTRACT]
+  final FoodController foodController;
+
   WheelController({
     required this.foodController,
   });
-  final FoodController foodController;
 
-  // ---- Reactive states ----
+  ///---> [VARIABLES]
   final RxBool isPressed = false.obs;
   final RxBool isSpinning = false.obs;
   final RxBool isLoading = true.obs;
-
-  // ---- Stream for the wheel ----
-  final StreamController<int> selected = StreamController<int>();
-  // ---- Data ----
   final List<FoodModel> foods = [];
   int? _selectedIndex;
+  final StreamController<int> selected = StreamController<int>();
   final List<FoodModel> foodsShimmer = List.generate(5, (_) => FoodModel());
 
+  ///---> [OVERRIDE_LIFECYCLE]
   @override
   void onInit() {
     super.onInit();
@@ -36,10 +36,17 @@ class WheelController extends GetxController with ArgumentHandlerMixinController
   @override
   void onReady() async {
     super.onReady();
-    initialData();
+    _initialData();
   }
 
-  Future<void> initialData() async {
+  @override
+  void onClose() {
+    selected.close();
+    super.onClose();
+  }
+
+  ///---> [DATA]
+  Future<void> _initialData() async {
     if (argsData?.isNotEmpty ?? false) {
       foods.assignAll(argsData ?? []);
     } else {
@@ -49,16 +56,19 @@ class WheelController extends GetxController with ArgumentHandlerMixinController
     update(["WHEEL_ID"]);
   }
 
-  // ---- Actions ----
-  Future<void> spinWheel() async {
-    if (isSpinning.value) return;
+  Future<void> callbackData() async {
+    await foodController.loadFoodOnWheel();
+    foods.assignAll(foodController.listFoodOnWheel);
+    update(["WHEEL_ID"]);
+  }
 
+  ///---> [EVENTS]
+  Future<void> onSpinWheel() async {
+    if (isSpinning.value) return;
     isPressed.value = true;
     await Future.delayed(const Duration(milliseconds: 100));
     isPressed.value = false;
-
     isSpinning.value = true;
-
     _selectedIndex = Fortune.randomInt(0, foods.length);
     selected.add(_selectedIndex!);
   }
@@ -66,26 +76,14 @@ class WheelController extends GetxController with ArgumentHandlerMixinController
   void onSpinEnd() async {
     isSpinning.value = false;
     if (_selectedIndex != null) {
-      // Đăng ký controller
       Get.put(ScaleDialogController());
-
-      // Gọi dialog (không bọc Get.put() trong await)
       await Get.dialog(
         ScaleTransitionDialog(result: foods[_selectedIndex!].name.orNA()),
         barrierDismissible: false,
       );
-
-      // Xoá controller sau khi dialog đóng
       if (Get.isRegistered<ScaleDialogController>()) {
         Get.delete<ScaleDialogController>();
       }
     }
-  }
-
-  // ---- Lifecycle ----
-  @override
-  void onClose() {
-    selected.close();
-    super.onClose();
   }
 }

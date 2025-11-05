@@ -24,7 +24,7 @@ class FoodItem extends StatelessWidget {
     return Stack(
       children: [
         Container(
-          margin: AppEdgeInsets.all8,
+          margin: AppEdgeInsets.all6,
           decoration: BoxDecoration(
             borderRadius: borderRadius,
             color: Colors.blue.shade100,
