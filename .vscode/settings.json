@@ -23,7 +23,7 @@
     "android/app/build"
   ],
   // 📏 Quy định style cho code Dart
-  "dart.lineLength": 100,
+  "dart.lineLength": 120,
   "dart.allowTestsOutsideTestFolder": true,
   // ⚙️ Terminal mặc định
   "terminal.integrated.defaultProfile.windows": "PowerShell",

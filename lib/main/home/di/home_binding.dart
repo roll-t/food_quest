@@ -1,5 +1,5 @@
-import 'package:food_quest/main/home/feature/presentation/controller/scale_dialog_controller.dart';
-import 'package:food_quest/main/home/feature/presentation/controller/wheel_controller.dart';
+import 'package:food_quest/main/home/presentation/controller/scale_dialog_controller.dart';
+import 'package:food_quest/main/home/presentation/controller/wheel_controller.dart';
 import 'package:get/get.dart';
 
 class HomeBinding extends Bindings {

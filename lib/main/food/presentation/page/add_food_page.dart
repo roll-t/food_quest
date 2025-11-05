@@ -15,7 +15,7 @@ import 'package:food_quest/core/utils/utils.dart';
 import 'package:food_quest/main/food/data/model/food_model.dart';
 import 'package:food_quest/main/food/presentation/controller/deep_link_controller.dart';
 import 'package:food_quest/main/food/presentation/controller/food_controller.dart';
-import 'package:food_quest/main/home/feature/presentation/widgets/food_item.dart';
+import 'package:food_quest/main/home/presentation/widgets/food_item.dart';
 import 'package:get/get.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
@@ -130,6 +130,30 @@ class _BuildListRecommend extends StatelessWidget {
                                           children: [
                                             const TextWidget(text: "Xóa"),
                                             AppIcons.icDelete.show(),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                    ScaleOnTap(
+                                      onTap: controller.resetSettings,
+                                      child: Container(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 8,
+                                          vertical: 4,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(12),
+                                          color: AppThemeColors.primary.withValues(alpha: .2),
+                                        ),
+                                        child: Row(
+                                          spacing: 4,
+                                          children: [
+                                            Obx(
+                                              () => TextWidget(
+                                                text: controller.selectedFoodsHandler.length.toString(),
+                                              ),
+                                            ),
+                                            AppIcons.icClose.show(),
                                           ],
                                         ),
                                       ),
@@ -322,9 +346,10 @@ class _BuildAddFoodWidget extends StatelessWidget {
                                   ),
                                 Expanded(
                                   child: Container(
-                                    padding:
-                                        const EdgeInsets.symmetric(vertical: 4.0, horizontal: 12)
-                                            .copyWith(left: 8.0, right: 12.0),
+                                    padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 12).copyWith(
+                                      left: 8.0,
+                                      right: 12.0,
+                                    ),
                                     child: Column(
                                       spacing: 4.0,
                                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -375,13 +400,11 @@ class _BuildAddFoodWidget extends StatelessWidget {
 class _FoodSelectableItem extends GetView<FoodController> {
   final FoodModel food;
   const _FoodSelectableItem({required this.food});
-
   @override
   Widget build(BuildContext context) {
     return Obx(() {
       final bool isSelected = controller.selectedFoodsHandler.contains(food);
       final bool isSelectedMarker = controller.selectedFoodsMarker.any((e) => e.id == food.id);
-
       return GestureDetector(
         onLongPress: () {
           if (isSelectedMarker) return;
@@ -467,24 +490,12 @@ class _FoodSelectableItem extends GetView<FoodController> {
                       right: 0,
                       top: 0,
                       child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 4,
-                          vertical: 2,
-                        ),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(12),
-                          color: AppColors.background2,
-                        ),
-                        child: Row(
-                          children: [
-                            const TextWidget(
-                              text: "Đã chọn",
-                              color: AppColors.white,
-                            ),
-                            AppIcons.icWheelMark.show(size: 35),
-                          ],
-                        ),
-                      ),
+                          padding: AppEdgeInsets.all4,
+                          decoration: const BoxDecoration(
+                            color: AppColors.black,
+                            shape: BoxShape.circle,
+                          ),
+                          child: AppIcons.icWheelMark.show(size: 35)),
                     )
                   ],
                 ),

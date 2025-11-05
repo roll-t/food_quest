@@ -7,8 +7,8 @@ import 'package:food_quest/core/config/theme/app_theme_colors.dart';
 import 'package:food_quest/core/ui/animations/scale_on_tap.dart';
 import 'package:food_quest/core/ui/widgets/shimmer/shimmer_widget.dart';
 import 'package:food_quest/core/ui/widgets/texts/text_widget.dart';
-import 'package:food_quest/main/home/feature/presentation/controller/add_food_form_controller.dart';
-import 'package:food_quest/main/home/feature/presentation/widgets/food_item.dart';
+import 'package:food_quest/main/home/presentation/controller/add_food_form_controller.dart';
+import 'package:food_quest/main/home/presentation/widgets/food_item.dart';
 import 'package:get/get.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
@@ -114,7 +114,10 @@ class _BuildListFoodSelected extends GetView<AddFoodFormController> {
             itemBuilder: (context, index) {
               if (index == 0) {
                 return ScaleOnTap(
-                  onTap: controller.onGoToAddFoodPage,
+                  onTap: () {
+                    print("object");
+                    controller.onGoToAddFoodPage();
+                  },
                   child: Container(
                     margin: AppEdgeInsets.all8,
                     padding: const EdgeInsets.all(12),

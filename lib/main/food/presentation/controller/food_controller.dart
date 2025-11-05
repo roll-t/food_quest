@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:food_quest/core/config/const/app_const.dart';
 import 'package:food_quest/core/config/const/app_enum.dart';
 import 'package:food_quest/core/services/deep_link_service.dart';
 import 'package:food_quest/core/ui/widgets/dialogs/dialog_utils.dart';
@@ -17,56 +18,45 @@ import 'package:food_quest/main/splash/presentation/controller/splash_controller
 import 'package:get/get.dart';
 
 class FoodController extends GetxController with ArgumentHandlerMixinController<SplashArg> {
-  
   FoodController(this._foodService);
+
+  // ─────────────────────────────────────────────
+  // 🔹 CONSTANTS & SERVICES & STATES
+  // ─────────────────────────────────────────────
+
   static const int pageLimit = 18;
+  final FoodService _foodService;
+
   final isLoading = false.obs;
   final isLoadingListSaved = false.obs;
-  final message = ''.obs;
   final isMultiSelectMode = false.obs;
-  final FoodService _foodService;
+  final message = ''.obs;
+
+  final RxList<FoodModel> listFoods = <FoodModel>[].obs;
   final RxList<FoodModel> selectedFoodsMarker = <FoodModel>[].obs;
   final RxList<FoodModel> selectedFoodsHandler = <FoodModel>[].obs;
-  final RxList<FoodModel> listFoods = <FoodModel>[].obs;
-  final foodNameController = TextEditingController();
+
   final List<FoodModel> listFoodOnWheel = [];
+  final foodNameController = TextEditingController();
+
   DocumentSnapshot? lastDocument;
+
+  // ─────────────────────────────────────────────
+  // 🔹 INIT & ARGUMENT HANDLING
+  // ─────────────────────────────────────────────
 
   @override
   void onInit() async {
     super.onInit();
     bool hasArg = handleArgumentFromGet();
-    if (hasArg) {
-      if (argsData?.listFood?.isNotEmpty ?? false) {
-        listFoods.assignAll(argsData?.listFood ?? []);
-      }
+    if (hasArg && (argsData?.listFood?.isNotEmpty ?? false)) {
+      listFoods.assignAll(argsData?.listFood ?? []);
     }
   }
 
-  // ===========================================================================
-  // ✅ COMMON HELPERS
-  // ===========================================================================
-  Future<void> _loadList(
-    Future<List<FoodModel>> Function() source,
-    RxBool loadingState, {
-    String? updateId,
-  }) async {
-    try {
-      loadingState.value = true;
-      if (updateId != null) update([updateId]);
-      final foods = await source();
-      listFoods.assignAll(foods);
-    } catch (e) {
-      message.value = "Error: $e";
-    } finally {
-      loadingState.value = false;
-      if (updateId != null) update([updateId]);
-    }
-  }
-
-  // ===========================================================================
-  // ✅ UI CONTROLS
-  // ===========================================================================
+  // ─────────────────────────────────────────────
+  // 🔹 UI CONTROLS & MULTI SELECT
+  // ─────────────────────────────────────────────
 
   void enableMultiSelect() {
     isMultiSelectMode.value = true;
@@ -74,9 +64,7 @@ class FoodController extends GetxController with ArgumentHandlerMixinController<
   }
 
   void toggleFoodSelection(FoodModel food) {
-    selectedFoodsHandler.contains(food)
-        ? selectedFoodsHandler.remove(food)
-        : selectedFoodsHandler.add(food);
+    selectedFoodsHandler.contains(food) ? selectedFoodsHandler.remove(food) : selectedFoodsHandler.add(food);
     selectedFoodsHandler.refresh();
     if (selectedFoodsHandler.isEmpty) {
       isMultiSelectMode.value = false;
@@ -84,9 +72,9 @@ class FoodController extends GetxController with ArgumentHandlerMixinController<
     }
   }
 
-  // ===========================================================================
-  // ✅ LOAD & PAGINATION
-  // ===========================================================================
+  // ─────────────────────────────────────────────
+  // 🔹 LOAD & PAGINATION
+  // ─────────────────────────────────────────────
 
   Future<void> getSelectedFoods() {
     return _loadList(_foodService.getSelectedFoods, isLoadingListSaved);
@@ -96,6 +84,7 @@ class FoodController extends GetxController with ArgumentHandlerMixinController<
     try {
       isLoadingListSaved.value = true;
       update(["LIST_FOOD_RECOMMEND_ID"]);
+
       final foods = await _foodService.fetchFoodsPage(
         limit: pageLimit,
         startAfterDoc: lastDocument,
@@ -109,8 +98,8 @@ class FoodController extends GetxController with ArgumentHandlerMixinController<
       message.value = 'Error fetching foods page: $e';
     } finally {
       isLoadingListSaved.value = false;
+      update(["LIST_FOOD_RECOMMEND_ID"]);
     }
-    update(["LIST_FOOD_RECOMMEND_ID"]);
   }
 
   Future<void> loadFoodOnWheel() async {
@@ -127,13 +116,12 @@ class FoodController extends GetxController with ArgumentHandlerMixinController<
     }
   }
 
-  // ===========================================================================
-  // ✅ CRUD ACTIONS
-  // ===========================================================================
+  // ─────────────────────────────────────────────
+  // 🔹 CRUD ACTIONS
+  // ─────────────────────────────────────────────
 
   Future<void> addFood() async {
     await KeyboardUtils.hiddenKeyboard(isDelay: true);
-
     if (!_validateInput()) return;
 
     await Utils.runWithLoading(() async {
@@ -143,6 +131,7 @@ class FoodController extends GetxController with ArgumentHandlerMixinController<
               metaDataModel: Get.find<DeepLinkController>().metaData.value,
             )
           : FoodModel(name: foodNameController.text);
+
       final success = await _foodService.addFood(food);
 
       if (success) {
@@ -163,13 +152,11 @@ class FoodController extends GetxController with ArgumentHandlerMixinController<
       alertType: AlertType.warning,
       content: "Bạn có thật sự muốn xoá!",
       onConfirm: () async {
-        await Utils.runWithLoading(
-          () async {
-            await _foodService.deleteFood(id!);
-            await resetData();
-            Get.back();
-          },
-        );
+        await Utils.runWithLoading(() async {
+          await _foodService.deleteFood(id!);
+          await resetData();
+          Get.back();
+        });
       },
     );
   }
@@ -184,6 +171,7 @@ class FoodController extends GetxController with ArgumentHandlerMixinController<
         await Utils.runWithLoading(() async {
           final ids = selectedFoodsHandler.map((e) => e.id!).toList();
           final success = await _foodService.deleteMultiFood(ids);
+
           if (!success) {
             DialogUtils.showAlert(
               alertType: AlertType.error,
@@ -196,6 +184,7 @@ class FoodController extends GetxController with ArgumentHandlerMixinController<
           selectedFoodsHandler.clear();
           isMultiSelectMode.value = false;
           await refreshFoods();
+          resetSettings();
           Get.back();
         });
       },
@@ -222,15 +211,22 @@ class FoodController extends GetxController with ArgumentHandlerMixinController<
     }
   }
 
-  /// Toggle multi
-  /// ✅ Chọn nhiều món → chuyển sang trạng thái isSelected = true
   Future<void> onSelectMultiChoiceFood() async {
+    final int remaining = AppConst.MAX_WHEEL_COUNT - selectedFoodsMarker.length;
+    if (remaining <= 0) {
+      Fluttertoast.showToast(msg: "Tối đa chỉ được ${AppConst.MAX_WHEEL_COUNT} món thôi!");
+      return;
+    }
+    if (selectedFoodsHandler.length > remaining) {
+      Fluttertoast.showToast(msg: "Chỉ thêm được $remaining món nữa thôi!");
+      return;
+    }
+
     if (selectedFoodsHandler.isEmpty) {
       Fluttertoast.showToast(msg: "Chưa chọn món nào");
       return;
     }
 
-    // Danh sách ID cần update
     final ids = selectedFoodsHandler.map((e) => e.id!).toList();
 
     await Utils.runWithLoading(() async {
@@ -243,9 +239,11 @@ class FoodController extends GetxController with ArgumentHandlerMixinController<
         );
         return;
       }
+
       for (final food in selectedFoodsHandler) {
         food.isSelected = true;
       }
+
       selectedFoodsMarker.addAll(selectedFoodsHandler);
       selectedFoodsHandler.clear();
       isMultiSelectMode.value = false;
@@ -256,9 +254,9 @@ class FoodController extends GetxController with ArgumentHandlerMixinController<
     });
   }
 
-  // ===========================================================================
-  // ✅ STREAM
-  // ===========================================================================
+  // ─────────────────────────────────────────────
+  // 🔹 REALTIME STREAMS
+  // ─────────────────────────────────────────────
 
   void streamFoodsRealtime() {
     _foodService.streamFoods().listen(
@@ -274,9 +272,27 @@ class FoodController extends GetxController with ArgumentHandlerMixinController<
         );
   }
 
-  // ===========================================================================
-  // ✅ HELPER / VALIDATION
-  // ===========================================================================
+  // ─────────────────────────────────────────────
+  // 🔹 HELPER / RESET / VALIDATION
+  // ─────────────────────────────────────────────
+
+  Future<void> _loadList(
+    Future<List<FoodModel>> Function() source,
+    RxBool loadingState, {
+    String? updateId,
+  }) async {
+    try {
+      loadingState.value = true;
+      if (updateId != null) update([updateId]);
+      final foods = await source();
+      listFoods.assignAll(foods);
+    } catch (e) {
+      message.value = "Error: $e";
+    } finally {
+      loadingState.value = false;
+      if (updateId != null) update([updateId]);
+    }
+  }
 
   bool _validateInput() {
     if (foodNameController.text.isEmpty) {
@@ -299,6 +315,18 @@ class FoodController extends GetxController with ArgumentHandlerMixinController<
     if (isMultiSelectMode.value) return;
     foodNameController.clear();
     await refreshFoods();
+  }
+
+  void resetSettings() {
+    foodNameController.clear();
+    isMultiSelectMode.value = false;
+    selectedFoodsHandler.clear();
+    message.value = '';
+    lastDocument = null;
+    update([
+      "HANDLE_BAR_ID",
+      "LIST_FOOD_RECOMMEND_ID",
+    ]);
   }
 
   void _exitApp() {

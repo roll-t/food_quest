@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:food_quest/core/config/theme/app_theme_colors.dart';
-import 'package:food_quest/main/home/feature/presentation/widgets/wheel_spinner.dart';
+import 'package:food_quest/main/home/presentation/widgets/wheel_spinner.dart';
 
 // NAV Home
 // =========================== //

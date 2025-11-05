@@ -4,7 +4,7 @@ import 'package:food_quest/core/ui/widgets/dialogs/dialog_utils.dart';
 import 'package:food_quest/main/food/data/model/food_model.dart';
 import 'package:food_quest/main/food/presentation/controller/food_controller.dart';
 import 'package:food_quest/main/food/presentation/page/add_food_page.dart';
-import 'package:food_quest/main/home/feature/presentation/controller/wheel_controller.dart';
+import 'package:food_quest/main/home/presentation/controller/wheel_controller.dart';
 import 'package:get/get.dart';
 
 class AddFoodFormController extends GetxController with GetSingleTickerProviderStateMixin {
@@ -36,9 +36,10 @@ class AddFoodFormController extends GetxController with GetSingleTickerProviderS
   }
 
   @override
-  void onClose() async {
+  void onClose() {
     if (hasEdited) {
-      await Get.find<WheelController>().callbackData();
+      Get.find<WheelController>().foods = listFoodSelected;
+      Get.find<WheelController>().callbackData();
     }
     scaleController.dispose();
     super.onClose();
@@ -85,15 +86,20 @@ class AddFoodFormController extends GetxController with GetSingleTickerProviderS
   }
 
   void onGoToAddFoodPage() {
+    DialogUtils.showProgressDialog();
+    Get.back();
     if (listFoodSelected.length >= 5) {
       Fluttertoast.showToast(msg: "Tối đa 5 phần");
       return;
     }
 
     foodController.selectedFoodsMarker.value = listFoodSelected;
+
     if (foodController.listFoods.isEmpty) {
       foodController.fetchNextPage();
     }
+
+    foodController.resetSettings();
 
     Get.toNamed(
       const AddFoodPage().routeName,

@@ -1,5 +1,5 @@
-import 'package:food_quest/main/home/feature/presentation/controller/add_food_form_controller.dart';
-import 'package:food_quest/main/home/feature/presentation/controller/wheel_controller.dart';
+import 'package:food_quest/main/home/presentation/controller/add_food_form_controller.dart';
+import 'package:food_quest/main/home/presentation/controller/wheel_controller.dart';
 import 'package:get/get.dart';
 
 class AddFoodFromBinding extends Bindings {

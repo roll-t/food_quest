@@ -5,8 +5,8 @@ import 'package:food_quest/core/extension/core/empty_extensions.dart';
 import 'package:food_quest/core/utils/mixin_controller/argument_handle_mixin_controller.dart';
 import 'package:food_quest/main/food/data/model/food_model.dart';
 import 'package:food_quest/main/food/presentation/controller/food_controller.dart';
-import 'package:food_quest/main/home/feature/presentation/controller/scale_dialog_controller.dart';
-import 'package:food_quest/main/home/feature/presentation/widgets/scale_transition_dialog.dart';
+import 'package:food_quest/main/home/presentation/controller/scale_dialog_controller.dart';
+import 'package:food_quest/main/home/presentation/widgets/scale_transition_dialog.dart';
 import 'package:get/get.dart';
 
 class WheelController extends GetxController with ArgumentHandlerMixinController<List<FoodModel>> {
@@ -21,7 +21,7 @@ class WheelController extends GetxController with ArgumentHandlerMixinController
   final RxBool isPressed = false.obs;
   final RxBool isSpinning = false.obs;
   final RxBool isLoading = true.obs;
-  final List<FoodModel> foods = [];
+  List<FoodModel> foods = [];
   int? _selectedIndex;
   final StreamController<int> selected = StreamController<int>();
   final List<FoodModel> foodsShimmer = List.generate(5, (_) => FoodModel());
@@ -57,8 +57,6 @@ class WheelController extends GetxController with ArgumentHandlerMixinController
   }
 
   Future<void> callbackData() async {
-    await foodController.loadFoodOnWheel();
-    foods.assignAll(foodController.listFoodOnWheel);
     update(["WHEEL_ID"]);
   }
 
