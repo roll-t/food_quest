@@ -1,6 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:food_quest/core/config/theme/app_colors.dart';
 
 class CacheImageWidget extends StatelessWidget {
   final String? imageUrl;
@@ -29,7 +28,6 @@ class CacheImageWidget extends StatelessWidget {
     Widget image;
 
     if (imageUrl == null || imageUrl!.isEmpty) {
-      // URL rỗng → dùng ảnh mặc định hoặc icon
       image = defaultAsset != null
           ? Image.asset(
               defaultAsset!,
@@ -37,28 +35,15 @@ class CacheImageWidget extends StatelessWidget {
               height: height,
               fit: fit,
             )
-          : const Icon(
-              Icons.broken_image,
-              color: AppColors.text400,
-            );
+          : const SizedBox.shrink();
     } else {
-      // URL hợp lệ
       image = CachedNetworkImage(
         imageUrl: imageUrl!,
         width: width,
         height: height,
         fit: fit,
-        placeholder: (context, url) =>
-            placeholder ??
-            const Center(
-              child: CircularProgressIndicator(),
-            ),
-        errorWidget: (context, url, error) =>
-            errorWidget ??
-            const Icon(
-              Icons.broken_image,
-              color: AppColors.text400,
-            ),
+        placeholder: (context, url) => placeholder ?? const SizedBox.shrink(),
+        errorWidget: (context, url, error) => errorWidget ?? const SizedBox.shrink(),
       );
     }
 

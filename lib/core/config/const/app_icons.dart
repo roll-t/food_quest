@@ -17,6 +17,13 @@ class AppIcons {
   static const icDelete = _PngIcon("${_root}ic_delete$_ext");
   static const icEmptyData = _PngIcon("${_root}ic_empty_data$_ext");
   static const icWheelMark = _PngIcon("${_root}ic_wheel_mark$_ext");
+  static const icLogoTiktok = _PngIcon("${_root}ic_logo_tiktok$_ext");
+  static const icLogoTwitter = _PngIcon("${_root}ic_logo_twitter$_ext");
+  static const icLogoInstagram = _PngIcon("${_root}ic_logo_instagram$_ext");
+  static const icLogoFacebook = _PngIcon("${_root}ic_logo_facebook$_ext");
+  static const icLogoYoutube = _PngIcon("${_root}ic_logo_youtube$_ext");
+  static const icLogoGoogle = _PngIcon("${_root}ic_logo_google$_ext");
+  static const icCatNoData = _PngIcon("${_root}ic_cat_no_data$_ext");
 }
 
 class _PngIcon {

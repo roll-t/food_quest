@@ -15,6 +15,7 @@ import 'package:food_quest/core/utils/utils.dart';
 import 'package:food_quest/main/food/data/model/food_model.dart';
 import 'package:food_quest/main/food/presentation/controller/deep_link_controller.dart';
 import 'package:food_quest/main/food/presentation/controller/food_controller.dart';
+import 'package:food_quest/main/food/presentation/widgets/build_food_detail_widget.dart';
 import 'package:food_quest/main/home/presentation/widgets/food_item.dart';
 import 'package:get/get.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
@@ -402,107 +403,131 @@ class _FoodSelectableItem extends GetView<FoodController> {
   const _FoodSelectableItem({required this.food});
   @override
   Widget build(BuildContext context) {
-    return Obx(() {
-      final bool isSelected = controller.selectedFoodsHandler.contains(food);
-      final bool isSelectedMarker = controller.selectedFoodsMarker.any((e) => e.id == food.id);
-      return GestureDetector(
-        onLongPress: () {
-          if (isSelectedMarker) return;
-          controller.enableMultiSelect();
-          controller.toggleFoodSelection(food);
-        },
-        onTap: () {
-          if (isSelectedMarker && controller.isMultiSelectMode.value) return;
-          if (controller.isMultiSelectMode.value) {
+    return Obx(
+      () {
+        final bool isSelected = controller.selectedFoodsHandler.contains(food);
+        final bool isSelectedMarker = controller.selectedFoodsMarker.any((e) => e.id == food.id);
+        return GestureDetector(
+          onLongPress: () {
+            if (isSelectedMarker) return;
+            controller.enableMultiSelect();
             controller.toggleFoodSelection(food);
-          } else {
-            if (food.metaDataModel?.url != null) {
-              Utils.lanchUrl(food.metaDataModel!.url);
+          },
+          onTap: () async {
+            if (isSelectedMarker && controller.isMultiSelectMode.value) return;
+            if (controller.isMultiSelectMode.value) {
+              controller.toggleFoodSelection(food);
+            } else {
+              bool hasThumbnail = await Utils.isValidImageUrl(food.metaDataModel?.imageUrl);
+              if (food.metaDataModel?.url != null) {
+                Get.dialog(
+                  BuildFoodDetailWidget(
+                    food: food,
+                    hasThumbnail: hasThumbnail,
+                  ),
+                );
+              }
             }
-          }
-        },
-        child: Stack(
-          children: [
-            TweenAnimationBuilder<double>(
-              duration: const Duration(milliseconds: 200),
-              tween: Tween(begin: 1, end: isSelected ? .85 : 1),
-              curve: Curves.easeOut,
-              builder: (_, scale, child) => Transform.scale(
-                scale: scale,
-                child: child,
-              ),
-              child: FoodItem(food: food),
-            ),
-            Positioned.fill(
-              child: AnimatedOpacity(
+          },
+          child: Stack(
+            children: [
+              TweenAnimationBuilder<double>(
                 duration: const Duration(milliseconds: 200),
-                opacity: isSelected ? 1 : 0,
-                child: Container(
-                  margin: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(
-                      width: 4,
-                      color: AppThemeColors.primary,
-                    ),
-                  ),
+                tween: Tween(begin: 1, end: isSelected ? .85 : 1),
+                curve: Curves.easeOut,
+                builder: (_, scale, child) => Transform.scale(
+                  scale: scale,
+                  child: child,
                 ),
+                child: FoodItem(food: food),
               ),
-            ),
-            AnimatedPositioned(
-              duration: const Duration(milliseconds: 200),
-              top: isSelected ? 6 : -20,
-              right: isSelected ? 6 : -20,
-              child: AnimatedOpacity(
-                duration: const Duration(milliseconds: 200),
-                opacity: isSelected ? 1 : 0,
-                child: Container(
-                  padding: const EdgeInsets.all(2),
-                  decoration: BoxDecoration(
-                    color: AppColors.white,
-                    shape: BoxShape.circle,
-                    border: Border.all(
-                      width: 1,
-                      color: AppThemeColors.primary,
-                    ),
-                  ),
-                  child: AppIcons.icTick.show(),
-                ),
-              ),
-            ),
-            if (isSelectedMarker)
               Positioned.fill(
-                child: Stack(
-                  children: [
-                    Positioned.fill(
-                      child: Container(
-                        margin: AppEdgeInsets.all6,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(16),
-                          color: AppColors.black.withValues(
-                            alpha: .2,
-                          ),
-                        ),
-                        child: const SizedBox.shrink(),
+                child: AnimatedOpacity(
+                  duration: const Duration(milliseconds: 200),
+                  opacity: isSelected ? 1 : 0,
+                  child: Container(
+                    margin: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(
+                        width: 4,
+                        color: AppThemeColors.primary,
                       ),
                     ),
-                    Positioned(
-                      right: 0,
-                      top: 0,
-                      child: Container(
-                          padding: AppEdgeInsets.all4,
-                          decoration: const BoxDecoration(
-                            color: AppColors.black,
-                            shape: BoxShape.circle,
-                          ),
-                          child: AppIcons.icWheelMark.show(size: 35)),
-                    )
-                  ],
+                  ),
                 ),
               ),
-          ],
-        ),
-      );
-    });
+              AnimatedPositioned(
+                duration: const Duration(milliseconds: 200),
+                top: isSelected ? 6 : -20,
+                right: isSelected ? 6 : -20,
+                child: AnimatedOpacity(
+                  duration: const Duration(milliseconds: 200),
+                  opacity: isSelected ? 1 : 0,
+                  child: Container(
+                    padding: const EdgeInsets.all(2),
+                    decoration: BoxDecoration(
+                      color: AppColors.white,
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        width: 1,
+                        color: AppThemeColors.primary,
+                      ),
+                    ),
+                    child: AppIcons.icTick.show(),
+                  ),
+                ),
+              ),
+              _BuildMarkers(
+                isInWheel: (isSelectedMarker),
+                icons: [
+                  if (food.metaDataModel?.url.isNotEmpty ?? false)
+                    Utils.getSocialIcon(urlSocial: food.metaDataModel?.url) ?? const SizedBox.shrink(),
+                  if ((isSelectedMarker)) AppIcons.icWheelMark.show(size: 20),
+                ],
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _BuildMarkers extends StatelessWidget {
+  final List<Widget> icons;
+  final bool isInWheel;
+
+  const _BuildMarkers({
+    required this.icons,
+    this.isInWheel = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Positioned.fill(
+      child: Stack(
+        children: [
+          Positioned(
+            right: 0,
+            bottom: 0,
+            child: Row(
+              spacing: 6,
+              children: [
+                for (var icon in icons)
+                  Container(
+                    padding: AppEdgeInsets.all4,
+                    decoration: const BoxDecoration(
+                      color: AppColors.black,
+                      shape: BoxShape.circle,
+                    ),
+                    child: icon,
+                  ),
+              ],
+            ),
+          )
+        ],
+      ),
+    );
   }
 }

@@ -20,7 +20,6 @@ class AddFoodFormController extends GetxController with GetSingleTickerProviderS
   final RxBool isLoadingSelectedFoods = false.obs;
 
   ///---> [VARIABLES]
-  bool hasEdited = false;
   final RxList<FoodModel> listFoodSelected;
   final RxSet<String> hiddenItems = <String>{}.obs;
   late final List<FoodModel> recentFoods;
@@ -37,10 +36,8 @@ class AddFoodFormController extends GetxController with GetSingleTickerProviderS
 
   @override
   void onClose() {
-    if (hasEdited) {
-      Get.find<WheelController>().foods = listFoodSelected;
-      Get.find<WheelController>().callbackData();
-    }
+    Get.find<WheelController>().foods = listFoodSelected;
+    Get.find<WheelController>().callbackData();
     scaleController.dispose();
     super.onClose();
   }
@@ -81,7 +78,6 @@ class AddFoodFormController extends GetxController with GetSingleTickerProviderS
       listFoodSelected.remove(food);
       hiddenItems.remove(key);
     }
-    hasEdited = true;
     Get.back();
   }
 
