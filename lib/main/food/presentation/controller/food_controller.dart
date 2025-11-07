@@ -120,6 +120,17 @@ class FoodController extends GetxController with ArgumentHandlerMixinController<
   // 🔹 CRUD ACTIONS
   // ─────────────────────────────────────────────
 
+  /// 🔹 Lấy 20 món được chọn gần đây nhất
+  Future<List<FoodModel>> getRecentSelectedFoods({int limit = 20}) async {
+    try {
+      final foods = await _foodService.getRecentFoods(limit: limit);
+      return foods;
+    } catch (e) {
+      message.value = "Error fetching recent selected foods: $e";
+      return [];
+    }
+  }
+
   Future<void> addFood() async {
     await KeyboardUtils.hiddenKeyboard(isDelay: true);
     if (!_validateInput()) return;
@@ -202,9 +213,9 @@ class FoodController extends GetxController with ArgumentHandlerMixinController<
     }
   }
 
-  Future<void> toggleSelected(FoodModel food) async {
+  Future<void> toggleSelected(FoodModel food, {bool? isSelect}) async {
     try {
-      await _foodService.toggleSelected(food.id!, !food.isSelected);
+      await _foodService.toggleSelected(food.id!, isSelect ?? !food.isSelected);
       listFoods.refresh();
     } catch (e) {
       message.value = 'Error toggling selection: $e';

@@ -7,6 +7,7 @@ import 'package:food_quest/core/config/theme/app_theme_colors.dart';
 import 'package:food_quest/core/ui/animations/scale_on_tap.dart';
 import 'package:food_quest/core/ui/widgets/shimmer/shimmer_widget.dart';
 import 'package:food_quest/core/ui/widgets/texts/text_widget.dart';
+import 'package:food_quest/main/food/data/model/food_model.dart';
 import 'package:food_quest/main/home/presentation/controller/add_food_form_controller.dart';
 import 'package:food_quest/main/home/presentation/widgets/food_item.dart';
 import 'package:get/get.dart';
@@ -51,7 +52,7 @@ class _BodyBuilder extends StatelessWidget {
     return const Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
-      spacing: 24,
+      spacing: 12,
       children: [
         _BuildListFoodSelected(),
         _BuildListFoodRecent(),
@@ -115,7 +116,6 @@ class _BuildListFoodSelected extends GetView<AddFoodFormController> {
               if (index == 0) {
                 return ScaleOnTap(
                   onTap: () {
-                    print("object");
                     controller.onGoToAddFoodPage();
                   },
                   child: Container(
@@ -158,24 +158,69 @@ class _BuildListFoodRecent extends StatelessWidget {
             padding: EdgeInsets.only(left: 20),
           ),
           Expanded(
-            child: GridView.builder(
-              padding: const EdgeInsets.symmetric(horizontal: 16).copyWith(bottom: 20),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: 12,
-                mainAxisSpacing: 12,
-              ),
-              itemCount: 30,
-              itemBuilder: (context, index) {
-                return ScaleOnTap(
-                  onTap: () {},
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.blue.shade100,
-                      borderRadius: BorderRadius.circular(20),
+            child: GetBuilder<AddFoodFormController>(
+              builder: (controller) {
+                return Obx(() {
+                  if (controller.isLoadingRecentFoods.value) {
+                    return GridView.builder(
+                      padding: const EdgeInsets.symmetric(horizontal: 16).copyWith(bottom: 20),
+                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                      ),
+                      itemCount: 8,
+                      itemBuilder: (context, index) {
+                        return Container(
+                          margin: AppEdgeInsets.all6,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(16),
+                            color: AppColors.shimmerSingleColor,
+                          ),
+                        );
+                      },
+                    );
+                  }
+                  return GridView.builder(
+                    padding: const EdgeInsets.symmetric(horizontal: 16).copyWith(bottom: 20),
+                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
                     ),
-                  ),
-                );
+                    itemCount: controller.recentFoods.length,
+                    itemBuilder: (context, index) {
+                      final FoodModel food = controller.recentFoods[index];
+                      return ScaleOnTap(
+                        onTap: () => controller.onSelectRecentFood(food),
+                        child: Stack(
+                          children: [
+                            FoodItem(food: food),
+                            Positioned(
+                              left: 0,
+                              right: 0,
+                              bottom: 0,
+                              child: Container(
+                                margin: AppEdgeInsets.all6,
+                                decoration: BoxDecoration(
+                                  borderRadius: const BorderRadius.only(
+                                    bottomLeft: Radius.circular(16),
+                                    bottomRight: Radius.circular(16),
+                                  ),
+                                  color: AppThemeColors.primary,
+                                ),
+                                height: 40,
+                                child: const Center(
+                                  child: TextWidget(
+                                    text: "Chọn",
+                                    color: AppColors.white,
+                                    textStyle: AppTextStyle.semiBold16,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  );
+                });
               },
             ),
           ),

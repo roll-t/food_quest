@@ -79,4 +79,5 @@ class AppColors {
 
   static const Color shimmerBase = Color.fromARGB(255, 218, 218, 218);
   static const Color shimmerHighlight = Color.fromARGB(255, 238, 238, 238);
+  static const Color shimmerSingleColor = Color(0xFFBBDEFB);
 }

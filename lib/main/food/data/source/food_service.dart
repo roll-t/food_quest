@@ -25,8 +25,7 @@ class FoodService extends FirebaseService {
   /// 🔹 Cập nhật food theo ID với updatedAt
   Future<void> updateFood(String id, Map<String, dynamic> data) async {
     try {
-      final updatedData = Map<String, dynamic>.from(data)
-        ..['updatedAt'] = FieldValue.serverTimestamp();
+      final updatedData = Map<String, dynamic>.from(data)..['updatedAt'] = FieldValue.serverTimestamp();
 
       await db.collection(_collection).doc(id).update(updatedData);
     } catch (e) {
@@ -74,8 +73,7 @@ class FoodService extends FirebaseService {
   /// 🔹 Lấy tất cả foods theo ngày tạo (mới nhất trước)
   Future<List<FoodModel>> getAllFoods() async {
     try {
-      final snapshot =
-          await db.collection(_collection).orderBy('createdAt', descending: true).get();
+      final snapshot = await db.collection(_collection).orderBy('createdAt', descending: true).get();
 
       return snapshot.docs.map((doc) => FoodModel.fromJson(doc.data(), id: doc.id)).toList();
     } catch (e) {
@@ -86,12 +84,7 @@ class FoodService extends FirebaseService {
 
   /// 🔹 Stream foods realtime theo ngày tạo
   Stream<List<FoodModel>> streamFoods({int limit = 18}) {
-    return db
-        .collection(_collection)
-        .orderBy('createdAt', descending: true)
-        .limit(limit)
-        .snapshots()
-        .map((snapshot) {
+    return db.collection(_collection).orderBy('createdAt', descending: true).limit(limit).snapshots().map((snapshot) {
       return snapshot.docs.map((doc) => FoodModel.fromJson(doc.data(), id: doc.id)).toList();
     });
   }
@@ -107,22 +100,34 @@ class FoodService extends FirebaseService {
     }
   }
 
-  /// 🔹 Toggle trạng thái isSelected
   Future<void> toggleSelected(String id, bool isSelected) async {
     try {
-      await db.collection(_collection).doc(id).update({'isSelected': isSelected});
+      final updateData = {
+        'isSelected': isSelected,
+        'updatedAt': FieldValue.serverTimestamp(),
+      };
+
+      if (!isSelected) {
+        updateData['recentSelect'] = FieldValue.serverTimestamp();
+      }
+      await db.collection(_collection).doc(id).update(updateData);
     } catch (e) {
       AppLogger.e(e);
     }
   }
 
-  /// 🔹 Stream foods đã chọn realtime
+  Future<List<FoodModel>> getRecentFoods({int limit = 20}) async {
+    try {
+      final snapshot = await db.collection(_collection).orderBy('recentSelect', descending: true).limit(limit).get();
+      return snapshot.docs.map((doc) => FoodModel.fromJson(doc.data(), id: doc.id)).toList();
+    } catch (e, s) {
+      AppLogger.e('Error getRecentFoods: $e\n$s');
+      return [];
+    }
+  }
+
   Stream<List<FoodModel>> streamSelectedFoods() {
-    return db
-        .collection(_collection)
-        .where('isSelected', isEqualTo: true)
-        .snapshots()
-        .map((snapshot) {
+    return db.collection(_collection).where('isSelected', isEqualTo: true).snapshots().map((snapshot) {
       return snapshot.docs.map((doc) => FoodModel.fromJson(doc.data(), id: doc.id)).toList();
     });
   }

@@ -73,8 +73,12 @@ class BuildFoodDetailWidget extends StatelessWidget {
                     ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    spacing: 8,
                     children: [
-                      TextWidget(text: (food.name?.isNotEmpty ?? false) ? "Note: ${food.name}" : "", maxLines: 1),
+                      Expanded(
+                        child:
+                            TextWidget(text: (food.name?.isNotEmpty ?? false) ? "Note: ${food.name}" : "", maxLines: 1),
+                      ),
                       ScaleOnTap(
                         onTap: () {
                           if (food.metaDataModel?.url.isNotEmpty ?? false) {
@@ -82,7 +86,6 @@ class BuildFoodDetailWidget extends StatelessWidget {
                           }
                         },
                         child: Container(
-                          margin: const EdgeInsets.only(left: 8),
                           padding: const EdgeInsets.symmetric(
                             vertical: 8,
                             horizontal: 8,

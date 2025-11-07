@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/animation.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:food_quest/core/ui/widgets/dialogs/dialog_utils.dart';
@@ -18,11 +19,12 @@ class AddFoodFormController extends GetxController with GetSingleTickerProviderS
 
   ///---> [LOADING_VARIABLES]
   final RxBool isLoadingSelectedFoods = false.obs;
+  final RxBool isLoadingRecentFoods = false.obs;
 
   ///---> [VARIABLES]
   final RxList<FoodModel> listFoodSelected;
   final RxSet<String> hiddenItems = <String>{}.obs;
-  late final List<FoodModel> recentFoods;
+  final RxList<FoodModel> recentFoods = <FoodModel>[].obs;
   late final AnimationController scaleController;
   late final Animation<double> scaleAnimation;
 
@@ -44,13 +46,23 @@ class AddFoodFormController extends GetxController with GetSingleTickerProviderS
 
   ///---> [INIT_DATA]
   Future<void> _loadInitialData() async {
-    if (listFoodSelected.isEmpty) {
+    try {
       isLoadingSelectedFoods.value = true;
-      await foodController.loadFoodOnWheel();
-      listFoodSelected.assignAll(foodController.listFoodOnWheel);
+      if (listFoodSelected.isEmpty) {
+        await foodController.loadFoodOnWheel();
+        listFoodSelected.assignAll(foodController.listFoodOnWheel);
+      }
+      isLoadingSelectedFoods.value = false;
+
+      isLoadingRecentFoods.value = true;
+      final recentList = await foodController.getRecentSelectedFoods(limit: 20);
+      recentFoods.assignAll(recentList);
+      isLoadingRecentFoods.value = false;
+    } catch (e) {
+      Fluttertoast.showToast(msg: "Lỗi khi tải dữ liệu: $e");
+      isLoadingRecentFoods.value = false;
       isLoadingSelectedFoods.value = false;
     }
-    recentFoods = List.generate(20, (i) => FoodModel(name: "Food $i"));
   }
 
   ///---> [ANIMATION]
@@ -70,15 +82,74 @@ class AddFoodFormController extends GetxController with GetSingleTickerProviderS
 
   ///---> [EVENTS]
   Future<void> onRemoveFood(FoodModel food) async {
-    DialogUtils.showProgressDialog();
-    await foodController.toggleSelected(food);
-    final key = food.id ?? food.name;
-    if (key != null) {
-      hiddenItems.add(key);
-      listFoodSelected.remove(food);
-      hiddenItems.remove(key);
+    try {
+      DialogUtils.showProgressDialog();
+
+      // Cập nhật trạng thái chọn trong DB
+      await foodController.toggleSelected(food, isSelect: false);
+
+      final key = food.id ?? food.name;
+      if (key != null) {
+        hiddenItems.add(key);
+
+        // Remove bằng ID thay vì object
+        listFoodSelected.removeWhere((f) => f.id == food.id || f.name == food.name);
+
+        // Chờ animation (nếu cần)
+        await Future.delayed(const Duration(milliseconds: 200));
+        hiddenItems.remove(key);
+      }
+
+      // Update lại danh sách recent
+      final now = Timestamp.fromDate(DateTime.now());
+      final existingIndex = recentFoods.indexWhere((f) => f.id == food.id);
+      final updatedFood = food.copyWith(isSelected: false, recentSelect: now);
+
+      if (existingIndex >= 0) {
+        recentFoods[existingIndex] = updatedFood;
+      } else {
+        recentFoods.add(updatedFood);
+      }
+
+      // Giới hạn 20 phần tử và sắp xếp
+      recentFoods.sort((a, b) {
+        final tA = a.recentSelect?.toDate().millisecondsSinceEpoch ?? 0;
+        final tB = b.recentSelect?.toDate().millisecondsSinceEpoch ?? 0;
+        return tB.compareTo(tA);
+      });
+
+      if (recentFoods.length > 20) {
+        recentFoods.removeRange(20, recentFoods.length);
+      }
+    } catch (e) {
+      Fluttertoast.showToast(msg: "Lỗi khi xóa món: $e");
+    } finally {
+      Get.back(); // đóng dialog an toàn
     }
-    Get.back();
+  }
+
+  Future<void> onSelectRecentFood(FoodModel food) async {
+    if (listFoodSelected.length >= 5) {
+      Fluttertoast.showToast(msg: "Tối đa 5 món");
+      return;
+    }
+
+    try {
+      DialogUtils.showProgressDialog();
+
+      final now = Timestamp.fromDate(DateTime.now());
+      final updatedFood = food.copyWith(isSelected: true, recentSelect: now);
+
+      await foodController.toggleSelected(updatedFood, isSelect: true);
+
+      listFoodSelected.add(updatedFood);
+
+      recentFoods.removeWhere((f) => f.id == food.id || f.name == food.name);
+    } catch (e) {
+      Fluttertoast.showToast(msg: "Lỗi khi chọn món: $e");
+    } finally {
+      Get.back();
+    }
   }
 
   void onGoToAddFoodPage() {
@@ -97,8 +168,6 @@ class AddFoodFormController extends GetxController with GetSingleTickerProviderS
 
     foodController.resetSettings();
 
-    Get.toNamed(
-      const AddFoodPage().routeName,
-    );
+    Get.toNamed(const AddFoodPage().routeName);
   }
 }

@@ -9,6 +9,7 @@ class FoodModel {
   final MetaDataModel? metaDataModel;
   final Timestamp? createdAt;
   final Timestamp? updatedAt;
+  Timestamp? recentSelect;
 
   FoodModel({
     this.id,
@@ -18,6 +19,7 @@ class FoodModel {
     this.metaDataModel,
     this.createdAt,
     this.updatedAt,
+    this.recentSelect,
   });
 
   /// Tạo từ JSON / Map (Firestore)
@@ -27,11 +29,11 @@ class FoodModel {
       name: json['name'] ?? '',
       image: json['image'] ?? '',
       isSelected: json['isSelected'] ?? false,
-      metaDataModel: json['metaData'] != null
-          ? MetaDataModel.fromMap(Map<String, dynamic>.from(json['metaData']))
-          : null,
+      metaDataModel:
+          json['metaData'] != null ? MetaDataModel.fromMap(Map<String, dynamic>.from(json['metaData'])) : null,
       createdAt: json['createdAt'] as Timestamp?,
       updatedAt: json['updatedAt'] as Timestamp?,
+      recentSelect: json['recentSelect'] as Timestamp?,
     );
   }
 
@@ -44,6 +46,7 @@ class FoodModel {
       'metaData': metaDataModel?.toMap(),
       'createdAt': createdAt ?? FieldValue.serverTimestamp(),
       'updatedAt': updatedAt ?? FieldValue.serverTimestamp(),
+      'recentSelect': recentSelect,
     };
   }
 
@@ -56,6 +59,7 @@ class FoodModel {
     MetaDataModel? metaDataModel,
     Timestamp? createdAt,
     Timestamp? updatedAt,
+    Timestamp? recentSelect,
   }) {
     return FoodModel(
       id: id ?? this.id,
@@ -65,11 +69,12 @@ class FoodModel {
       metaDataModel: metaDataModel ?? this.metaDataModel,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
+      recentSelect: recentSelect ?? this.recentSelect,
     );
   }
 
   @override
   String toString() {
-    return 'FoodModel(id: $id, name: $name, image: $image, isSelected: $isSelected, metaDataModel: $metaDataModel, createdAt: $createdAt, updatedAt: $updatedAt)';
+    return 'FoodModel(id: $id, name: $name, image: $image, isSelected: $isSelected, recentSelect: $recentSelect, metaDataModel: $metaDataModel, createdAt: $createdAt, updatedAt: $updatedAt)';
   }
 }
