@@ -1,7 +1,7 @@
 import 'package:food_quest/core/services/deep_link_service.dart';
 import 'package:food_quest/main/food/data/model/food_model.dart';
 import 'package:food_quest/main/food/presentation/controller/food_controller.dart';
-import 'package:food_quest/main/food/presentation/page/add_food_page.dart';
+import 'package:food_quest/main/food/presentation/page/add_from_deep_link_page.dart';
 import 'package:food_quest/main/nav/presentation/page/navigation_page.dart';
 import 'package:get/get.dart';
 
@@ -19,20 +19,17 @@ class SplashArg {
 }
 
 class SplashController extends GetxController {
-  final FoodController foodController;
   final List<FoodModel> listFood = [];
 
-  SplashController({required this.foodController});
+  SplashController();
 
   @override
   Future<void> onReady() async {
     super.onReady();
 
     if (DeepLinkService.sharedText != null) {
-      await foodController.fetchNextPage();
-      listFood.addAll(foodController.listFoods);
       Get.offAllNamed(
-        const AddFoodPage().routeName,
+        const AddFromDeepLinkPage().routeName,
         arguments: SplashArg(
           deepLinkText: DeepLinkService.sharedText,
           listFood: listFood,
@@ -40,6 +37,8 @@ class SplashController extends GetxController {
       );
       return;
     }
+
+    final FoodController foodController = Get.find<FoodController>();
     await foodController.loadFoodOnWheel();
     listFood.addAll(foodController.listFoodOnWheel);
     Get.offAllNamed(

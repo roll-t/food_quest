@@ -73,7 +73,7 @@ class _BuildListFoodSelected extends GetView<AddFoodFormController> {
           children: [
             const TextWidget(
               text: "Món đã chọn",
-              padding: EdgeInsets.only(left: 20),
+              padding: EdgeInsets.only(left: 12),
               textStyle: AppTextStyle.medium18,
             ),
             AppIcons.icClose.show(
@@ -91,7 +91,7 @@ class _BuildListFoodSelected extends GetView<AddFoodFormController> {
             return GridView.builder(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
-              padding: const EdgeInsets.symmetric(horizontal: 16),
+              padding: const EdgeInsets.symmetric(horizontal: 8),
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 3,
                 crossAxisSpacing: 16,
@@ -107,7 +107,7 @@ class _BuildListFoodSelected extends GetView<AddFoodFormController> {
           return GridView.builder(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
-            padding: const EdgeInsets.symmetric(horizontal: 16),
+            padding: const EdgeInsets.symmetric(horizontal: 8),
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 3,
             ),
@@ -155,7 +155,7 @@ class _BuildListFoodRecent extends StatelessWidget {
           const TextWidget(
             text: "Món ăn gần đây",
             textStyle: AppTextStyle.medium18,
-            padding: EdgeInsets.only(left: 20),
+            padding: EdgeInsets.only(left: 12),
           ),
           Expanded(
             child: GetBuilder<AddFoodFormController>(
@@ -163,7 +163,7 @@ class _BuildListFoodRecent extends StatelessWidget {
                 return Obx(() {
                   if (controller.isLoadingRecentFoods.value) {
                     return GridView.builder(
-                      padding: const EdgeInsets.symmetric(horizontal: 16).copyWith(bottom: 20),
+                      padding: const EdgeInsets.symmetric(horizontal: 8).copyWith(bottom: 20),
                       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 2,
                       ),
@@ -180,7 +180,7 @@ class _BuildListFoodRecent extends StatelessWidget {
                     );
                   }
                   return GridView.builder(
-                    padding: const EdgeInsets.symmetric(horizontal: 16).copyWith(bottom: 20),
+                    padding: const EdgeInsets.symmetric(horizontal: 8).copyWith(bottom: 20),
                     gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2,
                     ),
@@ -193,9 +193,9 @@ class _BuildListFoodRecent extends StatelessWidget {
                           children: [
                             FoodItem(food: food),
                             Positioned(
-                              left: 0,
-                              right: 0,
-                              bottom: 0,
+                              left: -2,
+                              right: -2,
+                              bottom: -2,
                               child: Container(
                                 margin: AppEdgeInsets.all6,
                                 decoration: BoxDecoration(

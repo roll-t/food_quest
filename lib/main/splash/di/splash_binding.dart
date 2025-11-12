@@ -6,11 +6,7 @@ import 'package:get/get.dart';
 class SplashBinding extends Bindings {
   @override
   void dependencies() {
-    Get.put(
-      SplashController(
-        foodController: Get.find(),
-      ),
-    );
+    Get.put(SplashController());
     Get.put(InternetService());
     Get.put(ApiClient());
   }

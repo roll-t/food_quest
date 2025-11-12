@@ -23,7 +23,7 @@ android {
 
     defaultConfig {
         applicationId "com.example.auto_fin"
-        minSdk 23                 // ✅ OK for app_links + sharing intent
+        minSdkVersion flutter.minSdkVersion                 // ✅ OK for app_links + sharing intent
         targetSdk 35
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName

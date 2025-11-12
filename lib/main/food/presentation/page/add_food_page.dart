@@ -1,21 +1,19 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:food_quest/core/config/const/app_icons.dart';
 import 'package:food_quest/core/config/const/app_padding.dart';
 import 'package:food_quest/core/config/theme/app_colors.dart';
 import 'package:food_quest/core/config/theme/app_theme_colors.dart';
-import 'package:food_quest/core/services/deep_link_service.dart';
 import 'package:food_quest/core/ui/animations/scale_on_tap.dart';
-import 'package:food_quest/core/ui/widgets/buttons/primary_button.dart';
 import 'package:food_quest/core/ui/widgets/inputs/custom_text_field.dart';
 import 'package:food_quest/core/ui/widgets/shimmer/shimmer_widget.dart';
 import 'package:food_quest/core/ui/widgets/texts/text_widget.dart';
 import 'package:food_quest/core/utils/custom_state.dart';
 import 'package:food_quest/core/utils/utils.dart';
 import 'package:food_quest/main/food/data/model/food_model.dart';
-import 'package:food_quest/main/food/presentation/controller/deep_link_controller.dart';
 import 'package:food_quest/main/food/presentation/controller/food_controller.dart';
-import 'package:food_quest/main/food/presentation/widgets/build_food_detail_widget.dart';
+import 'package:food_quest/main/food/presentation/widgets/add_food_widget.dart';
+import 'package:food_quest/main/food/presentation/widgets/food_detail_widget.dart';
+import 'package:food_quest/main/food/presentation/widgets/marker_items.dart';
 import 'package:food_quest/main/home/presentation/widgets/food_item.dart';
 import 'package:get/get.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
@@ -24,376 +22,249 @@ class AddFoodPage extends CustomState {
   const AddFoodPage({super.key});
 
   @override
-  Widget buildBody(BuildContext context) => const _BodyBuilder();
+  String? get title => "Thêm món mới";
 
   @override
-  String? get title => "Thêm món mới";
+  Widget? get actionAppBar => const _BuildActionItemAppBar();
 
   @override
   bool get dismissKeyboard => true;
 
   @override
   bool get backgroundImage => true;
+
+  @override
+  Widget buildBody(BuildContext context) => const _BodyBuilder();
+}
+
+class _BuildActionItemAppBar extends StatelessWidget {
+  const _BuildActionItemAppBar();
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        Get.dialog(
+          Material(
+            color: Colors.transparent,
+            child: Center(
+              child: Stack(
+                children: [
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Container(
+                        width: 90.w,
+                        padding: AppEdgeInsets.all12,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        child: const Center(
+                          child: AddFoodWidget(),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Positioned(
+                    right: 0,
+                    top: 0,
+                    child: AppIcons.icClose.show(
+                      padding: AppEdgeInsets.all8,
+                      onTap: () => Get.back(),
+                    ),
+                  )
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+      child: Container(
+        padding: AppEdgeInsets.all4,
+        margin: const EdgeInsets.only(right: 16),
+        decoration: const BoxDecoration(
+          shape: BoxShape.circle,
+          color: AppColors.white,
+        ),
+        child: AppIcons.icAdd.show(),
+      ),
+    );
+  }
 }
 
 class _BodyBuilder extends StatelessWidget {
   const _BodyBuilder();
   @override
   Widget build(BuildContext context) {
-    return const Padding(
-      padding: EdgeInsets.only(
-        left: 16,
-        right: 16,
-        bottom: 16,
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: 12,
+        vertical: 12,
+      ),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12),
+        color: AppColors.white,
       ),
       child: Column(
-        spacing: 16,
+        spacing: 8,
         children: [
-          ///---> [ADD FORM]
-          _BuildAddFoodWidget(),
-
-          ///---> [LIST]
-          _BuildListRecommend()
-        ],
-      ),
-    );
-  }
-}
-
-class _BuildListRecommend extends StatelessWidget {
-  const _BuildListRecommend();
-  @override
-  Widget build(BuildContext context) {
-    return Expanded(
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 18),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(16),
-          color: AppColors.white,
-        ),
-        child: Column(
-          spacing: 16,
-          children: [
-            SizedBox(
-              height: 35,
-              child: GetBuilder<FoodController>(
-                id: "HANDLE_BAR_ID",
-                builder: (controller) {
-                  ///---> [SEARCH CASE]
-                  return Row(
-                    spacing: 16,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const TextWidget(text: "Món đã lưu"),
-                      Expanded(
-                        child: AnimatedSwitcher(
-                          duration: const Duration(milliseconds: 250),
-                          switchInCurve: Curves.easeOut,
-                          switchOutCurve: Curves.easeIn,
-                          child: controller.isMultiSelectMode.value
-                              ? Row(
-                                  spacing: 16,
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    ScaleOnTap(
-                                      onTap: controller.onSelectMultiChoiceFood,
-                                      child: Container(
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 6,
-                                          vertical: 4,
-                                        ),
-                                        decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(12),
-                                          color: AppThemeColors.primary.withValues(alpha: .2),
-                                        ),
-                                        child: Row(
-                                          spacing: 6,
-                                          children: [
-                                            const TextWidget(text: "Thêm"),
-                                            AppIcons.icAdd.show(),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                    ScaleOnTap(
-                                      onTap: controller.deleteMultiSelectedFoods,
-                                      child: Container(
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 6,
-                                          vertical: 4,
-                                        ),
-                                        decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(12),
-                                          color: AppThemeColors.primary.withValues(alpha: .2),
-                                        ),
-                                        child: Row(
-                                          spacing: 6,
-                                          children: [
-                                            const TextWidget(text: "Xóa"),
-                                            AppIcons.icDelete.show(),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                    ScaleOnTap(
-                                      onTap: controller.resetSettings,
-                                      child: Container(
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 8,
-                                          vertical: 4,
-                                        ),
-                                        decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(12),
-                                          color: AppThemeColors.primary.withValues(alpha: .2),
-                                        ),
-                                        child: Row(
-                                          spacing: 4,
-                                          children: [
-                                            Obx(
-                                              () => TextWidget(
-                                                text: controller.selectedFoodsHandler.length.toString(),
-                                              ),
-                                            ),
-                                            AppIcons.icClose.show(),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                )
-                              : const CustomTextField(
-                                  height: 35,
-                                  hintText: "Nhập tên món...",
-                                ),
-                        ),
-                      )
-                    ],
-                  );
-                },
-              ),
-            ),
-            GetBuilder<FoodController>(
-              id: "LIST_FOOD_RECOMMEND_ID",
+          SizedBox(
+            height: 35,
+            child: GetBuilder<FoodController>(
+              id: "HANDLE_BAR_ID",
               builder: (controller) {
-                if (controller.isLoadingListSaved.value) {
-                  return Expanded(
-                    child: GridView.builder(
-                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        childAspectRatio: 1,
+                return Row(
+                  spacing: 16,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const TextWidget(text: "Món đã lưu"),
+                    Expanded(
+                      child: AnimatedSwitcher(
+                        duration: const Duration(milliseconds: 250),
+                        switchInCurve: Curves.easeOut,
+                        switchOutCurve: Curves.easeIn,
+                        child: controller.isMultiSelectMode.value
+                            ? Row(
+                                spacing: 16,
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  ScaleOnTap(
+                                    onTap: controller.onSelectMultiChoiceFood,
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 6,
+                                        vertical: 4,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(12),
+                                        color: AppThemeColors.primary.withValues(alpha: .2),
+                                      ),
+                                      child: Row(
+                                        spacing: 6,
+                                        children: [
+                                          const TextWidget(text: "Thêm"),
+                                          AppIcons.icAdd.show(),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  ScaleOnTap(
+                                    onTap: controller.deleteMultiSelectedFoods,
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 6,
+                                        vertical: 4,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(12),
+                                        color: AppThemeColors.primary.withValues(alpha: .2),
+                                      ),
+                                      child: Row(
+                                        spacing: 6,
+                                        children: [
+                                          const TextWidget(text: "Xóa"),
+                                          AppIcons.icDelete.show(),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  ScaleOnTap(
+                                    onTap: controller.resetSettings,
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 8,
+                                        vertical: 4,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(12),
+                                        color: AppThemeColors.primary.withValues(alpha: .2),
+                                      ),
+                                      child: Row(
+                                        spacing: 4,
+                                        children: [
+                                          Obx(
+                                            () => TextWidget(
+                                              text: controller.selectedFoodsHandler.length.toString(),
+                                            ),
+                                          ),
+                                          AppIcons.icClose.show(),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              )
+                            : const CustomTextField(
+                                height: 35,
+                                hintText: "Nhập tên món...",
+                              ),
                       ),
-                      itemCount: 8,
-                      itemBuilder: (context, index) {
-                        return Container(
-                          margin: AppEdgeInsets.all6,
-                          child: const ShimmerWidget(radius: 16),
-                        );
-                      },
-                    ),
-                  );
-                }
-                if (controller.listFoods.isEmpty) {
-                  return Expanded(
-                    child: Opacity(
-                      opacity: .3,
-                      child: Center(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          spacing: 16,
-                          children: [
-                            AppIcons.icEmptyData.show(size: 40.w),
-                            const TextWidget(
-                              text: "không có dữ liệu",
-                              size: 16,
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
-                  );
-                }
-                return Expanded(
-                  child: RefreshIndicator(
-                    onRefresh: controller.resetData,
-                    child: GridView.builder(
-                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        childAspectRatio: 1,
-                      ),
-                      itemCount: controller.listFoods.length,
-                      itemBuilder: (context, index) {
-                        final food = controller.listFoods[index];
-                        return _FoodSelectableItem(food: food);
-                      },
-                    ),
-                  ),
+                    )
+                  ],
                 );
               },
             ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _BuildAddFoodWidget extends StatelessWidget {
-  const _BuildAddFoodWidget();
-
-  @override
-  Widget build(BuildContext context) {
-    return GetBuilder<FoodController>(
-      builder: (controller) {
-        return Container(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 12,
-            vertical: 18,
           ),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(16),
-            color: AppColors.white,
-          ),
-          child: Column(
-            spacing: 8,
-            children: [
-              CustomTextField(
-                controller: controller.foodNameController,
-                label: "Nhập tên ghi nhớ",
-              ),
-              if (DeepLinkService.isOpenedFromShare)
-                GetBuilder<DeepLinkController>(
-                  id: "EXTRA_LINK_ID",
-                  builder: (controller) {
-                    ///---> [LOADING_CASE]
-                    if (controller.isLoading.value) {
+          GetBuilder<FoodController>(
+            id: "LIST_FOOD_RECOMMEND_ID",
+            builder: (controller) {
+              if (controller.isLoadingListSaved.value) {
+                return Expanded(
+                  child: GridView.builder(
+                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      childAspectRatio: 1,
+                    ),
+                    itemCount: 8,
+                    itemBuilder: (context, index) {
                       return Container(
-                        padding: const EdgeInsets.all(8),
-                        margin: const EdgeInsets.only(top: 6),
-                        decoration: BoxDecoration(
-                          color: Colors.grey.shade200,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: const SizedBox(
-                          height: 70,
-                          child: Center(
-                            child: CircularProgressIndicator(strokeWidth: 1.5),
-                          ),
-                        ),
+                        margin: AppEdgeInsets.all6,
+                        child: const ShimmerWidget(radius: 16),
                       );
-                    }
-
-                    ///---> [EMPTY_CASE]
-                    final data = controller.metaData.value;
-
-                    if (data == null) {
-                      return const TextWidget(text: "⚠ Không có dữ liệu deep link");
-                    }
-
-                    ///---> [RENDER_CASE]
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      spacing: 8.0,
-                      children: [
-                        if (data.url.isNotEmpty)
-                          TextWidget(
-                            text: data.url,
-                            color: AppColors.blue,
-                          ),
-                        Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(8),
-                            border: Border.all(
-                              color: AppThemeColors.primary,
-                              width: 1.0,
-                            ),
-                          ),
-                          child: IntrinsicHeight(
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.stretch,
-                              children: [
-                                if (data.imageUrl.isNotEmpty)
-                                  ClipRRect(
-                                    borderRadius: const BorderRadius.only(
-                                      topLeft: Radius.circular(8),
-                                      bottomLeft: Radius.circular(8),
-                                    ),
-                                    child: ColoredBox(
-                                      color: AppColors.accent,
-                                      child: CachedNetworkImage(
-                                        imageUrl: data.imageUrl,
-                                        width: 90,
-                                        height: 70,
-                                        fit: BoxFit.cover,
-                                        placeholder: (context, _) => Container(
-                                          width: 90,
-                                          height: 70,
-                                          color: Colors.grey.shade200,
-                                          alignment: Alignment.center,
-                                          child: const CircularProgressIndicator(strokeWidth: 1.5),
-                                        ),
-                                        errorWidget: (context, _, __) => Container(
-                                          width: 90,
-                                          height: 70,
-                                          color: Colors.grey.shade300,
-                                          alignment: Alignment.center,
-                                          child: const Icon(
-                                            Icons.broken_image,
-                                            color: Colors.grey,
-                                            size: 30,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                Expanded(
-                                  child: Container(
-                                    padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 12).copyWith(
-                                      left: 8.0,
-                                      right: 12.0,
-                                    ),
-                                    child: Column(
-                                      spacing: 4.0,
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
-                                        if (data.title.isNotEmpty)
-                                          Padding(
-                                            padding: const EdgeInsets.symmetric(horizontal: 4),
-                                            child: TextWidget(
-                                              text: data.title,
-                                              size: 12,
-                                              maxLines: 2,
-                                              fontWeight: FontWeight.w600,
-                                            ),
-                                          ),
-                                        TextWidget(
-                                          text: data.description,
-                                          fontWeight: FontWeight.w400,
-                                          size: 12,
-                                          maxLines: 2,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    );
-                  },
+                    },
+                  ),
+                );
+              }
+              if (controller.listFoods.isEmpty) {
+                return Expanded(
+                  child: Opacity(
+                    opacity: .3,
+                    child: Center(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        spacing: 16,
+                        children: [
+                          AppIcons.icEmptyData.show(size: 40.w),
+                          const TextWidget(
+                            text: "không có dữ liệu",
+                            size: 16,
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              }
+              return Expanded(
+                child: RefreshIndicator(
+                  onRefresh: controller.resetData,
+                  child: GridView.builder(
+                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      childAspectRatio: 1,
+                    ),
+                    itemCount: controller.listFoods.length,
+                    itemBuilder: (context, index) {
+                      final food = controller.listFoods[index];
+                      return _FoodSelectableItem(food: food);
+                    },
+                  ),
                 ),
-              const SizedBox.shrink(),
-              PrimaryButton(
-                isMaxParent: true,
-                text: "✔ Xác nhận & thêm vào danh sách",
-                onPressed: controller.addFood,
-              ),
-            ],
+              );
+            },
           ),
-        );
-      },
+        ],
+      ),
     );
   }
 }
@@ -421,7 +292,7 @@ class _FoodSelectableItem extends GetView<FoodController> {
               bool hasThumbnail = await Utils.isValidImageUrl(food.metaDataModel?.imageUrl);
               if (food.metaDataModel?.url != null) {
                 Get.dialog(
-                  BuildFoodDetailWidget(
+                  FoodDetailWidget(
                     food: food,
                     hasThumbnail: hasThumbnail,
                   ),
@@ -433,7 +304,7 @@ class _FoodSelectableItem extends GetView<FoodController> {
             children: [
               TweenAnimationBuilder<double>(
                 duration: const Duration(milliseconds: 200),
-                tween: Tween(begin: 1, end: isSelected ? .85 : 1),
+                tween: Tween(begin: 1, end: isSelected ? .9 : 1),
                 curve: Curves.easeOut,
                 builder: (_, scale, child) => Transform.scale(
                   scale: scale,
@@ -446,7 +317,7 @@ class _FoodSelectableItem extends GetView<FoodController> {
                   duration: const Duration(milliseconds: 200),
                   opacity: isSelected ? 1 : 0,
                   child: Container(
-                    margin: const EdgeInsets.all(8),
+                    margin: const EdgeInsets.all(4),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(16),
                       border: Border.all(
@@ -459,8 +330,8 @@ class _FoodSelectableItem extends GetView<FoodController> {
               ),
               AnimatedPositioned(
                 duration: const Duration(milliseconds: 200),
-                top: isSelected ? 6 : -20,
-                right: isSelected ? 6 : -20,
+                top: isSelected ? 0 : -15,
+                right: isSelected ? 0 : -15,
                 child: AnimatedOpacity(
                   duration: const Duration(milliseconds: 200),
                   opacity: isSelected ? 1 : 0,
@@ -478,7 +349,7 @@ class _FoodSelectableItem extends GetView<FoodController> {
                   ),
                 ),
               ),
-              _BuildMarkers(
+              MarkerItems(
                 isInWheel: (isSelectedMarker),
                 icons: [
                   if (food.metaDataModel?.url.isNotEmpty ?? false)
@@ -490,44 +361,6 @@ class _FoodSelectableItem extends GetView<FoodController> {
           ),
         );
       },
-    );
-  }
-}
-
-class _BuildMarkers extends StatelessWidget {
-  final List<Widget> icons;
-  final bool isInWheel;
-
-  const _BuildMarkers({
-    required this.icons,
-    this.isInWheel = false,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Positioned.fill(
-      child: Stack(
-        children: [
-          Positioned(
-            right: 0,
-            bottom: 0,
-            child: Row(
-              spacing: 6,
-              children: [
-                for (var icon in icons)
-                  Container(
-                    padding: AppEdgeInsets.all4,
-                    decoration: const BoxDecoration(
-                      color: AppColors.black,
-                      shape: BoxShape.circle,
-                    ),
-                    child: icon,
-                  ),
-              ],
-            ),
-          )
-        ],
-      ),
     );
   }
 }

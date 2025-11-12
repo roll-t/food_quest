@@ -6,7 +6,7 @@ import 'package:food_quest/core/config/theme/app_colors.dart';
 import 'package:food_quest/core/config/theme/app_theme_colors.dart';
 import 'package:food_quest/core/ui/widgets/buttons/primary_button.dart';
 import 'package:food_quest/core/ui/widgets/texts/text_widget.dart';
-import 'package:food_quest/core/utils/binding_utils.dart';
+import 'package:food_quest/core/utils/dependency_utils.dart';
 import 'package:get/get.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
@@ -36,7 +36,7 @@ class DialogUtils {
     // Cleanup controller sau khi dialog đóng
     if (autoRemoveControllers != null) {
       for (final type in autoRemoveControllers) {
-        BindUtils.removeByType(type);
+        DependencyUtils.removeByType(type);
       }
     }
 
@@ -240,7 +240,6 @@ class DialogUtils {
     );
   }
 
-  /// Hiển thị dialog xác nhận thoát App
   static Future<bool> showCustomExitConfirm() async {
     final result = await Get.dialog<bool>(
       AlertDialog(
@@ -339,7 +338,6 @@ class DialogUtils {
   }
 }
 
-/// Class chứa config cho từng loại alert
 class _AlertConfig {
   final Color color;
   final Color bgColor;

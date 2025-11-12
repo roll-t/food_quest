@@ -1,19 +1,15 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:food_quest/core/config/const/app_const.dart';
 import 'package:food_quest/core/config/const/app_enum.dart';
-import 'package:food_quest/core/services/deep_link_service.dart';
 import 'package:food_quest/core/ui/widgets/dialogs/dialog_utils.dart';
-import 'package:food_quest/core/utils/keyboard_utils.dart';
 import 'package:food_quest/core/utils/mixin_controller/argument_handle_mixin_controller.dart';
 import 'package:food_quest/core/utils/utils.dart';
 import 'package:food_quest/main/food/data/model/food_model.dart';
 import 'package:food_quest/main/food/data/source/food_service.dart';
-import 'package:food_quest/main/food/presentation/controller/deep_link_controller.dart';
 import 'package:food_quest/main/splash/presentation/controller/splash_controller.dart';
 import 'package:get/get.dart';
 
@@ -37,7 +33,6 @@ class FoodController extends GetxController with ArgumentHandlerMixinController<
   final RxList<FoodModel> selectedFoodsHandler = <FoodModel>[].obs;
 
   final List<FoodModel> listFoodOnWheel = [];
-  final foodNameController = TextEditingController();
 
   DocumentSnapshot? lastDocument;
 
@@ -129,33 +124,6 @@ class FoodController extends GetxController with ArgumentHandlerMixinController<
       message.value = "Error fetching recent selected foods: $e";
       return [];
     }
-  }
-
-  Future<void> addFood() async {
-    await KeyboardUtils.hiddenKeyboard(isDelay: true);
-    if (!_validateInput()) return;
-
-    await Utils.runWithLoading(() async {
-      final food = DeepLinkService.isOpenedFromShare
-          ? FoodModel(
-              name: foodNameController.text,
-              metaDataModel: Get.find<DeepLinkController>().metaData.value,
-            )
-          : FoodModel(name: foodNameController.text);
-
-      final success = await _foodService.addFood(food);
-
-      if (success) {
-        Fluttertoast.showToast(msg: "Lưu thành công");
-        if (DeepLinkService.isOpenedFromShare) _exitApp();
-        resetData();
-      } else {
-        DialogUtils.showAlert(
-          alertType: AlertType.error,
-          content: "Thêm thất bại, thử lại",
-        );
-      }
-    });
   }
 
   Future<void> deleteFood(String? id) async {
@@ -305,17 +273,6 @@ class FoodController extends GetxController with ArgumentHandlerMixinController<
     }
   }
 
-  bool _validateInput() {
-    if (foodNameController.text.isEmpty) {
-      DialogUtils.showAlert(
-        alertType: AlertType.error,
-        content: "Không được bỏ trống tên",
-      );
-      return false;
-    }
-    return true;
-  }
-
   Future<void> refreshFoods() async {
     lastDocument = null;
     listFoods.clear();
@@ -324,12 +281,10 @@ class FoodController extends GetxController with ArgumentHandlerMixinController<
 
   Future<void> resetData() async {
     if (isMultiSelectMode.value) return;
-    foodNameController.clear();
     await refreshFoods();
   }
 
   void resetSettings() {
-    foodNameController.clear();
     isMultiSelectMode.value = false;
     selectedFoodsHandler.clear();
     message.value = '';

@@ -11,10 +11,10 @@ import 'package:food_quest/core/utils/utils.dart';
 import 'package:food_quest/main/food/data/model/food_model.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
-class BuildFoodDetailWidget extends StatelessWidget {
+class FoodDetailWidget extends StatelessWidget {
   final FoodModel food;
   final bool hasThumbnail;
-  const BuildFoodDetailWidget({
+  const FoodDetailWidget({
     super.key,
     required this.food,
     this.hasThumbnail = false,

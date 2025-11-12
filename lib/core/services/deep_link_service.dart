@@ -18,11 +18,13 @@ class DeepLinkService {
       _processIntent(initialIntent, fromColdStart: true);
     }
 
-    ReceiveIntent.receivedIntentStream.listen((intent) {
-      if (intent != null) {
-        _processIntent(intent, fromColdStart: false);
-      }
-    });
+    ReceiveIntent.receivedIntentStream.listen(
+      (intent) {
+        if (intent != null) {
+          _processIntent(intent, fromColdStart: false);
+        }
+      },
+    );
   }
 
   static void _processIntent(Intent intent, {required bool fromColdStart}) {

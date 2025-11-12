@@ -20,11 +20,13 @@ class FoodItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const borderRadius = BorderRadius.all(Radius.circular(16));
+    const borderRadius = BorderRadius.all(
+      Radius.circular(16),
+    );
     return Stack(
       children: [
         Container(
-          margin: AppEdgeInsets.all6,
+          margin: AppEdgeInsets.all4,
           decoration: BoxDecoration(
             borderRadius: borderRadius,
             color: Colors.blue.shade100,
