@@ -21,6 +21,7 @@ class CustomBottomSheetWidget extends StatelessWidget {
   final EdgeInsets padding;
   final String hint;
   final String? label;
+  final Color? titleColor;
   final Function(ItemModel) onSelectedItem;
   final bool isMaxParent;
   final String? leadingIconUrl;
@@ -39,6 +40,7 @@ class CustomBottomSheetWidget extends StatelessWidget {
     this.hint = "",
     this.isRequired = false,
     this.label,
+    this.titleColor,
     this.titleBottomSheet,
   });
 
@@ -70,8 +72,8 @@ class CustomBottomSheetWidget extends StatelessWidget {
             padding: padding,
             height: height,
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              color: AppThemeColors.background100,
+              borderRadius: BorderRadius.circular(borderRadius),
+              color: backgroundColor ?? AppThemeColors.background100,
               border: Border.all(
                 width: .5,
                 color: const Color.fromRGBO(189, 189, 189, 1),
@@ -94,10 +96,8 @@ class CustomBottomSheetWidget extends StatelessWidget {
                       child: TextWidget(
                         text: value.title.orEmpty().isNotEmpty ? value.title.orNA() : hint,
                         size: 14,
-                        color:
-                            value.title.orEmpty().isNotEmpty ? AppThemeColors.text : AppColors.grey,
-                        fontWeight:
-                            value.title.orEmpty().isNotEmpty ? FontWeight.w500 : FontWeight.w400,
+                        color: value.title.orEmpty().isNotEmpty ? (titleColor ?? AppThemeColors.text) : AppColors.grey,
+                        fontWeight: value.title.orEmpty().isNotEmpty ? FontWeight.w500 : FontWeight.w400,
                         maxLines: 1,
                       ),
                     ),

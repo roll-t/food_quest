@@ -22,7 +22,7 @@ class AppIcons {
   static const icLogoInstagram = _PngIcon("${_root}ic_logo_instagram$_ext");
   static const icLogoFacebook = _PngIcon("${_root}ic_logo_facebook$_ext");
   static const icLogoYoutube = _PngIcon("${_root}ic_logo_youtube$_ext");
-  static const icLogoGoogle = _PngIcon("${_root}ic_logo_google$_ext");
+  static const icLogoGoogle = _PngIcon("${_root}ic_google$_ext");
   static const icCatNoData = _PngIcon("${_root}ic_cat_no_data$_ext");
 }
 
@@ -35,7 +35,7 @@ class _PngIcon {
     Color? color,
     EdgeInsets? padding,
     VoidCallback? onTap,
-    Alignment? align, // cho phép null
+    Alignment? align,
   }) {
     final content = GestureDetector(
       onTap: onTap,

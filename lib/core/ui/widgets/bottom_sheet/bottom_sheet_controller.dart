@@ -1,6 +1,6 @@
+import 'package:flutter/material.dart';
 import 'package:food_quest/core/model/ui/item_model.dart';
 import 'package:food_quest/core/ui/widgets/bottom_sheet/select_bottom_sheet_widget.dart';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class BottomSheetController extends GetxController {
@@ -36,8 +36,7 @@ class BottomSheetController extends GetxController {
     } else {
       filteredList.value = listItem
           .where(
-            (item) =>
-                (item.title ?? "").toLowerCase().contains(query.toLowerCase()),
+            (item) => (item.title ?? "").toLowerCase().contains(query.toLowerCase()),
           )
           .toList();
     }
@@ -56,6 +55,7 @@ class BottomSheetController extends GetxController {
         },
         hasSearch: hasSearch,
         items: listItem,
+        itemSelected: itemSelected.value,
       ),
       isScrollControlled: true,
     );

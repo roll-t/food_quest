@@ -49,12 +49,16 @@ class _SvgIcon {
   Widget show({
     double size = 25,
     Color? color,
+    VoidCallback? onTap,
   }) {
-    return SvgPicture.asset(
-      path,
-      width: size,
-      height: size,
-      colorFilter: color != null ? ColorFilter.mode(color, BlendMode.srcIn) : null,
+    return GestureDetector(
+      onTap: onTap,
+      child: SvgPicture.asset(
+        path,
+        width: size,
+        height: size,
+        colorFilter: color != null ? ColorFilter.mode(color, BlendMode.srcIn) : null,
+      ),
     );
   }
 

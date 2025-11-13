@@ -29,6 +29,7 @@ abstract class CustomState extends StatelessWidget {
   Widget? get drawer => null;
   Widget? get floatingActionButton => null;
   Widget? get bottomNavigationBar => null;
+  bool get safeTop => false;
 
   // ===== Body =====
   Widget buildBody(BuildContext context);
@@ -83,7 +84,7 @@ abstract class CustomState extends StatelessWidget {
           ),
           _buildBackground(),
           SafeArea(
-            top: false,
+            top: safeTop,
             child: Scaffold(
               drawer: drawer,
               resizeToAvoidBottomInset: true,

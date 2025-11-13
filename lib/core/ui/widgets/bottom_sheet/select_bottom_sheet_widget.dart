@@ -1,16 +1,18 @@
+import 'package:diacritic/diacritic.dart';
+import 'package:flutter/material.dart';
 import 'package:food_quest/core/config/const/app_text_styles.dart';
-import 'package:food_quest/core/model/ui/item_model.dart';
+import 'package:food_quest/core/config/theme/app_theme_colors.dart';
 import 'package:food_quest/core/extension/core/empty_extensions.dart';
+import 'package:food_quest/core/model/ui/item_model.dart';
 import 'package:food_quest/core/ui/widgets/inputs/search_widget.dart';
 import 'package:food_quest/core/ui/widgets/texts/text_widget.dart';
 import 'package:food_quest/core/utils/keyboard_utils.dart';
-import 'package:diacritic/diacritic.dart';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class SelectBottomSheet extends StatelessWidget {
   final String title;
   final List<ItemModel> items;
+  final ItemModel? itemSelected;
   final void Function(ItemModel item) onSelected;
   final double? height;
   final bool hasSearch;
@@ -24,9 +26,10 @@ class SelectBottomSheet extends StatelessWidget {
     required this.items,
     required this.onSelected,
     this.height,
+    this.itemSelected,
     this.hasSearch = true,
   }) {
-    filteredItems.assignAll(items); // Gán danh sách ban đầu
+    filteredItems.assignAll(items);
   }
 
   static void show({
@@ -97,19 +100,26 @@ class SelectBottomSheet extends StatelessWidget {
               child: Obx(() {
                 if (filteredItems.isEmpty) {
                   return const Center(
-                    child: Text("Không tìm thấy kết quả"),
+                    child: TextWidget(text: "Không tìm thấy kết quả"),
                   );
                 }
                 return ListView.builder(
                   itemCount: filteredItems.length,
                   itemBuilder: (context, index) {
                     final item = filteredItems[index];
-                    return ListTile(
-                      title: TextWidget(text: item.title.orNA()),
-                      onTap: () {
-                        onSelected(item);
-                        Get.back();
-                      },
+                    final RxBool isSelected = (item.id == itemSelected?.id).obs;
+                    return Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8),
+                        color: isSelected.value ? AppThemeColors.primary.withValues(alpha: 0.15) : null,
+                      ),
+                      child: ListTile(
+                        title: TextWidget(text: item.title.orNA()),
+                        onTap: () {
+                          onSelected(item);
+                          Get.back();
+                        },
+                      ),
                     );
                   },
                 );

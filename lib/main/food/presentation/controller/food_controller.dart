@@ -5,6 +5,8 @@ import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:food_quest/core/config/const/app_const.dart';
 import 'package:food_quest/core/config/const/app_enum.dart';
+import 'package:food_quest/core/model/ui/item_model.dart';
+import 'package:food_quest/core/ui/widgets/bottom_sheet/bottom_sheet_controller.dart';
 import 'package:food_quest/core/ui/widgets/dialogs/dialog_utils.dart';
 import 'package:food_quest/core/utils/mixin_controller/argument_handle_mixin_controller.dart';
 import 'package:food_quest/core/utils/utils.dart';
@@ -33,6 +35,32 @@ class FoodController extends GetxController with ArgumentHandlerMixinController<
   final RxList<FoodModel> selectedFoodsHandler = <FoodModel>[].obs;
 
   final List<FoodModel> listFoodOnWheel = [];
+
+  final BottomSheetController typeSort = BottomSheetController(
+    hasSearch: false,
+    listItem: [
+      ItemModel(
+        id: "all",
+        title: "Tất cả món",
+      ),
+      ItemModel(
+        id: "all2",
+        title: "Chọn 3",
+      ),
+      ItemModel(
+        id: "all3",
+        title: "chọn 2",
+      ),
+      ItemModel(
+        id: "all4",
+        title: "chọn 1",
+      ),
+    ].obs,
+    itemSelected: ItemModel(
+      id: "all",
+      title: "Tất cả món",
+    ),
+  );
 
   DocumentSnapshot? lastDocument;
 

@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:food_quest/core/config/const/app_icons.dart';
 import 'package:food_quest/core/config/const/app_padding.dart';
+import 'package:food_quest/core/config/const/app_vectors.dart';
 import 'package:food_quest/core/config/theme/app_colors.dart';
 import 'package:food_quest/core/config/theme/app_theme_colors.dart';
 import 'package:food_quest/core/ui/animations/scale_on_tap.dart';
-import 'package:food_quest/core/ui/widgets/inputs/custom_text_field.dart';
+import 'package:food_quest/core/ui/widgets/bottom_sheet/custom_bottom_sheet_widget.dart';
+import 'package:food_quest/core/ui/widgets/dialogs/dialog_utils.dart';
 import 'package:food_quest/core/ui/widgets/shimmer/shimmer_widget.dart';
 import 'package:food_quest/core/ui/widgets/texts/text_widget.dart';
 import 'package:food_quest/core/utils/custom_state.dart';
 import 'package:food_quest/core/utils/utils.dart';
 import 'package:food_quest/main/food/data/model/food_model.dart';
+import 'package:food_quest/main/food/di/add_from_deep_link_binding.dart';
 import 'package:food_quest/main/food/presentation/controller/food_controller.dart';
 import 'package:food_quest/main/food/presentation/widgets/add_food_widget.dart';
 import 'package:food_quest/main/food/presentation/widgets/food_detail_widget.dart';
@@ -22,16 +25,10 @@ class AddFoodPage extends CustomState {
   const AddFoodPage({super.key});
 
   @override
-  String? get title => "Thêm món mới";
-
-  @override
-  Widget? get actionAppBar => const _BuildActionItemAppBar();
-
-  @override
   bool get dismissKeyboard => true;
 
   @override
-  bool get backgroundImage => true;
+  bool get safeTop => true;
 
   @override
   Widget buildBody(BuildContext context) => const _BodyBuilder();
@@ -43,7 +40,8 @@ class _BuildActionItemAppBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Get.dialog(
+        DialogUtils.show(
+          binding: AddFromDeepLinkBinding(),
           Material(
             color: Colors.transparent,
             child: Center(
@@ -81,7 +79,6 @@ class _BuildActionItemAppBar extends StatelessWidget {
       },
       child: Container(
         padding: AppEdgeInsets.all4,
-        margin: const EdgeInsets.only(right: 16),
         decoration: const BoxDecoration(
           shape: BoxShape.circle,
           color: AppColors.white,
@@ -117,7 +114,10 @@ class _BodyBuilder extends StatelessWidget {
                   spacing: 16,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const TextWidget(text: "Món đã lưu"),
+                    AppVectors.icArrowBack.show(
+                      onTap: () => Get.back(),
+                      color: AppThemeColors.text,
+                    ),
                     Expanded(
                       child: AnimatedSwitcher(
                         duration: const Duration(milliseconds: 250),
@@ -126,7 +126,7 @@ class _BodyBuilder extends StatelessWidget {
                         child: controller.isMultiSelectMode.value
                             ? Row(
                                 spacing: 16,
-                                mainAxisAlignment: MainAxisAlignment.end,
+                                mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   ScaleOnTap(
                                     onTap: controller.onSelectMultiChoiceFood,
@@ -194,12 +194,22 @@ class _BodyBuilder extends StatelessWidget {
                                   ),
                                 ],
                               )
-                            : const CustomTextField(
-                                height: 35,
-                                hintText: "Nhập tên món...",
+                            : Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  CustomBottomSheetWidget(
+                                    backgroundColor: AppThemeColors.primary,
+                                    onSelectedItem: (_) {},
+                                    controller: controller.typeSort,
+                                    titleBottomSheet: "Danh sách",
+                                    borderRadius: 300,
+                                    isMaxParent: false,
+                                  ),
+                                ],
                               ),
                       ),
-                    )
+                    ),
+                    const _BuildActionItemAppBar(),
                   ],
                 );
               },

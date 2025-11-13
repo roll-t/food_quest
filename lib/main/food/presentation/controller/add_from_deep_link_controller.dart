@@ -16,7 +16,6 @@ import 'package:get/get.dart';
 class AddFromDeepLinkController extends GetxController {
   final FoodService _foodService;
   AddFromDeepLinkController(this._foodService);
-
   final foodNameController = TextEditingController();
   final RxBool isLoading = false.obs;
 
@@ -31,7 +30,6 @@ class AddFromDeepLinkController extends GetxController {
   Future<void> addFood() async {
     await KeyboardUtils.hiddenKeyboard(isDelay: true);
     if (!_validateInput()) return;
-
     await Utils.runWithLoading(() async {
       final food = DeepLinkService.isOpenedFromShare
           ? FoodModel(
@@ -44,13 +42,14 @@ class AddFromDeepLinkController extends GetxController {
 
       if (success) {
         Fluttertoast.showToast(msg: "Lưu thành công");
-
         if (DeepLinkService.isOpenedFromShare) {
           if (Platform.isAndroid) {
             SystemNavigator.pop();
           } else if (Platform.isIOS) {
             exit(0);
           }
+        } else {
+          Get.back();
         }
       } else {
         DialogUtils.showAlert(
