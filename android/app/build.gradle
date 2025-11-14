@@ -20,10 +20,9 @@ android {
     namespace "com.example.auto_fin"
     compileSdk 35
     ndkVersion flutter.ndkVersion
-
     defaultConfig {
         applicationId "com.example.auto_fin"
-        minSdkVersion flutter.minSdkVersion                 // ✅ OK for app_links + sharing intent
+        minSdkVersion 23
         targetSdk 35
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName

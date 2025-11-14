@@ -7,6 +7,7 @@ class FoodModel {
   final String? image;
   bool isSelected;
   final MetaDataModel? metaDataModel;
+  final String? categoryId;
   final Timestamp? createdAt;
   final Timestamp? updatedAt;
   Timestamp? recentSelect;
@@ -17,6 +18,7 @@ class FoodModel {
     this.image,
     this.isSelected = false,
     this.metaDataModel,
+    this.categoryId,
     this.createdAt,
     this.updatedAt,
     this.recentSelect,
@@ -31,6 +33,7 @@ class FoodModel {
       isSelected: json['isSelected'] ?? false,
       metaDataModel:
           json['metaData'] != null ? MetaDataModel.fromMap(Map<String, dynamic>.from(json['metaData'])) : null,
+      categoryId: json['categoryId'], // 🆕 parse
       createdAt: json['createdAt'] as Timestamp?,
       updatedAt: json['updatedAt'] as Timestamp?,
       recentSelect: json['recentSelect'] as Timestamp?,
@@ -44,6 +47,7 @@ class FoodModel {
       'image': image,
       'isSelected': isSelected,
       'metaData': metaDataModel?.toMap(),
+      'categoryId': categoryId, // 🆕 thêm vào Firestore
       'createdAt': createdAt ?? FieldValue.serverTimestamp(),
       'updatedAt': updatedAt ?? FieldValue.serverTimestamp(),
       'recentSelect': recentSelect,
@@ -57,6 +61,7 @@ class FoodModel {
     String? image,
     bool? isSelected,
     MetaDataModel? metaDataModel,
+    String? categoryId,
     Timestamp? createdAt,
     Timestamp? updatedAt,
     Timestamp? recentSelect,
@@ -67,6 +72,7 @@ class FoodModel {
       image: image ?? this.image,
       isSelected: isSelected ?? this.isSelected,
       metaDataModel: metaDataModel ?? this.metaDataModel,
+      categoryId: categoryId ?? this.categoryId, // 🆕 dùng category hiện tại nếu null
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
       recentSelect: recentSelect ?? this.recentSelect,
@@ -75,6 +81,9 @@ class FoodModel {
 
   @override
   String toString() {
-    return 'FoodModel(id: $id, name: $name, image: $image, isSelected: $isSelected, recentSelect: $recentSelect, metaDataModel: $metaDataModel, createdAt: $createdAt, updatedAt: $updatedAt)';
+    return 'FoodModel(id: $id, name: $name, image: $image, '
+        'isSelected: $isSelected, categoryId: $categoryId, '
+        'recentSelect: $recentSelect, metaDataModel: $metaDataModel, '
+        'createdAt: $createdAt, updatedAt: $updatedAt)';
   }
 }

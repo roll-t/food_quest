@@ -42,27 +42,48 @@ class FoodService extends FirebaseService {
     }
   }
 
+  /// 🔹 Lấy foods phân trang (không theo category)
   Future<List<FoodModel>> fetchFoodsPage({
+    int limit = 18,
+    DocumentSnapshot? startAfterDoc,
+  }) async {
+    try {
+      Query query = db.collection(_collection).orderBy('createdAt', descending: true).limit(limit);
+
+      if (startAfterDoc != null) {
+        query = query.startAfterDocument(startAfterDoc);
+      }
+
+      final snapshot = await query.get();
+      return snapshot.docs
+          .map((doc) => FoodModel.fromJson(Map<String, dynamic>.from(doc.data() as Map), id: doc.id))
+          .toList();
+    } catch (e) {
+      AppLogger.e(e);
+      return [];
+    }
+  }
+
+  /// 🔹 Lấy foods phân trang theo category
+  Future<List<FoodModel>> fetchFoodsByCategoryPage({
+    required String categoryId,
     int limit = 18,
     DocumentSnapshot? startAfterDoc,
   }) async {
     try {
       Query query = db
           .collection(_collection)
+          .where('categoryId', isEqualTo: categoryId)
           .orderBy('createdAt', descending: true)
-          // .where('isSelected', isEqualTo: false )
           .limit(limit);
+
       if (startAfterDoc != null) {
         query = query.startAfterDocument(startAfterDoc);
       }
+
       final snapshot = await query.get();
       return snapshot.docs
-          .map((doc) {
-            final data = doc.data();
-            if (data == null) return null;
-            return FoodModel.fromJson(Map<String, dynamic>.from(data as Map), id: doc.id);
-          })
-          .whereType<FoodModel>()
+          .map((doc) => FoodModel.fromJson(Map<String, dynamic>.from(doc.data() as Map), id: doc.id))
           .toList();
     } catch (e) {
       AppLogger.e(e);
@@ -84,15 +105,30 @@ class FoodService extends FirebaseService {
 
   /// 🔹 Stream foods realtime theo ngày tạo
   Stream<List<FoodModel>> streamFoods({int limit = 18}) {
-    return db.collection(_collection).orderBy('createdAt', descending: true).limit(limit).snapshots().map((snapshot) {
-      return snapshot.docs.map((doc) => FoodModel.fromJson(doc.data(), id: doc.id)).toList();
-    });
+    return db
+        .collection(_collection)
+        .orderBy('createdAt', descending: true)
+        .limit(limit)
+        .snapshots()
+        .map((snapshot) => snapshot.docs.map((doc) => FoodModel.fromJson(doc.data(), id: doc.id)).toList());
+  }
+
+  /// 🔹 Stream foods realtime theo category
+  Stream<List<FoodModel>> streamFoodsByCategory(String categoryId, {int limit = 18}) {
+    return db
+        .collection(_collection)
+        .where('categoryId', isEqualTo: categoryId)
+        .orderBy('createdAt', descending: true)
+        .limit(limit)
+        .snapshots()
+        .map((snapshot) => snapshot.docs.map((doc) => FoodModel.fromJson(doc.data(), id: doc.id)).toList());
   }
 
   /// 🔹 Lấy foods đã chọn
   Future<List<FoodModel>> getSelectedFoods() async {
     try {
       final snapshot = await db.collection(_collection).where('isSelected', isEqualTo: true).get();
+
       return snapshot.docs.map((doc) => FoodModel.fromJson(doc.data(), id: doc.id)).toList();
     } catch (e) {
       AppLogger.e(e);
@@ -119,6 +155,7 @@ class FoodService extends FirebaseService {
   Future<List<FoodModel>> getRecentFoods({int limit = 20}) async {
     try {
       final snapshot = await db.collection(_collection).orderBy('recentSelect', descending: true).limit(limit).get();
+
       return snapshot.docs.map((doc) => FoodModel.fromJson(doc.data(), id: doc.id)).toList();
     } catch (e, s) {
       AppLogger.e('Error getRecentFoods: $e\n$s');
@@ -127,9 +164,11 @@ class FoodService extends FirebaseService {
   }
 
   Stream<List<FoodModel>> streamSelectedFoods() {
-    return db.collection(_collection).where('isSelected', isEqualTo: true).snapshots().map((snapshot) {
-      return snapshot.docs.map((doc) => FoodModel.fromJson(doc.data(), id: doc.id)).toList();
-    });
+    return db
+        .collection(_collection)
+        .where('isSelected', isEqualTo: true)
+        .snapshots()
+        .map((snapshot) => snapshot.docs.map((doc) => FoodModel.fromJson(doc.data(), id: doc.id)).toList());
   }
 
   /// ✅ Xóa nhiều foods cùng lúc (dùng batch)
@@ -138,8 +177,7 @@ class FoodService extends FirebaseService {
     try {
       final batch = db.batch();
       for (final id in ids) {
-        final docRef = db.collection(_collection).doc(id);
-        batch.delete(docRef);
+        batch.delete(db.collection(_collection).doc(id));
       }
       await batch.commit();
       return true;
@@ -155,8 +193,7 @@ class FoodService extends FirebaseService {
     try {
       final batch = db.batch();
       for (final id in ids) {
-        final docRef = db.collection(_collection).doc(id);
-        batch.update(docRef, {'isSelected': isSelected});
+        batch.update(db.collection(_collection).doc(id), {'isSelected': isSelected});
       }
       await batch.commit();
       return true;
