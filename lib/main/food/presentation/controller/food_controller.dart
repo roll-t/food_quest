@@ -1,12 +1,10 @@
-import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:food_quest/core/config/const/app_const.dart';
 import 'package:food_quest/core/config/const/app_enum.dart';
 import 'package:food_quest/core/model/ui/item_model.dart';
 import 'package:food_quest/core/ui/widgets/bottom_sheet/bottom_sheet_controller.dart';
+import 'package:food_quest/core/ui/widgets/bottom_sheet/select_bottom_sheet_widget.dart';
 import 'package:food_quest/core/ui/widgets/dialogs/dialog_utils.dart';
 import 'package:food_quest/core/utils/mixin_controller/argument_handle_mixin_controller.dart';
 import 'package:food_quest/core/utils/utils.dart';
@@ -37,7 +35,9 @@ class FoodController extends GetxController with ArgumentHandlerMixinController<
   final List<FoodModel> listFoodOnWheel = [];
 
   final BottomSheetController typeSort = BottomSheetController(
+    displayType: BottomSheetDisplayType.grid,
     hasSearch: false,
+    height: Get.height * .8,
     listItem: [
       ItemModel(
         id: "all",
@@ -67,7 +67,6 @@ class FoodController extends GetxController with ArgumentHandlerMixinController<
   // ─────────────────────────────────────────────
   // 🔹 INIT & ARGUMENT HANDLING
   // ─────────────────────────────────────────────
-
   @override
   void onInit() async {
     super.onInit();
@@ -321,13 +320,5 @@ class FoodController extends GetxController with ArgumentHandlerMixinController<
       "HANDLE_BAR_ID",
       "LIST_FOOD_RECOMMEND_ID",
     ]);
-  }
-
-  void _exitApp() {
-    if (Platform.isAndroid) {
-      SystemNavigator.pop();
-    } else if (Platform.isIOS) {
-      exit(0);
-    }
   }
 }

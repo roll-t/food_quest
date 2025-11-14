@@ -6,6 +6,9 @@ import 'package:get/get.dart';
 class BottomSheetController extends GetxController {
   final RxList<ItemModel> listItem;
   final bool hasSearch;
+  final double? height;
+  final BottomSheetDisplayType displayType;
+  final VoidCallback? onAdd;
   late RxList<ItemModel> filteredList;
   Rx<ItemModel> itemSelected;
   late TextEditingController searchController;
@@ -13,6 +16,9 @@ class BottomSheetController extends GetxController {
   BottomSheetController({
     required this.listItem,
     ItemModel? itemSelected,
+    this.height,
+    this.onAdd,
+    this.displayType = BottomSheetDisplayType.list,
     this.hasSearch = true,
   }) : itemSelected = (itemSelected ?? ItemModel()).obs {
     filteredList = RxList<ItemModel>(listItem);
@@ -24,12 +30,10 @@ class BottomSheetController extends GetxController {
     itemSelected.value = item;
   }
 
-  /// Reset về mặc định (chưa chọn)
   void clearSelection() {
     itemSelected.value = ItemModel(title: "");
   }
 
-  /// Tìm kiếm
   void search(String query) {
     if (query.isEmpty) {
       filteredList.value = listItem;
@@ -48,7 +52,10 @@ class BottomSheetController extends GetxController {
   }) {
     Get.bottomSheet(
       SelectBottomSheet(
+        height: height,
         title: title,
+        onAdd: onAdd,
+        displayType: displayType,
         onSelected: (ItemModel item) {
           selectItem(item);
           onSelected?.call(item);

@@ -14,6 +14,7 @@ class DialogUtils {
   static Future<T?> show<T>(
     Widget dialog, {
     Bindings? binding,
+    List<Bindings>? bindings,
     bool barrierDismissible = true,
     Color? barrierColor,
     bool useSafeArea = true,
@@ -23,6 +24,12 @@ class DialogUtils {
     List<Type>? autoRemoveControllers,
   }) async {
     binding?.dependencies();
+
+    if (bindings != null) {
+      for (final b in bindings) {
+        b.dependencies();
+      }
+    }
     await Future.delayed(Duration.zero);
     final result = await Get.dialog<T>(
       dialog,

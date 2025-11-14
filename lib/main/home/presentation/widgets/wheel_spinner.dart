@@ -16,9 +16,9 @@ import 'package:food_quest/core/ui/widgets/images/asset_image_widget.dart';
 import 'package:food_quest/core/ui/widgets/images/cache_image_widget.dart';
 import 'package:food_quest/core/ui/widgets/texts/text_widget.dart';
 import 'package:food_quest/main/food/data/model/food_model.dart';
-import 'package:food_quest/main/home/di/add_food_from_binding.dart';
+import 'package:food_quest/main/food/di/add_food_from_binding.dart';
+import 'package:food_quest/main/food/presentation/widgets/add_food_from.dart';
 import 'package:food_quest/main/home/presentation/controller/wheel_controller.dart';
-import 'package:food_quest/main/home/presentation/widgets/add_food_from.dart';
 import 'package:get/get.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
@@ -30,8 +30,7 @@ class WheelSpinner extends StatelessWidget {
     return GetBuilder<WheelController>(
       id: "WHEEL_ID",
       builder: (controller) {
-        final List<FoodModel> listFood =
-            controller.foods.length >= 2 ? controller.foods : controller.foodsShimmer;
+        final List<FoodModel> listFood = controller.foods.length >= 2 ? controller.foods : controller.foodsShimmer;
         return Column(
           children: [
             Transform.scale(
@@ -62,8 +61,7 @@ class WheelSpinner extends StatelessWidget {
                                     child: Stack(
                                       fit: StackFit.expand,
                                       children: [
-                                        CacheImageWidget(
-                                            imageUrl: food.metaDataModel?.imageUrl.orEmpty()),
+                                        CacheImageWidget(imageUrl: food.metaDataModel?.imageUrl.orEmpty()),
                                         Container(
                                           color: AppColors.black.withOpacity(0.6),
                                         ),

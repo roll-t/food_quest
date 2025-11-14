@@ -26,6 +26,8 @@ class CustomBottomSheetWidget extends StatelessWidget {
   final bool isMaxParent;
   final String? leadingIconUrl;
   final bool isRequired;
+  final bool hasBorder;
+  final double? heightBodyBottomSheet;
   const CustomBottomSheetWidget({
     super.key,
     required this.onSelectedItem,
@@ -35,12 +37,14 @@ class CustomBottomSheetWidget extends StatelessWidget {
     this.leadingIconUrl,
     this.isMaxParent = true,
     this.borderRadius = 6,
+    this.heightBodyBottomSheet,
     this.height = 35,
     this.padding = const EdgeInsets.only(left: 6, right: 5),
     this.hint = "",
     this.isRequired = false,
     this.label,
     this.titleColor,
+    this.hasBorder = true,
     this.titleBottomSheet,
   });
 
@@ -74,10 +78,12 @@ class CustomBottomSheetWidget extends StatelessWidget {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(borderRadius),
               color: backgroundColor ?? AppThemeColors.background100,
-              border: Border.all(
-                width: .5,
-                color: const Color.fromRGBO(189, 189, 189, 1),
-              ),
+              border: hasBorder
+                  ? Border.all(
+                      width: .5,
+                      color: const Color.fromRGBO(189, 189, 189, 1),
+                    )
+                  : null,
             ),
             child: controller.itemSelected.obx(
               onData: (value) {
@@ -103,7 +109,7 @@ class CustomBottomSheetWidget extends StatelessWidget {
                     ),
                     const SizedBox(width: 6),
                     AppVectors.icArrowDown.show(
-                      color: AppThemeColors.text100,
+                      color: titleColor ?? AppThemeColors.text100,
                       size: 18,
                     )
                   ],

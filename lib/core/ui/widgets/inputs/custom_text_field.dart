@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:food_quest/core/config/const/app_enum.dart';
 import 'package:food_quest/core/config/theme/app_colors.dart';
 import 'package:food_quest/core/config/theme/app_theme_colors.dart';
@@ -7,8 +9,6 @@ import 'package:food_quest/core/ui/widgets/inputs/date_time_picker_text_field_wi
 import 'package:food_quest/core/ui/widgets/inputs/year_picker_text_field_widget.dart';
 import 'package:food_quest/core/ui/widgets/texts/text_span_widget.dart';
 import 'package:food_quest/core/utils/keyboard_utils.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
 class CustomTextField extends StatelessWidget {
@@ -141,9 +141,7 @@ class CustomTextField extends StatelessWidget {
           lastDate: lastDate ?? DateTime.now(),
           onDateSelected: onDateSelected,
           enabled: enabled,
-          backgroundColor: enabled
-              ? backgroundColor ?? AppThemeColors.background100
-              : AppThemeColors.background300,
+          backgroundColor: enabled ? backgroundColor ?? AppThemeColors.background100 : AppThemeColors.background300,
         );
         break;
       case CustomTextFieldType.yearPicker:
@@ -153,9 +151,7 @@ class CustomTextField extends StatelessWidget {
           endYear: endYear ?? DateTime.now().year,
           onYearSelected: onYearSelected,
           enabled: enabled,
-          backgroundColor: enabled
-              ? backgroundColor ?? AppThemeColors.background100
-              : AppThemeColors.background300,
+          backgroundColor: enabled ? backgroundColor ?? AppThemeColors.background100 : AppThemeColors.background300,
         );
         break;
       case CustomTextFieldType.textArea:
@@ -231,6 +227,9 @@ class CustomTextField extends StatelessWidget {
       enabled: enabled,
       onChanged: onChanged,
       onSubmitted: onSubmit,
+      onTapOutside: (f) {
+        KeyboardUtils.hiddenKeyboard();
+      },
       style: TextStyle(
         color: textColor ?? AppThemeColors.text100,
         fontSize: textSize ?? 14,
@@ -238,14 +237,9 @@ class CustomTextField extends StatelessWidget {
       ),
       decoration: InputDecoration(
         filled: true,
-        fillColor: enabled
-            ? backgroundColor ?? AppThemeColors.background100
-            : AppThemeColors.background300,
+        fillColor: enabled ? backgroundColor ?? AppThemeColors.background100 : AppThemeColors.background300,
         hintText: hintText,
-        hintStyle: TextStyle(
-            color: hintColor ?? AppColors.grey,
-            fontSize: 14,
-            fontWeight: FontWeight.w400),
+        hintStyle: TextStyle(color: hintColor ?? AppColors.grey, fontSize: 14, fontWeight: FontWeight.w400),
         prefixIcon: prefixIcon,
         errorText: errorText,
         enabledBorder: buildBorder(borderColor),
@@ -290,8 +284,7 @@ class CustomTextField extends StatelessWidget {
     InputBorder buildBorder(Color color) => !enableBorder
         ? OutlineInputBorder(
             borderRadius: BorderRadius.circular(borderRadius),
-            borderSide:
-                const BorderSide(color: AppColors.transparent, width: 0),
+            borderSide: const BorderSide(color: AppColors.transparent, width: 0),
           )
         : OutlineInputBorder(
             borderRadius: BorderRadius.circular(borderRadius),
@@ -314,9 +307,7 @@ class CustomTextField extends StatelessWidget {
       ),
       decoration: InputDecoration(
         filled: true,
-        fillColor: enabled
-            ? backgroundColor ?? AppThemeColors.background100
-            : AppThemeColors.background300,
+        fillColor: enabled ? backgroundColor ?? AppThemeColors.background100 : AppThemeColors.background300,
         hintText: hintText,
         hintStyle: TextStyle(
           color: hintColor ?? AppColors.grey,
@@ -353,8 +344,7 @@ class CustomTextField extends StatelessWidget {
       focusNode: focusNode,
       controller: controller,
       scrollPadding: scrollPadding ?? EdgeInsets.zero,
-      keyboardType:
-          const TextInputType.numberWithOptions(decimal: false, signed: false),
+      keyboardType: const TextInputType.numberWithOptions(decimal: false, signed: false),
       textInputAction: TextInputAction.done,
       inputFormatters: [
         TextInputFormatter.withFunction(
@@ -373,13 +363,11 @@ class CustomTextField extends StatelessWidget {
               return oldValue;
             }
 
-            final formatted =
-                NumberFormat("#,###", "vi_VN").format(numericValue);
+            final formatted = NumberFormat("#,###", "vi_VN").format(numericValue);
 
             // Tính toán lại offset để caret không luôn nhảy về cuối
             final diff = formatted.length - newValue.text.length;
-            final newOffset =
-                (newValue.selection.end + diff).clamp(0, formatted.length);
+            final newOffset = (newValue.selection.end + diff).clamp(0, formatted.length);
 
             return TextEditingValue(
               text: formatted,
@@ -395,9 +383,7 @@ class CustomTextField extends StatelessWidget {
       ),
       decoration: InputDecoration(
         filled: true,
-        fillColor: enabled
-            ? backgroundColor ?? AppThemeColors.background100
-            : AppThemeColors.background300,
+        fillColor: enabled ? backgroundColor ?? AppThemeColors.background100 : AppThemeColors.background300,
         hintText: hintText,
         hintStyle: TextStyle(
           color: hintColor ?? Colors.grey,

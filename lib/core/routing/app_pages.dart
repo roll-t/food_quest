@@ -2,6 +2,7 @@ import 'package:food_quest/core/ui/widgets/notFound/not_found_page.dart';
 import 'package:food_quest/core/utils/binding/internet_binding.dart';
 import 'package:food_quest/main/food/di/add_food_binding.dart';
 import 'package:food_quest/main/food/di/add_from_deep_link_binding.dart';
+import 'package:food_quest/main/food/di/category_binding.dart';
 import 'package:food_quest/main/food/di/food_binding.dart';
 import 'package:food_quest/main/food/presentation/page/add_food_page.dart';
 import 'package:food_quest/main/food/presentation/page/add_from_deep_link_page.dart';
@@ -59,7 +60,10 @@ final appPage = [
   GetPage(
     name: const AddFromDeepLinkPage().routeName,
     page: () => const AddFromDeepLinkPage(),
-    binding: AddFromDeepLinkBinding(),
+    bindings: [
+      CategoryBinding(),
+      AddFromDeepLinkBinding(),
+    ],
   ),
   GetPage(
     name: NotFoundPage.routeName,

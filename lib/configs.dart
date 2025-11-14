@@ -6,8 +6,10 @@ import 'package:food_quest/core/config/load_env.dart';
 import 'package:food_quest/core/config/storage_configs.dart';
 import 'package:food_quest/core/lang/language_configs.dart';
 import 'package:food_quest/core/services/firebase/firebase_service.dart';
+import 'package:food_quest/core/utils/utils.dart';
 
 Future<void> configs() async {
+  Utils.ignoreException();
   WidgetsFlutterBinding.ensureInitialized();
   WidgetsBinding.instance.addObserver(AppLifecycleHandler());
   await FirebaseService.init();

@@ -8,6 +8,7 @@ import 'package:food_quest/core/ui/widgets/inputs/custom_text_field.dart';
 import 'package:food_quest/core/ui/widgets/texts/text_widget.dart';
 import 'package:food_quest/main/food/presentation/controller/add_from_deep_link_controller.dart';
 import 'package:food_quest/main/food/presentation/controller/deep_link_controller.dart';
+import 'package:food_quest/main/food/presentation/widgets/select_category_widget.dart';
 import 'package:get/get_state_manager/src/simple/get_state.dart';
 
 class AddFoodWidget extends StatelessWidget {
@@ -27,9 +28,11 @@ class AddFoodWidget extends StatelessWidget {
             color: AppColors.white,
           ),
           child: Column(
-            spacing: 8,
+            spacing: 16,
             children: [
+              const SelectCategoryWidget(),
               CustomTextField(
+                height: 40,
                 controller: controller.foodNameController,
                 label: "Nhập tên ghi nhớ",
               ),
@@ -157,7 +160,6 @@ class AddFoodWidget extends StatelessWidget {
                     );
                   },
                 ),
-              const SizedBox.shrink(),
               PrimaryButton(
                 isMaxParent: true,
                 text: "✔ Xác nhận & thêm vào danh sách",
