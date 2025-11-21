@@ -38,13 +38,9 @@ extension StringCurrencyExtension on String? {
 extension CurrencyFormatter on String {
   String toCurrencyWithUnit(BottomSheetController currencyUnitController) {
     if (trim().isEmpty) return "0";
-
     final value = double.tryParse(this) ?? 0;
-
-    final String unitId = currencyUnitController.itemSelected.value.id ?? "";
-    final String unitTitle =
-        currencyUnitController.itemSelected.value.title ?? "";
-
+    final String unitId = currencyUnitController.selectedItem.value.id ?? "";
+    final String unitTitle = currencyUnitController.selectedItem.value.title ?? "";
     double convertedValue = value;
     switch (unitId) {
       case "million":
@@ -68,8 +64,7 @@ extension CurrencyFormatter on String {
     // Đổi dấu phân cách nghìn thành khoảng trắng
     if (formatted.contains(',')) {
       final parts = formatted.split(',');
-      formatted =
-          '${parts[0].replaceAll('.', '.')}${unitId == "million" || unitId == "billion" ? ',${parts[1]}' : ''}';
+      formatted = '${parts[0].replaceAll('.', '.')}${unitId == "million" || unitId == "billion" ? ',${parts[1]}' : ''}';
     } else {
       formatted = formatted.replaceAll('.', '.');
     }

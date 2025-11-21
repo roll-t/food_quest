@@ -1,8 +1,9 @@
 import 'dart:convert';
+
 import 'package:food_quest/core/config/const/app_logger.dart';
-import 'package:food_quest/main/user/data/model/user_model.dart'; // import model
 import 'package:food_quest/core/config/theme/app_color_scheme.dart';
 import 'package:food_quest/core/lang/translation_service.dart';
+import 'package:food_quest/features/user/data/model/user_model.dart'; // import model
 import 'package:get_storage/get_storage.dart';
 
 class AppGetStorage {
@@ -26,8 +27,7 @@ class AppGetStorage {
   static void saveTheme(bool isDark) => _box.write(_themeKey, isDark);
   static bool getTheme() => _box.read(_themeKey) ?? false;
 
-  static void savePrimaryTheme(AppColorTheme theme) =>
-      _box.write(_primaryThemeKey, theme.toString());
+  static void savePrimaryTheme(AppColorTheme theme) => _box.write(_primaryThemeKey, theme.toString());
 
   static AppColorTheme getPrimaryTheme(AppColorTheme fallback) {
     final themeString = _box.read<String>(_primaryThemeKey);
@@ -40,11 +40,9 @@ class AppGetStorage {
     return fallback;
   }
 
-  static void setNotificationEnabled(bool value) =>
-      _box.write(_isNotificationEnabled, value);
+  static void setNotificationEnabled(bool value) => _box.write(_isNotificationEnabled, value);
 
-  static bool isNotificationEnabled() =>
-      _box.read(_isNotificationEnabled) ?? true;
+  static bool isNotificationEnabled() => _box.read(_isNotificationEnabled) ?? true;
 
   // ========== Token ========== //
   static void saveToken(String token) => _box.write(_tokenKey, token);

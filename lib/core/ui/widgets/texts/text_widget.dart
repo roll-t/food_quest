@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:food_quest/core/config/const/app_dimens.dart';
 import 'package:food_quest/core/config/const/app_enum.dart';
 import 'package:food_quest/core/config/const/app_text_styles.dart';
 import 'package:food_quest/core/config/theme/app_colors.dart';
@@ -30,7 +29,7 @@ class TextWidget extends StatelessWidget {
     required this.text,
     this.color,
     this.colorFixed = false,
-    this.size = AppDimens.fontSizeMedium,
+    this.size = 14,
     this.fontWeight = FontWeight.normal,
     this.fontStyle = FontStyle.normal,
     this.textDecoration = TextDecoration.none,
@@ -53,9 +52,7 @@ class TextWidget extends StatelessWidget {
         return value
             .split(' ')
             .map(
-              (word) => word.isNotEmpty
-                  ? '${word[0].toUpperCase()}${word.substring(1).toLowerCase()}'
-                  : '',
+              (word) => word.isNotEmpty ? '${word[0].toUpperCase()}${word.substring(1).toLowerCase()}' : '',
             )
             .join(' ');
       case TextTransformType.normal:
@@ -65,8 +62,7 @@ class TextWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Color textColor =
-        colorFixed == false ? (color ?? AppThemeColors.text) : AppColors.dark700;
+    final Color textColor = colorFixed == false ? (color ?? AppThemeColors.text) : AppColors.dark700;
     final transformedText = _applyTransform(text.tr);
     return Padding(
       padding: padding,

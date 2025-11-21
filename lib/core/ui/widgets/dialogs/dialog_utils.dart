@@ -6,7 +6,7 @@ import 'package:food_quest/core/config/theme/app_colors.dart';
 import 'package:food_quest/core/config/theme/app_theme_colors.dart';
 import 'package:food_quest/core/ui/widgets/buttons/primary_button.dart';
 import 'package:food_quest/core/ui/widgets/texts/text_widget.dart';
-import 'package:food_quest/core/utils/dependency_utils.dart';
+import 'package:food_quest/core/utils/binding/dependency_utils.dart';
 import 'package:get/get.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 

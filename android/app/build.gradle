@@ -22,7 +22,7 @@ android {
     ndkVersion flutter.ndkVersion
     defaultConfig {
         applicationId "com.example.auto_fin"
-        minSdkVersion 23
+        minSdkVersion flutter.minSdkVersion
         targetSdk 35
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName

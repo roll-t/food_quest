@@ -1,4 +1,3 @@
-import 'package:food_quest/core/config/const/app_dimens.dart';
 import 'package:flutter/material.dart';
 
 class CustomRadio<T> extends StatelessWidget {
@@ -16,8 +15,8 @@ class CustomRadio<T> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: AppDimens.radioSize,
-      height: AppDimens.radioSize,
+      width: 12,
+      height: 12,
       child: Radio<T>(
         value: value,
         groupValue: groupValue,

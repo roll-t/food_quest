@@ -1,11 +1,11 @@
+import 'package:flutter/material.dart';
 import 'package:food_quest/app_binding.dart';
 import 'package:food_quest/core/config/theme/app_color_scheme.dart';
 import 'package:food_quest/core/config/theme/app_theme.dart';
+import 'package:food_quest/core/config/theme/theme_controller.dart';
 import 'package:food_quest/core/lang/translation_service.dart';
 import 'package:food_quest/core/routing/app_pages.dart';
-import 'package:food_quest/main/splash/presentation/page/splash_page.dart';
-import 'package:food_quest/core/config/theme/theme_controller.dart';
-import 'package:flutter/material.dart';
+import 'package:food_quest/features/splash/presentation/page/splash_page.dart';
 import 'package:get/get.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
@@ -18,9 +18,10 @@ class App extends StatelessWidget {
     return ResponsiveSizer(
       builder: (context, orientation, screenType) {
         AppColorScheme colorScheme = themeController.appColorScheme.value;
-        
+
         return GetMaterialApp(
           debugShowCheckedModeBanner: false,
+
           ///---> [Localization service]
           translations: LocalizationService(),
           locale: LocalizationService.locale,

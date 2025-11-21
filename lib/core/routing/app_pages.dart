@@ -1,19 +1,19 @@
 import 'package:food_quest/core/ui/widgets/notFound/not_found_page.dart';
 import 'package:food_quest/core/utils/binding/internet_binding.dart';
-import 'package:food_quest/main/food/di/add_food_binding.dart';
-import 'package:food_quest/main/food/di/add_from_deep_link_binding.dart';
-import 'package:food_quest/main/food/di/category_binding.dart';
-import 'package:food_quest/main/food/di/food_binding.dart';
-import 'package:food_quest/main/food/presentation/page/add_food_page.dart';
-import 'package:food_quest/main/food/presentation/page/add_from_deep_link_page.dart';
-import 'package:food_quest/main/nav/di/navigation_binding.dart';
-import 'package:food_quest/main/nav/presentation/page/navigation_page.dart';
-import 'package:food_quest/main/splash/di/splash_binding.dart';
-import 'package:food_quest/main/splash/presentation/page/splash_page.dart';
-import 'package:food_quest/main/user/features/auth/login/di/login_binding.dart';
-import 'package:food_quest/main/user/features/auth/login/presentation/page/login_page.dart';
-import 'package:food_quest/main/user/features/auth/signin/di/signin_binding.dart';
-import 'package:food_quest/main/user/features/auth/signin/presentation/page/signin_page.dart';
+import 'package:food_quest/features/category/application/di/category_binding.dart';
+import 'package:food_quest/features/food/application/di/add_food_binding.dart';
+import 'package:food_quest/features/food/application/di/add_from_deep_link_binding.dart';
+import 'package:food_quest/features/food/application/di/food_binding.dart';
+import 'package:food_quest/features/food/presentation/page/add_food_page.dart';
+import 'package:food_quest/features/food/presentation/page/add_from_deep_link_page.dart';
+import 'package:food_quest/features/nav/di/navigation_binding.dart';
+import 'package:food_quest/features/nav/presentation/page/navigation_page.dart';
+import 'package:food_quest/features/splash/di/splash_binding.dart';
+import 'package:food_quest/features/splash/presentation/page/splash_page.dart';
+import 'package:food_quest/features/user/features/auth/login/di/login_binding.dart';
+import 'package:food_quest/features/user/features/auth/login/presentation/page/login_page.dart';
+import 'package:food_quest/features/user/features/auth/signin/di/signin_binding.dart';
+import 'package:food_quest/features/user/features/auth/signin/presentation/page/signin_page.dart';
 import 'package:get/get.dart';
 
 final notFoundPage = GetPage(
